@@ -1,0 +1,97 @@
+\documentclass[12pt,a4paper,twoside,open=right,bibliography=totoc,BCOR=10mm]{scrreprt}
+\usepackage[utf8]{inputenc}
+\usepackage[english,german]{babel}
+
+\input{header.tex}
+
+\hypersetup{
+	pdfauthor={Dipl.-Ing. Andreas Stefl, BSc},
+	pdftitle={Development and performance of track reconstruction software for ATLAS Phase-2 Upgrade and beyond},
+	pdfsubject={Doctoral thesis physics},
+	pdfkeywords={},
+	pdfdisplaydoctitle=true,
+	colorlinks=false, % for printing "false"!
+}
+
+\addbibresource{references.bib}
+
+\begin{document}
+\pagenumbering{gobble}
+
+\selectlanguage{german}
+\input{titelblatt.tex}
+\selectlanguage{english}
+
+\input{titlepage.tex}
+
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\label{ch:acknowledgements}
+\input{chapters/00_acknowledgements.tex}
+
+\selectlanguage{german}
+\chapter*{Kurzfassung}
+\addcontentsline{toc}{chapter}{Kurzfassung}
+\label{ch:kurzfassung}
+\input{chapters/00_kurzfassung.tex}
+\selectlanguage{english}
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\label{ch:abstract}
+\input{chapters/00_abstract.tex}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\addcontentsline{toc}{chapter}{Contents}
+\newpage
+\cleardoublepage % Macht, dass openright funktioniert. \chapter macht das automatisch, \tableofcontents und \printbibliography machen das nicht.  Falls es Probleme gibt hilft auch der Befehl \blankpage (siehe header.tex)
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\chapter{Introduction}
+\label{ch:introduction}
+\input{chapters/01_introduction.tex}
+
+\chapter{General developments of ACTS}
+\label{ch:developments}
+\input{chapters/02_developments.tex}
+
+\chapter{Tracking performance with ACTS and ODD}
+\label{ch:performance}
+\input{chapters/03_performance.tex}
+
+\chapter{Track finding for Atlas Phase-2}
+\label{ch:track_finding_phase2}
+\input{chapters/04_track-finding-phase2.tex}
+
+\chapter{Tracking in dense environments with ACTS}
+\label{ch:dense_environments}
+\input{chapters/05_dense-environment.tex}
+
+\chapter{4D tracking with ACTS}
+\label{ch:4d_tracking}
+\input{chapters/06_4d-tracking.tex}
+
+\chapter{Conclusion}
+\label{ch:conclusion}
+\input{chapters/07_conclusion.tex}
+
+\chapter{Outlook}
+\label{ch:outlook}
+\input{chapters/08_outlook.tex}
+
+%\cleardoublepage
+%\pagenumbering{roman}
+%\setcounter{page}{1}
+
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
+
+\printbibliography
+
+\end{document}
