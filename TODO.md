@@ -2,8 +2,27 @@
 
 - split further into parts?
   - part 1: introduction
-    - physics introduction
-    - acts introduction
+    - general introduction
+      - HEP
+      - SM
+      - CERN
+      - LHC
+      - ATLAS
+      - Phase 2
+    - reconstruction
+      - history
+      - silicon sensors
+      - reconstruction objects
+      - particle/matter interactions
+      - equations of motion
+    - tracking
+      - RK4
+      - jacobian and covariance transport
+      - pattern recognition
+      - track finding
+      - track fitting
+    - acts
+    - acts examples
   - part 2: developments
     - track finding
     - stepping

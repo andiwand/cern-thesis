@@ -49,37 +49,70 @@
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
-\chapter{Introduction}
-\label{ch:introduction}
-\input{chapters/01_introduction.tex}
+\part{Introduction}
+\label{pt:introduction}
+
+\chapter{General introduction}
+\label{ch:general_intro}
+\input{chapters/01_general-introduction.tex}
+
+\chapter{Reconstruction of tracks and primary vertices}
+\label{ch:reco_intro}
+\input{chapters/02_reconstruction-introduction.tex}
+
+\chapter{ACTS: A Common Tracking Software}
+\label{ch:acts_intro}
+\input{chapters/03_acts-introduction.tex}
+
+\part{Developments}
+\label{pt:developments}
 
 \chapter{General developments of ACTS}
-\label{ch:developments}
-\input{chapters/02_developments.tex}
+\label{ch:general_developments}
+\input{chapters/04_general-developments.tex}
 
-\chapter{Tracking performance with ACTS}
-\label{ch:performance}
-\input{chapters/03_performance.tex}
+%TODO lift stepper optimizations into a chapter of its own
 
-\chapter{Track finding for Atlas Phase-2}
-\label{ch:track_finding_phase2}
-\input{chapters/04_track-finding-phase2.tex}
+%TODO lift navigator changes into a chapter of its own
 
-\chapter{Tracking in dense environments with ACTS}
-\label{ch:dense_environments}
-\input{chapters/05_dense-environment.tex}
+\chapter{Track finding developments}
+\label{ch:track_finding_developments}
+\input{chapters/05_trackfinding-developments.tex}
+
+\chapter{Tracking in dense material with ACTS}
+\label{ch:dense_material}
+\input{chapters/06_dense-material-developments.tex}
 
 \chapter{4D tracking with ACTS}
-\label{ch:4d_tracking}
-\input{chapters/06_4d-tracking.tex}
+\label{ch:4d_tracking_developments}
+\input{chapters/07_4d-tracking-developments.tex}
+
+\part{Performance}
+\label{pt:performance}
+
+\chapter{ODD tracking performance with ACTS}
+\label{ch:acts_performance}
+\input{chapters/08_acts-performance.tex}
+
+\chapter{ITk tracking performance with ACTS}
+\label{ch:athena_performance}
+\input{chapters/09_athena-performance.tex}
+
+\part{Conclusion and Outlook}
+\label{pt:conclusion_outlook}
 
 \chapter{Conclusion}
 \label{ch:conclusion}
-\input{chapters/07_conclusion.tex}
+\input{chapters/10_conclusion.tex}
 
 \chapter{Outlook}
 \label{ch:outlook}
-\input{chapters/08_outlook.tex}
+\input{chapters/11_outlook.tex}
+
+\appendix
+\part{Appendices}
+\label{pt:appendices}
+\input{chapters/12_appendices.tex}
 
 %\cleardoublepage
 %\pagenumbering{roman}
