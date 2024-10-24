@@ -1,9 +1,48 @@
 \section{Navigation subtleties and edge cases}
 
+\begin{itemize}
+    \color{red}
+    \item navigation has to be both fast and accurate
+    \item those two are in conflict and one has to find a sweet spot
+    \item describe how the navigation currently works and what assumptions are made
+    \begin{itemize}
+        \item straight line is a good approximation
+        \item order does not change
+    \end{itemize}
+    \item describe the edge cases and subtleties that are currently not handled
+    \begin{itemize}
+        \item new candidates after entering a volume
+        \item reordering due to overlaps
+        \item boundary punching
+        \item bending away from candidates
+    \end{itemize}
+\end{itemize}
+
 \section{A streamlined Navigation Model for ACTS}
 
 \section{Robust Intersection Handling for Cylinders}
 
+\begin{itemize}
+    \color{red}
+    \item why are cylinders special
+    \begin{itemize}
+        \item can be intersected twice
+        \item surface tolerance will not incrase the radius
+    \end{itemize}
+    \item how is this now handled
+\end{itemize}
+
 \section{Remove path limit and overstep limit}
 
+\begin{itemize}
+    \color{red}
+    \item what is it and why is it needed
+    \item what are the modifications
+\end{itemize}
+
 \section{Try-all navigators}
+
+\begin{itemize}
+    \color{red}
+    \item what is it and why is it needed
+\end{itemize}
