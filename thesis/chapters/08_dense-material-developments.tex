@@ -1,0 +1,49 @@
+\begin{itemize}
+    \color{red}
+    \item what is dense material tracking
+\end{itemize}
+
+\section{Motivation}
+
+\begin{itemize}
+    \color{red}
+    \item motivate the need for dense material tracking
+    \begin{itemize}
+        \item - alternative to material surfaces
+    \end{itemize}
+\end{itemize}
+
+\section{Baseline with Geant4}
+
+\begin{itemize}
+    \color{red}
+    \item setup, configuration and results
+\end{itemize}
+
+\section{First attempts with EigenStepper}
+
+\begin{itemize}
+    \color{red}
+    \item EigenStepper dealt with integration of equations of motion but not multiple scattering
+    \item Existing stepper abstraction did not allow for an easy integration of multiple scattering
+    \item Simplification by removing stepper extension list and auctioneer
+    \item Change of extension interface to allow for multiple scattering
+\end{itemize}
+
+\section{SympyStepper}
+
+\begin{itemize}
+    \color{red}
+    \item Alternative to EigenStepper with explicit math expressions
+    \being{itemize}
+        \item avoids extension by having different RK4 integration routines. removes one layer of abstraction
+    \end{itemize}
+\end{itemize}
+
+\section{Performance}
+
+\begin{itemize}
+    \color{red}
+    \item physics performance comparison of Geant4, EigenStepper and SympyStepper
+    \item CPU performance comparison of EigenStepper and SympyStepper with and without dense material
+\end{itemize}
