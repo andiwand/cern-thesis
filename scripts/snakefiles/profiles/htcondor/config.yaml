@@ -1,0 +1,9 @@
+jobscript: "jobscript.sh"
+cluster: "submit.py"
+cluster-status: "status.py"
+max-jobs-per-second: 100
+max-status-checks-per-second: 100
+restart-times: 2
+local-cores: 4
+jobs: 10000
+verbose: false
