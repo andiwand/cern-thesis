@@ -1,7 +1,6 @@
-% TODO should this rather be called track reconstruction?
-
 \begin{itemize}
     \color{red}
+    \item should this rather be called track reconstruction?
     \item what is track reconstruction
     \begin{itemize}
         \item what is a track
@@ -12,6 +11,14 @@
         \item tracks and vertices
     \end{itemize}
 \end{itemize}
+
+Reconstruction is the process of extracting information from the raw data collected by the detector. This proceedure can be thought of as building higher and higher level objects in a chain of reconstruction steps.
+
+This thesis is concerned with the reconstruction of tracks from charged particles and the reconstruction of primary vertices.
+
+Track reconstruction is a crutial step in the reconstruction of the full event in a particle physics experiment. It is the process of reconstructing the trajectoris of charged particles as they traverse the detector. After a trajectoy is found and fitted to the detector measurements, the track can be used to determine the particle's momentum, charge sign and origin.
+
+In a subsequent step called vertex reconstruction, tracks are used to find the point where the particles were produced. The position of the vertex in comparison with the interaction region can be used to get an insight into the event topology.
 
 \section{History}
 
@@ -38,12 +45,18 @@
     \item vertices
 \end{itemize}
 
-\section{Track Reconstruction Chains}
+Reconstruction objects are the inputs and outputs of reconstruction algorithms and described with an Event Data Model (EDM).
+
+A typical reconstruction chain starts with the clustering of raw sensor readings to form measurements of the particle's trajectory. These measurements are transformed into space points, which are points in the global 3D detector coordinate system and represent the position of all the detected hits in the detector caused by created particles during the event interaction. Space points can be grouped into potential track candidates called seeds. This is usually done with 3 space points as this is the minimum to get a first estimate of the track parameters. Using the seeds and their initial parameters a track finding algorithm can be used to find the full track and to filter out fakes. The track is then fitted to all the compatible measurements. Finally, fitted tracks can be grouped and a vertex can be reconstructed.
+
+\section{Reconstruction Chains}
 
 \begin{itemize}
     \color{red}
     \item illustration of a track reconstruction chains
 \end{itemize}
+
+A reconstruction chain is a preceedure of steps to ultimately extract all the information of interest from an event. In the context of this thesis, reconstruction chains produce tracks and vertices as final objects. In the context of a particle physics experiment, reconstruction chains will also produce higher level objects like jets, missing energy, etc.
 
 \section{Particle-Matter Interactions}
 
@@ -52,12 +65,24 @@
     \item what are the main interactions
 \end{itemize}
 
+Free, energetic particles interact with matter in a variety of ways. The most common interactions are ionization, bremsstrahlung, pair production, and nuclear interactions. These interactions are used to determine the particle's properties but will also limit the detector's performance. For this reason, the material budget of a detector is a critical parameter during the design and can be used to determine the detector's resolution and efficiency.
+
 \section{Equation of Motion}
 
 \begin{itemize}
     \color{red}
     \item what is the equation of motion
 \end{itemize}
+
+The equation of motion describes the trajectory of a free, charged particle in the presents of a magnetic field. Ignoring any material interactions, the equation is a second order differential equation.
+
+\begin{equation}
+    \frac{d^2\vec{p}}{dt^2} = q \vec{v} \times \vec{B}
+\end{equation}
+
+In a homogenous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. In reality, the magnetic field is not homogenous and the equation of motion are solved numerically. The most common method to solve the equation of motion is the Runge-Kutta-Nystrom method, which is discussed in the next section.
+
+This equation can be extended to include the effects of continous energy loss.
 
 \subsection{Runge-Kutta-Nystrom Method}
 
@@ -66,12 +91,31 @@
     \item formalism
 \end{itemize}
 
+The Runge-Kutta-Nystrom method is a numerical method to solve ordinary differential equations. It is a generalization of the Runge-Kutta method to second order differential equations. In track reconstruction, the method is used to solve the equation of motion of a charged particle in a magnetic field.
+
 \subsection{Jacobian and Covariance Transport}
 
 \begin{itemize}
     \color{red}
     \item formalism
+    \item expression for path length uncertainty?
 \end{itemize}
+
+Linear error propagation can be used to not only propagate the track parameters but also its uncertainties. Since we are dealing with vector quantities, the error propagation is done with the Jacobian matrix. This is crucial for track fitting with the least squares method, as this requires linear systems to minimize the $\chi^2$.
+
+The Jacobian transport matrix can be extracted from the Runge-Kutta-Nystrom method by taking the derivative of the track parameters with respect to the initial parameters. This only yields the transport matrix for free track parameters. In order to get the full transport matrix for bound to bound parameter propagation, the Jacobian matrix has to be multiplied with the Jacobian matrix of the bound to free and free to bound transformation.
+
+\begin{equation}
+    J = J_{\text{bound to free}} J_{\text{free to free}} J_{\text{free to bound}}
+\end{equation}
+
+An additional term has to be included to handle path length uncertainties.
+
+The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters. This is done by multiplying the Jacobian matrix with the covariance.
+
+\begin{equation}
+    \Sigma_{\text{new}} = J \Sigma_{\text{old}} J^T
+\end{equation}
 
 \section{Pattern Recognition}
 
