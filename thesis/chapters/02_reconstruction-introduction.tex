@@ -119,6 +119,16 @@ The Jacobian matrix can then be used to transport the covariance matrix of the b
 
 \section{Pattern Recognition}
 
+\begin{itemize}
+    \color{red}
+    \item what is pattern recognition
+    \item why is it needed
+\end{itemize}
+
+Pattern recognition is the process of identifying patterns in the detector measurements that are caused by charged particles. This is a crucial step in track reconstruction as it is the first step in the chain of reconstruction steps. The goal of pattern recognition is to identify the hits in the detector that are caused by the same particle and to group them into a track candidate.
+
+Examples of pattern recognition algorithms are the Hough transform and classical triplet seeding.
+
 \section{Track Finding}
 
 \begin{itemize}
@@ -134,6 +144,8 @@ The Jacobian matrix can then be used to transport the covariance matrix of the b
     \end{itemize}
 \end{itemize}
 
+After the pattern recognition step, the track finding algorithm is used to find the full track. The track finding algorithm uses the track candidate seeds to find the full track. The track finding algorithm can be global or local. Global track finding algorithms use all the hits in the detector to find the track, while local track finding algorithms use only the hits in the vicinity of the seed.
+
 \section{Track ambiguity}
 
 \begin{itemize}
@@ -141,6 +153,8 @@ The Jacobian matrix can then be used to transport the covariance matrix of the b
     \item what is track ambiguity
     \item how can we deal with it
 \end{itemize}
+
+After the track finding we might end up with multiple tracks that are caused by the same particle (duplicate) or tracks that are caused by different particles (fake). This is called track ambiguity. In order to deal with track ambiguity, track finding algorithms have to be able to filter out fakes and duplicates.
 
 \section{Track Fitting}
 
@@ -152,12 +166,16 @@ The Jacobian matrix can then be used to transport the covariance matrix of the b
     \end{itemize}
 \end{itemize}
 
-\subsection{Kalman Formalism}
+After finding all the measurements that belong to a track, the track can be fitted to the measurements. Track fitting is the process of finding the track parameters that best describe the measurements. This is done with a least squares method or a Kalman filter, which is equivalent to the least squares method if \color{red}{???}. The track parameters are then used to determine the particle's momentum, charge sign and origin.
+
+\subsection{Kalman Filter}
 
 \begin{itemize}
     \color{red}
-    \item formalism
+    \item what does smaller mean?
 \end{itemize}
+
+One should note that the filtered covariance matrix is always smaller than the predicted covariance matrix. For this reason, the initial covariance matrix has to be inflated to avoid biasing the filter and to estimate the final uncertainties just from the measurement and process noise.
 
 \section{Vertexing}
 
@@ -165,3 +183,5 @@ The Jacobian matrix can then be used to transport the covariance matrix of the b
     \color{red}
     \item what is vertexing
 \end{itemize}
+
+After the track finding and fitting, the tracks can be used to find the point where the particles were produced. This is called vertexing. The position of the vertex in comparison with the interaction region can be used to get an insight into the event topology.
