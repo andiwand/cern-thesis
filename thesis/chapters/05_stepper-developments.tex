@@ -5,8 +5,26 @@ The stepper component plays a central role in the propagation of track parameter
 \begin{itemize}
     \color{red}
     \item what is it and why is it needed
+    \begin{itemize}
+        \item key points:
+        \item choosing the right step length given multiple constraints
+        \item overstepping resolution
+    \end{itemize}
     \item what are the modifications
+    \begin{itemize}
+        \item key points:
+        \item remove propagation direction dependence
+        \item remove sign of accuracy limit
+    \end{itemize}
 \end{itemize}
+
+\texttt{ConstrainedStep} is a helper class to deal with different step length requests. In the current interface of the stepper in ACTS deals with 4 different request types: \texttt{accuracy}, \texttt{navigator}, \texttt{actor}, and \texttt{user}. The \texttt{accuracy} limit is used to communicate an appropriate step length limit to achieve the requested integration accuracy target from prior \texttt{step} calls. The \texttt{navigator} limit holds the approximated distance to the next target. In case of overstepping this can also be negative. The \texttt{actor} limit holds the approximate distance to the next abort condition, for example trajectory path length limit or target surface distance. Similar to the \texttt{navigator} limit, this can also be negative. The \texttt{user} limit is a user defined limit to restrict the step size to a given maximum.
+
+\texttt{ConstrainedStep} takes inputs from the different sources and provides a single step length. The step length is determined by the minimum of the \texttt{accuracy}, \texttt{navigator}, \texttt{actor}, and \texttt{user} limits, while overstepping resolution is always preferred over smaller absolute distances.
+
+This class used to be quite involved and a central cause of problems for the propagation. Over multiple iterations it has been effectively rewritten to be more robust and easier to understand. One major compilcation was the handling of step direction inside \texttt{ConstrainedStep}. The propagation can be done in both directions, forward and backward. During a backward propagation we might overstep a target. To resolve this we need to reverse direction, effectively stepping forward. This was all handled inside \texttt{ConstrainedStep} and made the code fail in certain cases. In the new implementation this was simplified by removing the propagation direction sign from \texttt{ConstrainedStep}. It only deals with distances given the propagation direction as the behavior has to be symmetrical in forward and backward propagation.
+
+Another major change was removing the sign of the \texttt{accuracy} limit. In rare cases the accuracy was set during overstep resolution which caused it get a negative sign and thus the limit was locked and could not be changed resulting in a failed propagation. The new implementation decides the sign for the accuracy limit based on the \texttt{navigator} and \texttt{actor} limits.
 
 \section{Adaptive step size}
 
@@ -15,6 +33,10 @@ The stepper component plays a central role in the propagation of track parameter
     \item what is it and why is it needed
     \item what are the modifications
 \end{itemize}
+
+Adaptive step size is a technique to improve the performance of the numerical integration given a certain accuracy target. The idea is to adjust the step size based on the local curvature of the trajectory. In regions of high curvature a smaller step size is used to resolve the trajectory better. In regions of low curvature a larger step size is used to speed up the propagation.
+
+This is done by computing an error estimate after each step of the numerical integration and comparing it to the requested accuracy target. If the error estimate is larger than the requested accuracy target the step size is reduced. If the error estimate is smaller than the requested accuracy target the step size is increased.
 
 \section{SympyStepper}
 
