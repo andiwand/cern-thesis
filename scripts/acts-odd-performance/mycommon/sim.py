@@ -162,7 +162,7 @@ def addMySimulation(
             inputParticles=inputParticles,
             preSelectParticles=preSelectParticles,
             postSelectParticles=postSelectParticles,
-            killVolume=tracking_geometry.worldVolume,
+            killVolume=tracking_geometry.highestTrackingVolume,
             killAfterTime=25 * u.ns,
             outputDirCsv=outputDirCsv,
             outputDirRoot=outputDirRoot,
