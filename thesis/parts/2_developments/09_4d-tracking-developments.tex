@@ -38,6 +38,14 @@ During the work on this thesis time information has been included in the paramet
 
 \section{Track finding and fitting with time}
 
+For track finding and fitting algorithms in ACTS the utilization of time information comes practically for free as they rely on the propagation, which does include time, and the measurements, which carry time information if the user provides it.
+
+The track finding will automatically select and cut on the additional parameter based on the predicition of the track parameters on the measurement surface. The standard cutting mechanism in ACTS is a $\chi^2$ cut which extends automatically to the time parameter. Users only need to be aware that the $\chi^2$ cut parameter might need to be adjusted to keep the p-value similar to the case without time information.
+
+The same is true for the track fitting. The fitting algorithms in ACTS are generic and do not need to be adapted to make use of time information. The time information is automatically picked up from the measurements and used in the fit. The user only needs to be aware that the time parameter is part of the fit and can be used to cut on the track quality.
+
+In both cases the initial parameters play a crucial role in the performance of the algorithms. The variance of the time parameter needs to be properly inflated to reflect our initial uncertainty and to avoid biasing the fit.
+
 \section{Vertex finding with time}
 
 \section{Vertex fitting with time}
