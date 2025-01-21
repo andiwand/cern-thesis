@@ -14,7 +14,7 @@ rule simulation:
     params:
         outdir = "data/acts-odd-performance/sim/{event_sim_label}",
         skip = 0,
-        events = config["scan"]["number_of_events"],
+        events = get_number_of_events,
     log:
         stdout = "data/acts-odd-performance/sim/{event_sim_label}/stdout.txt",
         stderr = "data/acts-odd-performance/sim/{event_sim_label}/stderr.txt",
