@@ -106,7 +106,7 @@ Linear error propagation can be used to not only propagate the track parameters 
 The Jacobian transport matrix can be extracted from the Runge-Kutta-Nystrom method by taking the derivative of the track parameters with respect to the initial parameters. This only yields the transport matrix for free track parameters. In order to get the full transport matrix for bound to bound parameter propagation, the Jacobian matrix has to be multiplied with the Jacobian matrix of the bound to free and free to bound transformation.
 
 \begin{equation}
-    J = J_{\text{bound to free}} J_{\text{free to free}} J_{\text{free to bound}}
+    \mathbf{J}_{\text{bound\textrightarrow bound}} = \mathbf{J}_{\text{bound\textrightarrow free}} \ \mathbf{J}_{\text{free\textrightarrow free}} \ \mathbf{J}_{\text{free\textrightarrow bound}}
 \end{equation}
 
 An additional term has to be included to handle path length uncertainties.
@@ -114,7 +114,7 @@ An additional term has to be included to handle path length uncertainties.
 The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters. This is done by multiplying the Jacobian matrix with the covariance.
 
 \begin{equation}
-    \Sigma_{\text{new}} = J \Sigma_{\text{old}} J^T
+    \mathbf{\Sigma}_{\text{next}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^T
 \end{equation}
 
 \section{Pattern Recognition}

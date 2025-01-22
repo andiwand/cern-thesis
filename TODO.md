@@ -5,20 +5,37 @@
 - [ ] ✔️✔️✔️ self read and corrected
 - [x] other read and corrected
 
+## plan
+
+- get developments part done for a first reviewable draft
+- get acts intro chapter done for a first reviewable draft
+- get reconstruction intro chapter done for a first reviewable draft
+
 ## current
 
-- [ ] get a sensible todo list with time estimates
+- [ ] get a sensible todo list
+- [ ] put time estimates on chapters including prework
+- [ ] define ITk performance outline
+  - rename / focus on track finding using CKF
+- [ ] get volume material chapter done
+  - should block at least one week for this
+  - [ ] technical work
+    - [ ] implement volume material in sympy stepper
+    - [ ] compare geant, eigen, sympy
+  - [ ] include prospects of this in the thesis
 
 ## plots
 
-- [ ] ODD schematic plot
-- [ ] ODD expected measurements over eta/phi
+- [ ] ODD
+  - [ ] schematic plot
+  - [ ] expected measurements over eta/phi
+- [ ] ITk
+  - [ ] schematic plot
+  - [ ] expected measurements over eta/phi
+- [ ] illustrate CKF / TF algorithm
 
 ## scripts
 
-- [ ] ODD plots
-  - [ ] schematic
-  - [ ] expected measurements over eta/phi
 - [ ] ODD+ACTS performance scripts
   - [ ] track finding
     - [ ] single particles / ttbar0/200
