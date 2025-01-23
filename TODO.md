@@ -19,6 +19,7 @@
   - rename / focus on track finding using CKF
 - [ ] get volume material chapter done
   - should block at least one week for this
+  - [ ] illustrate multiple scattering in thin and thick layers
   - [ ] technical work
     - [ ] implement volume material in sympy stepper
     - [ ] compare geant, eigen, sympy
