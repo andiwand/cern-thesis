@@ -20,6 +20,8 @@
 - [ ] get volume material chapter done
   - should block at least one week for this
   - [ ] illustrate multiple scattering in thin and thick layers
+  - [ ] Geant4 screenshot with white/alpha background
+  - [ ] remake comparison plots with proper ratio
   - [ ] technical work
     - [ ] implement volume material in sympy stepper
     - [ ] compare geant, eigen, sympy

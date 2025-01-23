@@ -3,11 +3,12 @@
     \item what is dense material tracking
     \item motivate the need for dense material tracking
     \begin{itemize}
-        \item - alternative to material surfaces
+        \item alternative to material surfaces
     \end{itemize}
+    \item illustrate thin and thick scatterers
 \end{itemize}
 
-Usually tracking is done in as little material as possible to increase the resolution yield of the detector and the chance of detecting particles at all before they get "stopped". However, in some cases it is necessary to track particles through dense material. For example in case of track extension through a calorimeter to combine inner detector and muon system tracklets to improve the momentum resolution of muons at the interaction point.
+Usually tracking is done in as little material as possible to increase the resolution yield of the detector and the chance of detecting particles at all before they get "stopped". However, in some cases it is necessary to track particles through dense material. One example is track extension through a calorimeter to combine inner detector and muon system tracklets to improve the momentum resolution of high momentum muons at the interaction point.
 
 One has two options to model the material in the calorimeter. Either virtual surfaces are inserted and the material of the calorimeter is projected on them similar to what is usually done in the inner detector. Or the material is modeled as a continous media. A volume-based approach also allows for continous energy loss and multiple scattering which can only be approximated by a surface-based approach. Ultimately, an experiment independet tracking software should be able to handle both cases.
 
@@ -27,13 +28,30 @@ Apart from the energy loss, the particle's trajectory is also affected by multip
 
 \section{Covariance transport through thick scatterers}
 
+\begin{itemize}
+    \color{red}
+    \item cannot be done by combining individual updates
+    \item what about energy loss and its uncertainty?
+\end{itemize}
+
 While thin scatterers only incrase directional uncertainty, as the particle will pass through the scatterer before a positional uncertainty can build up, thick scatterers also increase the positional uncertainty while the particle passes through them.
+
+\section{Toy Model}
+
+\begin{itemize}
+    \color{red}
+    \item illustration
+\end{itemize}
 
 \section{Baseline with Geant4}
 
 \begin{itemize}
     \color{red}
     \item setup, configuration and results
+    \item special treatment to make multiple scattering work
+    \item geant4 sim picture
+    \item results for positional uncertainty on surface + fit
+    \item results for energy loss + fit
 \end{itemize}
 
 A reference with Geant4 is established to compare it to the analytical solutions which will be implemented in ACTS. Geant4 is a widely used particle transport simulation framework which is capable of simulating the interactions of particles with matter. It covers a wide range of interactions beyond the Bethe-Bloch energy loss and the Molière multiple scattering which are used in this thesis.
