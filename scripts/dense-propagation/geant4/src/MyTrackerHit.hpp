@@ -33,7 +33,7 @@ public:
       G4Circle circle(fPos);
       circle.SetScreenSize(4.);
       circle.SetFillStyle(G4Circle::filled);
-      G4Colour colour(1., 1., 1.);
+      G4Colour colour(0., 0., 1.);
       G4VisAttributes attribs(colour);
       circle.SetVisAttributes(attribs);
       pVVisManager->Draw(circle);

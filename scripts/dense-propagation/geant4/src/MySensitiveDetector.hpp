@@ -19,7 +19,16 @@ public:
   ~MySensitiveDetector() override = default;
 
   G4bool ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist) override {
+    int particle = aStep->GetTrack()->GetTrackID();
+    G4PrimaryParticle *primaryParticle =
+        aStep->GetTrack()->GetDynamicParticle()->GetPrimaryParticle();
+    double x = aStep->GetPreStepPoint()->GetPosition().z();
+    double y = aStep->GetPreStepPoint()->GetPosition().y();
     double edep = aStep->GetTotalEnergyDeposit();
+
+    if (primaryParticle == nullptr) {
+      return false;
+    }
 
     auto newHit = new TrackerHit();
 
@@ -33,26 +42,18 @@ public:
 
     G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-    int particle = aStep->GetTrack()->GetTrackID();
-    G4PrimaryParticle *primaryParticle =
-        aStep->GetTrack()->GetDynamicParticle()->GetPrimaryParticle();
-    double x = aStep->GetPreStepPoint()->GetPosition().z();
-    double y = aStep->GetPreStepPoint()->GetPosition().y();
+    double eloss = primaryParticle->GetKineticEnergy() -
+                    aStep->GetTrack()->GetKineticEnergy();
 
-    if (primaryParticle != nullptr) {
-      double eloss = primaryParticle->GetKineticEnergy() -
-                     aStep->GetTrack()->GetKineticEnergy();
-
-      analysisManager->FillNtupleDColumn(0, particle);
-      analysisManager->FillNtupleDColumn(1, x / CLHEP::mm);
-      analysisManager->FillNtupleDColumn(2, y / CLHEP::mm);
-      analysisManager->FillNtupleDColumn(3, eloss / CLHEP::GeV);
-      analysisManager->FillNtupleDColumn(
-          4, primaryParticle->GetKineticEnergy() / CLHEP::GeV);
-      analysisManager->FillNtupleDColumn(
-          5, aStep->GetTrack()->GetKineticEnergy() / CLHEP::GeV);
-      analysisManager->AddNtupleRow();
-    }
+    analysisManager->FillNtupleDColumn(0, particle);
+    analysisManager->FillNtupleDColumn(1, x / CLHEP::mm);
+    analysisManager->FillNtupleDColumn(2, y / CLHEP::mm);
+    analysisManager->FillNtupleDColumn(3, eloss / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(
+        4, primaryParticle->GetKineticEnergy() / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(
+        5, aStep->GetTrack()->GetKineticEnergy() / CLHEP::GeV);
+    analysisManager->AddNtupleRow();
 
     return true;
   }

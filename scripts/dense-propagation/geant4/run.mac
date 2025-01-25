@@ -20,7 +20,7 @@
 # muon to the direction (1.,0.,0.)
 #
 /gun/particle mu-
-/gun/energy 10 GeV
+/gun/energy 1 GeV
 #
-#/run/printProgress 100
-/run/beamOn 100
+/run/printProgress 1000
+/run/beamOn 1000
