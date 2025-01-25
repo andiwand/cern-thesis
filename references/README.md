@@ -1,0 +1,4 @@
+- [2024-10-23-chep_v4.pdf](./2024-10-23-chep_v4.pdf)
+  - Authors: Paul Gessinger, Andreas Salzburger
+  - Indico: https://indico.cern.ch/event/1338689/contributions/6010526/
+  - File: https://indico.cern.ch/event/1338689/contributions/6010526/attachments/2952891/5191246/2024-10-23-chep_v4.pdf
