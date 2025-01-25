@@ -11,7 +11,14 @@
 #include "G4VisExecutive.hh"
 #include "Randomize.hh"
 
+#include <iostream>
+
 int main(int argc, char **argv) {
+  if (argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " energy" << std::endl;
+    return 1;
+  }
+
   std::string energy = argv[1];
 
   // use G4SteppingVerboseWithUnits
