@@ -85,7 +85,7 @@ def robust_gauss_fit(data):
     return (m, s), cov
 
 
-base_dir = Path(__file__).parent.parent.parent
+base_dir = Path(__file__).parent.parent.parent.parent
 
 parser = argparse.ArgumentParser(description="Plot multiple scattering")
 parser.add_argument("--show", action="store_true", help="Show the plot")
@@ -101,7 +101,7 @@ for i, axs_cols, momentum, x_range, e_range in zip(
     [(0.65, 0.825), (9.55, 9.85), (99.55, 99.85)],
 ):
     data = ak.to_dataframe(
-        uproot.open(f"{base_dir}/data/dense-propagation/chart_eloss_{momentum}GeV.root")["reading"].arrays(
+        uproot.open(f"{base_dir}/data/dense-propagation/geant4/chart_eloss_{momentum}GeV.root")["reading"].arrays(
             library="ak"
         )
     )

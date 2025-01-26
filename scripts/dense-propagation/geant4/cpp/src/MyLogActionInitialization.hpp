@@ -1,5 +1,4 @@
-#ifndef MyLogActionInitialization_h
-#define MyLogActionInitialization_h 1
+#pragma once
 
 #include "MyEventAction.hpp"
 #include "MyLogPrimaryGeneratorAction.hpp"
@@ -31,5 +30,3 @@ public:
     SetUserAction(new MySteppingAction());
   }
 };
-
-#endif

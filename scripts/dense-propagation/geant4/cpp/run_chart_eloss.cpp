@@ -1,25 +1,22 @@
-#include "MyActionInitialization.hpp"
 #include "MyDetectorConstruction.hpp"
+#include "MyLogActionInitialization.hpp"
 
 #include "FTFP_BERT.hh"
-#include "FTFP_BERT_ATL.hh"
 #include "G4RunManagerFactory.hh"
-#include "G4StepLimiterPhysics.hh"
 #include "G4SteppingVerbose.hh"
-#include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
-#include "G4VisExecutive.hh"
-#include "Randomize.hh"
-
-#include <iostream>
 
 int main(int argc, char **argv) {
   if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " energy" << std::endl;
+    std::cerr << "Usage: " << argv[0] << " material" << std::endl;
+    std::cerr << "  example materials: G4_lAr, G4_Fe" << std::endl;
     return 1;
   }
 
-  std::string energy = argv[1];
+  std::string material = argv[1];
+
+  // Optionally: choose a different Random engine...
+  // G4Random::setTheEngine(new CLHEP::MTwistEngine);
 
   // use G4SteppingVerboseWithUnits
   G4int precision = 4;
@@ -34,18 +31,18 @@ int main(int argc, char **argv) {
   //
   // Detector construction
   runManager->SetUserInitialization(
-      new MyDetectorConstruction("G4_lAr", 1 * m));
+      new MyDetectorConstruction(material.c_str(), 100 * mm));
 
   // Physics list
   G4VModularPhysicsList *physicsList = new FTFP_BERT();
 
-  G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
-  physicsList->RegisterPhysics(stepLimitPhys);
+  // G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
+  // physicsList->RegisterPhysics(stepLimitPhys);
 
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
-  runManager->SetUserInitialization(new MyActionInitialization());
+  runManager->SetUserInitialization(new MyLogActionInitialization());
 
   G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
@@ -60,9 +57,13 @@ int main(int argc, char **argv) {
   runManager->Initialize();
 
   G4UImanager *uiManager = G4UImanager::GetUIpointer();
-  uiManager->ApplyCommand(("/gun/energy " + energy).c_str());
+  // inactivate to disable the process
+  uiManager->ApplyCommand("/process/activate muIoni");
+  uiManager->ApplyCommand("/process/inactivate muBrems");
+  uiManager->ApplyCommand("/process/inactivate muPairProd");
+  uiManager->ApplyCommand("/process/inactivate muonNuclear");
 
-  runManager->BeamOn(10000);
+  runManager->BeamOn(1000000);
 
   analysisManager->Write();
   analysisManager->CloseFile();
@@ -71,5 +72,6 @@ int main(int argc, char **argv) {
   // Free the store: user actions, physics_list and detector_description are
   // owned and deleted by the run manager, so they should not be deleted
   // in the main() program !
+
   delete runManager;
 }

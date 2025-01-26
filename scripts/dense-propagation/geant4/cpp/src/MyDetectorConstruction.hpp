@@ -1,22 +1,16 @@
-#ifndef MyDetectorConstruction_h
-#define MyDetectorConstruction_h 1
+#pragma once
 
 #include "MySensitiveDetector.hpp"
 
 #include "G4Box.hh"
-#include "G4Cons.hh"
 #include "G4LogicalVolume.hh"
 #include "G4NistManager.hh"
-#include "G4Orb.hh"
 #include "G4PVPlacement.hh"
 #include "G4RunManager.hh"
 #include "G4SDManager.hh"
-#include "G4Sphere.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4Trd.hh"
 #include "G4UserLimits.hh"
 #include "G4VUserDetectorConstruction.hh"
-#include "globals.hh"
 
 class MyDetectorConstruction : public G4VUserDetectorConstruction {
 public:
@@ -152,5 +146,3 @@ private:
   std::string m_material;
   double m_thickness{};
 };
-
-#endif

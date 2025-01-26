@@ -1,5 +1,4 @@
-#ifndef MyTrackerHit_h
-#define MyTrackerHit_h 1
+#pragma once
 
 #include "G4Allocator.hh"
 #include "G4Circle.hh"
@@ -79,5 +78,3 @@ inline void *TrackerHit::operator new(size_t) {
 inline void TrackerHit::operator delete(void *hit) {
   TrackerHitAllocator->FreeSingle((TrackerHit *)hit);
 }
-
-#endif

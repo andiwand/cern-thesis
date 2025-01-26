@@ -1,17 +1,11 @@
-#ifndef MyPrimaryGeneratorAction_h
-#define MyPrimaryGeneratorAction_h 1
+#pragma once
 
 #include "G4Box.hh"
-#include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4RunManager.hh"
-#include "G4SystemOfUnits.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "Randomize.hh"
-#include "globals.hh"
 
 class MyPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
@@ -50,5 +44,3 @@ private:
   G4ParticleGun *fParticleGun = nullptr; // pointer a to G4 gun class
   G4Box *fWorldBox = nullptr;
 };
-
-#endif

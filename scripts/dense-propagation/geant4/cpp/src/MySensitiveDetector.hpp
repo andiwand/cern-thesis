@@ -1,5 +1,4 @@
-#ifndef MySensitiveDetector_h
-#define MySensitiveDetector_h 1
+#pragma once
 
 #include "MyTrackerHit.hpp"
 
@@ -80,5 +79,3 @@ public:
 private:
   TrackerHitsCollection *fHitsCollection = nullptr;
 };
-
-#endif

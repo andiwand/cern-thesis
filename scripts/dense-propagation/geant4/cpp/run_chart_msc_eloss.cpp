@@ -1,19 +1,21 @@
+#include "MyActionInitialization.hpp"
 #include "MyDetectorConstruction.hpp"
-#include "MyLogActionInitialization.hpp"
 
 #include "FTFP_BERT.hh"
-#include "FTFP_BERT_ATL.hh"
 #include "G4RunManagerFactory.hh"
 #include "G4StepLimiterPhysics.hh"
 #include "G4SteppingVerbose.hh"
-#include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
-#include "G4VisExecutive.hh"
-#include "Randomize.hh"
+
+#include <iostream>
 
 int main(int argc, char **argv) {
-  // Optionally: choose a different Random engine...
-  // G4Random::setTheEngine(new CLHEP::MTwistEngine);
+  if (argc != 2) {
+    std::cerr << "Usage: " << argv[0] << " energy" << std::endl;
+    return 1;
+  }
+
+  std::string energy = argv[1];
 
   // use G4SteppingVerboseWithUnits
   G4int precision = 4;
@@ -28,7 +30,7 @@ int main(int argc, char **argv) {
   //
   // Detector construction
   runManager->SetUserInitialization(
-      new MyDetectorConstruction("G4_Fe", 1 * mm));
+      new MyDetectorConstruction("G4_lAr", 1 * m));
 
   // Physics list
   G4VModularPhysicsList *physicsList = new FTFP_BERT();
@@ -39,10 +41,27 @@ int main(int argc, char **argv) {
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
-  runManager->SetUserInitialization(new MyLogActionInitialization());
+  runManager->SetUserInitialization(new MyActionInitialization());
+
+  G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+
+  analysisManager->OpenFile("chart_eloss.root");
+
+  // runManager->SetVerboseLevel(2);
+  // analysisManager->SetVerboseLevel(1);
+  // G4EventManager::GetEventManager()->SetVerboseLevel(2);
+  // G4EventManager::GetEventManager()->GetTrackingManager()->SetVerboseLevel(2);
+  // G4EventManager::GetEventManager()->GetStackManager()->SetVerboseLevel(2);
 
   runManager->Initialize();
-  runManager->BeamOn(0);
+
+  G4UImanager *uiManager = G4UImanager::GetUIpointer();
+  uiManager->ApplyCommand(("/gun/energy " + energy).c_str());
+
+  runManager->BeamOn(10000);
+
+  analysisManager->Write();
+  analysisManager->CloseFile();
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are

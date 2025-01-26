@@ -1,12 +1,8 @@
-#ifndef MyEventAction_h
-#define MyEventAction_h 1
-
-#include "MyRunAction.hpp"
+#pragma once
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4UserEventAction.hh"
-#include "globals.hh"
 
 class MyEventAction : public G4UserEventAction {
 public:
@@ -39,8 +35,4 @@ public:
              << G4endl;
     }
   }
-
-private:
 };
-
-#endif

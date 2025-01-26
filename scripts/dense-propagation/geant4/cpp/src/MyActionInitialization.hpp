@@ -1,5 +1,4 @@
-#ifndef MyActionInitialization_h
-#define MyActionInitialization_h 1
+#pragma once
 
 #include "MyEventAction.hpp"
 #include "MyPrimaryGeneratorAction.hpp"
@@ -31,5 +30,3 @@ public:
     SetUserAction(new MySteppingAction());
   }
 };
-
-#endif

@@ -1,15 +1,9 @@
-#ifndef MyRunAction_h
-#define MyRunAction_h 1
+#pragma once
 
 #include "G4AnalysisManager.hh"
-#include "G4LogicalVolume.hh"
-#include "G4LogicalVolumeStore.hh"
 #include "G4Run.hh"
 #include "G4RunManager.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
 #include "G4UserRunAction.hh"
-#include "globals.hh"
 
 class G4Run;
 
@@ -41,5 +35,3 @@ public:
 
 private:
 };
-
-#endif

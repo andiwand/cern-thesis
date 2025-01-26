@@ -1,5 +1,4 @@
-#ifndef MyPhysicsList_h
-#define MyPhysicsList_h 1
+#pragma once
 
 #include "G4DecayPhysics.hh"
 #include "G4EmStandardPhysics.hh"
@@ -25,5 +24,3 @@ public:
 
   void SetCuts() override { G4VUserPhysicsList::SetCuts(); }
 };
-
-#endif
