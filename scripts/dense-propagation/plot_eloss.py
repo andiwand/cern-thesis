@@ -77,16 +77,16 @@ base_dir = Path(__file__).parent.parent.parent
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
+    "--g4-input",
+    type=Path,
+    default=f"{base_dir}/data/dense-propagation/geant4/logscale_mom_fe.root",
+    help="Path to Geant4 input file",
+)
+parser.add_argument(
     "--acts-input",
     type=Path,
     default=f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv",
     help="Path to ACTS input file",
-)
-parser.add_argument(
-    "--g4-input",
-    type=Path,
-    default=f"{base_dir}/data/dense-propagation/geant4/eloss_fe.root",
-    help="Path to Geant4 input file",
 )
 parser.add_argument(
     "--output",
@@ -172,7 +172,7 @@ if args.g4_input is not None:
             )
 
         acts_eloss = pd.read_csv(f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv")
-        acts_mask = (acts_eloss["p"] > p_min) & (acts_eloss["p"] < p_max)
+        acts_mask = (acts_eloss["p_initial"] > p_min) & (acts_eloss["p_initial"] < p_max)
         acts_mean = acts_eloss["bethe"][acts_mask].mean()
         acts_mode = 0.9 * acts_mean
         acts_std = acts_eloss["landau_sigma"][acts_mask].mean()
@@ -232,21 +232,21 @@ if args.acts_input is not None:
     acts_eloss = pd.read_csv(args.acts_input)
 
     acts_total_mean, _, _ = scipy.stats.binned_statistic(
-        acts_eloss["p"],
+        acts_eloss["p_initial"],
         acts_eloss["total_mean"],
         bins=edges,
         range=log_range,
         statistic=stat_mean,
     )
     acts_bethe_mean, _, _ = scipy.stats.binned_statistic(
-        acts_eloss["p"],
+        acts_eloss["p_initial"],
         acts_eloss["bethe"],
         bins=edges,
         range=log_range,
         statistic=stat_mean,
     )
     acts_landau_sigma, _, _ = scipy.stats.binned_statistic(
-        acts_eloss["p"],
+        acts_eloss["p_initial"],
         acts_eloss["landau_sigma"],
         bins=edges,
         range=log_range,

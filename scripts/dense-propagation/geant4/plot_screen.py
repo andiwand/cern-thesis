@@ -73,7 +73,7 @@ parser.add_argument(
     nargs=3,
     type=Path,
     default=[
-        f"{base_dir}/data/dense-propagation/geant4/msc_{m}GeV.root"
+        f"{base_dir}/data/dense-propagation/geant4/single_mom_lar_{m}GeV.root"
         for m in [1, 10, 100]
     ],
     help="Path to the input files",
@@ -81,7 +81,7 @@ parser.add_argument(
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/dense-propagation/geant4_msc.pdf",
+    default=f"{base_dir}/plots/dense-propagation/geant4_screen.pdf",
     help="Path to output file",
 )
 parser.add_argument("--show", action="store_true", help="Show plot")
@@ -90,6 +90,8 @@ args = parser.parse_args()
 fig, axs = plt.subplots(
     2, 3, figsize=(8, 4), height_ratios=[2, 1], layout="constrained"
 )
+
+fig.suptitle("Recorded positions with muons passing 1 m of LAr")
 
 for i, file, axs_cols, momentum, x_range, e_range in zip(
     range(3),

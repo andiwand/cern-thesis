@@ -4,7 +4,7 @@ One has two options to model the material in the calorimeter. Either virtual sur
 
 The main difference between the two approaches is how the material is handled during the covariance transport. In a surface-based approach, the material is treated as a thin scatterer which only affects the direction uncertainty and the energy of the particle. In a volume-based approach, the material is treated as a thick scatterer which also affects the positional uncertainty of the particle. This is illustrated in figure \ref{fig:dev/dense/scatterers}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
@@ -63,7 +63,7 @@ While thin scatterers only incrase directional uncertainty, as the particle will
 
 One also needs to be careful with continous covariance updates as both, the energy loss and the multiple scattering, are non-Gaussian processes. To estimate the uncertainty correctly, all the encountered material needs to be taken into acount at once. This is in conflict with the usual approach of updating the covariance at each surface with the accumulated transport Jacobian, because we cannot split the material effects into individual updates which are then transported using individual Jacobians.
 
-To overcome this issue, the additional covariance due to the material is calculated without taking the transport Jacobian into account. Material during the transport is accumulated and applied to the covariance only when it is transported to the next surface. This way the covariance is only updated once for all the material the particle has passed through which is the correct way to estimate the uncertainty.
+To overcome this issue, the additional covariance due to the material is calculated without taking the transport Jacobian into account. Material during the transport is accumulated and applied to the covariance only when it is transported to the next surface. This way the covariance is only updated once for all the material the particle has passed through, which is the correct way to estimate the uncertainty.
 
 \section{Toy Model}
 
@@ -71,10 +71,10 @@ A toy model is used to simplify the implementation and validation of the volume-
 
 This captures the essence of the problem without the complexity of a full detector simulation. Inside the dense material, the muons lose energy and scatter multiple times. The scattering not only affects the uncertainty of the direction but also the positional uncertainty on the screen. After passing the dense material, the muons are transported in a vacuum which should keep the uncertainty in direction unchanged but the positional uncertainty to further increase.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{tikzpicture}
-        \draw[fill=red] (-5,0) circle (0.1);
+        \filldraw[red] (-5,0) circle (0.1);
         \draw[fill=gray!20] (-2,-2) rectangle (2,2);
         \draw[black, thick] (5,-2) rectangle (5.2,2);
 
@@ -97,7 +97,7 @@ Note that this toy model does not include a magnetic field which is present in a
 
 A reference is established using Geant4 to compare it to the analytical solution which will be implemented in ACTS. Geant4 is a widely used particle transport simulation framework which is capable of simulating the interactions of particles with matter. It covers a wide range of interactions beyond the Bethe-Bloch energy loss and the Molière multiple scattering which are used in ACTS.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{parts/2_developments/08_dense-material-developments/figures/geant4_events.png}
     \caption{Event display showing 1000 muons passing through the toy geometry in Geant4. The outer box represents the world volume. The inner box represents the dense material. The muons are shown as red lines and originate from the left. The surface on the right represents the screen and the blue points are the hits on the screen.}
@@ -108,7 +108,7 @@ The toy model is implemented with Geant4 in C++ and used to propagate muons thro
 
 When reaching the screen, the states of the muons are recorded as entries in a TTree and written to a ROOT file. Figure \ref{fig:dev/dense/geant4-events} shows an event display of 1000 muons passing through the toy geometry in Geant4.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/geant4_msc.pdf}
     \caption{The top row shows the density of the hits on the screen in local cartesian coordinates. For each column muons with a different energy are shown. The bottom row shows the hit positions of the local x coordinate on the screen with a fit to a Gaussian distribution.}
@@ -134,7 +134,7 @@ Since steppers in ACTS primirily deal with Jacobian transport and transport the 
 
 While this approach leads to promising results, it is unsatisfactory as the multiple scattering contribution had to be recalculated at each step which is computationally inefficient. The extension mechanism needed a redesign to allow for multiple scattering to be calculated only once and then added to the covariance only when it is transported to the next surface. At the same time it was unclear how multiple extensions should cooperate on this additional covariance. This bigger architectural change of ACTS was not directly attempted and this first solution was only a proof of concept and kept in a separate branch.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/eloss_cmp.pdf}
     \caption{A comparison of the energy loss computed by ACTS and Geant4 for muons with different energies. The vertical bars represent the uncertainty of the energy loss. A Moyal distribution is fitted to the Geant4 data for each bin and summarized as the mean and standard deviation computed from the FWHM. ACTS is able to reproduce the mean energy loss well over the full spectrum. The standard deviation is well reproduced around 1 GeV but deviates at higher energies.}
