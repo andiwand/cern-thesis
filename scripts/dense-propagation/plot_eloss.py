@@ -46,9 +46,13 @@ def stat_std_landau(data):
 def fwhm_landau(loc, scale):
     pdf_max = scipy.stats.moyal.pdf(loc, loc, scale)
     left_space = np.linspace(0, loc, 10000)
-    left = left_space[np.argmax(scipy.stats.moyal.pdf(left_space, loc, scale) > pdf_max / 2)]
+    left = left_space[
+        np.argmax(scipy.stats.moyal.pdf(left_space, loc, scale) > pdf_max / 2)
+    ]
     right_space = np.linspace(loc, 4 * loc, 10000)
-    right = right_space[np.argmax(scipy.stats.moyal.pdf(right_space, loc, scale) < pdf_max / 2)]
+    right = right_space[
+        np.argmax(scipy.stats.moyal.pdf(right_space, loc, scale) < pdf_max / 2)
+    ]
     return left, right
 
 
@@ -72,12 +76,29 @@ def stat_fwhm_std_landau(data):
 base_dir = Path(__file__).parent.parent.parent
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--acts-input", type=Path, default=f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv", help="Path to ACTS input file")
-parser.add_argument("--g4-input", type=Path, default=f"{base_dir}/data/dense-propagation/geant4/eloss_fe.root", help="Path to Geant4 input file")
-parser.add_argument("--output", type=Path, default=f"{base_dir}/plots/dense-propagation/eloss_cmp.pdf", help="Path to output file")
+parser.add_argument(
+    "--acts-input",
+    type=Path,
+    default=f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv",
+    help="Path to ACTS input file",
+)
+parser.add_argument(
+    "--g4-input",
+    type=Path,
+    default=f"{base_dir}/data/dense-propagation/geant4/eloss_fe.root",
+    help="Path to Geant4 input file",
+)
+parser.add_argument(
+    "--output",
+    type=Path,
+    default=f"{base_dir}/plots/dense-propagation/eloss_cmp.pdf",
+    help="Path to output file",
+)
 parser.add_argument("--show", action="store_true", help="Show plot")
 parser.add_argument("--bins", type=int, default=30, help="Number of bins")
-parser.add_argument("--e-range", nargs=2, default=[0.05, 300], help="Energy range in GeV")
+parser.add_argument(
+    "--e-range", nargs=2, default=[0.05, 300], help="Energy range in GeV"
+)
 args = parser.parse_args()
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
@@ -103,14 +124,21 @@ if args.g4_input is not None:
     g4_e_loss = g4_e_loss / 100
 
     for p_min, p_max in [
-        #(290, 310),
-        #(0.9, 1.1),
+        # (290, 310),
+        # (0.9, 1.1),
     ]:
         ofig, oax = plt.subplots(1, 1, figsize=(4, 3))
         oax.set_xscale("log")
         oax.set_yscale("log")
         mask = (g4_e_init > p_min) & (g4_e_init < p_max)
-        oax.hist(g4_e_loss[mask], bins=10000, density=True, histtype="step", color="deepskyblue", label="Geant4")
+        oax.hist(
+            g4_e_loss[mask],
+            bins=10000,
+            density=True,
+            histtype="step",
+            color="deepskyblue",
+            label="Geant4",
+        )
         loc, scale = fit_landau(g4_e_loss[mask])
         left, right = fwhm_landau(loc, scale)
         std = fwhm_to_std(right - left)
@@ -119,13 +147,29 @@ if args.g4_input is not None:
             oax.axvline(loc, color="deepskyblue", linestyle="--", label="Landau mode")
             oax.axvline(left, color="skyblue", linestyle="--", label="FWHM")
             oax.axvline(right, color="skyblue", linestyle="--")
-            oax.axvline(loc - std, color="lightskyblue", linestyle="--", label="Landau mode - std")
-            oax.axvline(loc + std, color="lightskyblue", linestyle="--", label="Landau mode + std")
+            oax.axvline(
+                loc - std,
+                color="lightskyblue",
+                linestyle="--",
+                label="Landau mode - std",
+            )
+            oax.axvline(
+                loc + std,
+                color="lightskyblue",
+                linestyle="--",
+                label="Landau mode + std",
+            )
 
         if False:
-            g4_fit_x = np.linspace(0.01*loc, 10*loc, 1000)
+            g4_fit_x = np.linspace(0.01 * loc, 10 * loc, 1000)
             g4_fit_y = scipy.stats.moyal.pdf(g4_fit_x, loc, scale)
-            oax.plot(g4_fit_x, g4_fit_y, color="deepskyblue", linestyle="--", label="Landau fit")
+            oax.plot(
+                g4_fit_x,
+                g4_fit_y,
+                color="deepskyblue",
+                linestyle="--",
+                label="Landau fit",
+            )
 
         acts_eloss = pd.read_csv(f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv")
         acts_mask = (acts_eloss["p"] > p_min) & (acts_eloss["p"] < p_max)
@@ -135,12 +179,32 @@ if args.g4_input is not None:
 
         if False:
             oax.axvline(acts_mean, color="red", linestyle="--", label="ACTS mean")
-            oax.axvline(acts_mean - acts_std, color="orange", linestyle="--", label="ACTS mean - std")
-            oax.axvline(acts_mean + acts_std, color="orange", linestyle="--", label="ACTS mean + std")
+            oax.axvline(
+                acts_mean - acts_std,
+                color="orange",
+                linestyle="--",
+                label="ACTS mean - std",
+            )
+            oax.axvline(
+                acts_mean + acts_std,
+                color="orange",
+                linestyle="--",
+                label="ACTS mean + std",
+            )
 
             oax.axvline(acts_mode, color="green", linestyle="--", label="ACTS mode")
-            oax.axvline(acts_mode - acts_std, color="limegreen", linestyle="--", label="ACTS mode - std")
-            oax.axvline(acts_mode + acts_std, color="limegreen", linestyle="--", label="ACTS mode + std")
+            oax.axvline(
+                acts_mode - acts_std,
+                color="limegreen",
+                linestyle="--",
+                label="ACTS mode - std",
+            )
+            oax.axvline(
+                acts_mode + acts_std,
+                color="limegreen",
+                linestyle="--",
+                label="ACTS mode + std",
+            )
 
         oax.legend()
 
@@ -162,7 +226,7 @@ if args.g4_input is not None:
     # ax.hist(e_init, bins=edges, range=log_range, histtype="step")
 
     ax.errorbar(mid, g4_mean, yerr=g4_std, fmt="o", linestyle="", label="Geant4")
-    #ax.plot(mid, g4_mean, marker="o", linestyle="", label="Geant4")
+    # ax.plot(mid, g4_mean, marker="o", linestyle="", label="Geant4")
 
 if args.acts_input is not None:
     acts_eloss = pd.read_csv(args.acts_input)
@@ -189,7 +253,14 @@ if args.acts_input is not None:
         statistic=stat_mean,
     )
 
-    ax.errorbar(mid, acts_total_mean, yerr=acts_landau_sigma, fmt="^", linestyle="", label="ACTS")
+    ax.errorbar(
+        mid,
+        acts_total_mean,
+        yerr=acts_landau_sigma,
+        fmt="^",
+        linestyle="",
+        label="ACTS",
+    )
     # ax.plot(mid, acts_total_mean, marker="^", linestyle="", label="ACTS")
     # ax.plot(mid, acts_bethe, label="ACTS bethe")
 

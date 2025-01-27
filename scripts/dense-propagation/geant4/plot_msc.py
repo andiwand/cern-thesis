@@ -68,12 +68,28 @@ def robust_gauss_fit(data):
 base_dir = Path(__file__).parent.parent.parent.parent
 
 parser = argparse.ArgumentParser(description="Plot multiple scattering")
-parser.add_argument("--input", nargs=3, type=Path, default=[f"{base_dir}/data/dense-propagation/geant4/msc_{m}GeV.root" for m in [1, 10, 100]], help="Path to the input files")
-parser.add_argument("--output", type=Path, default=f"{base_dir}/plots/dense-propagation/geant4_msc.pdf", help="Path to output file")
+parser.add_argument(
+    "--input",
+    nargs=3,
+    type=Path,
+    default=[
+        f"{base_dir}/data/dense-propagation/geant4/msc_{m}GeV.root"
+        for m in [1, 10, 100]
+    ],
+    help="Path to the input files",
+)
+parser.add_argument(
+    "--output",
+    type=Path,
+    default=f"{base_dir}/plots/dense-propagation/geant4_msc.pdf",
+    help="Path to output file",
+)
 parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
-fig, axs = plt.subplots(2, 3, figsize=(8, 4), height_ratios=[2, 1], layout="constrained")
+fig, axs = plt.subplots(
+    2, 3, figsize=(8, 4), height_ratios=[2, 1], layout="constrained"
+)
 
 for i, file, axs_cols, momentum, x_range, e_range in zip(
     range(3),
