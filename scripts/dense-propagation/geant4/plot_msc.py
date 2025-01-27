@@ -11,26 +11,6 @@ import awkward as ak
 import numpy as np
 
 
-def mean(data):
-    m = np.mean(data)
-    return m
-
-
-def std(data):
-    s = np.std(data)
-    return s
-
-
-def robust_mean(data):
-    (m, s), cov = robust_gauss_fit(data)
-    return m
-
-
-def robust_std(data):
-    (m, s), cov = robust_gauss_fit(data)
-    return s
-
-
 def robust_gauss_fit_naive(data):
     def fit(data):
         return np.mean(data), np.std(data)
@@ -88,23 +68,22 @@ def robust_gauss_fit(data):
 base_dir = Path(__file__).parent.parent.parent.parent
 
 parser = argparse.ArgumentParser(description="Plot multiple scattering")
-parser.add_argument("--show", action="store_true", help="Show the plot")
+parser.add_argument("--input", nargs=3, type=Path, default=[f"{base_dir}/data/dense-propagation/geant4/msc_{m}GeV.root" for m in [1, 10, 100]], help="Path to the input files")
+parser.add_argument("--output", type=Path, default=f"{base_dir}/plots/dense-propagation/geant4_msc.pdf", help="Path to output file")
+parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 fig, axs = plt.subplots(2, 3, figsize=(8, 4), height_ratios=[2, 1], layout="constrained")
 
-for i, axs_cols, momentum, x_range, e_range in zip(
+for i, file, axs_cols, momentum, x_range, e_range in zip(
     range(3),
+    args.input,
     axs.T,
     [1, 10, 100],
     [(-220, 220), (-22, 22), (-2.2, 2.2)],
     [(0.65, 0.825), (9.55, 9.85), (99.55, 99.85)],
 ):
-    data = ak.to_dataframe(
-        uproot.open(f"{base_dir}/data/dense-propagation/geant4/msc_{momentum}GeV.root")["reading"].arrays(
-            library="ak"
-        )
-    )
+    data = ak.to_dataframe(uproot.open(file)["reading"].arrays(library="ak"))
 
     x, y = data["x"], data["y"]
     e = data["e_final"]
@@ -149,7 +128,8 @@ for i, axs_cols, momentum, x_range, e_range in zip(
 
 fig.colorbar(h2d[3], ax=axs.ravel().tolist(), label="hits")
 
-if args.show:
-    plt.show()
+if args.output is not None:
+    plt.savefig(args.output, bbox_inches="tight")
 
-plt.savefig(f"{base_dir}/plots/dense-propagation/geant4_msc.pdf", bbox_inches="tight")
+if args.output is None or args.show:
+    plt.show()

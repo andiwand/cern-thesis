@@ -74,7 +74,7 @@ base_dir = Path(__file__).parent.parent.parent
 parser = argparse.ArgumentParser()
 parser.add_argument("--acts-input", type=Path, default=f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv", help="Path to ACTS input file")
 parser.add_argument("--g4-input", type=Path, default=f"{base_dir}/data/dense-propagation/geant4/eloss_fe.root", help="Path to Geant4 input file")
-parser.add_argument("--output", type=Path, help="Path to output file")
+parser.add_argument("--output", type=Path, default=f"{base_dir}/plots/dense-propagation/eloss_cmp.pdf", help="Path to output file")
 parser.add_argument("--show", action="store_true", help="Show plot")
 parser.add_argument("--bins", type=int, default=30, help="Number of bins")
 parser.add_argument("--e-range", nargs=2, default=[0.05, 300], help="Energy range in GeV")
