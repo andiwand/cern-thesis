@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 
+import argparse
+from pathlib import Path
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from scipy.optimize import curve_fit
 import uproot
 import awkward as ak
 import numpy as np
-import argparse
-from pathlib import Path
 
 
 def mean(data):
@@ -101,7 +101,7 @@ for i, axs_cols, momentum, x_range, e_range in zip(
     [(0.65, 0.825), (9.55, 9.85), (99.55, 99.85)],
 ):
     data = ak.to_dataframe(
-        uproot.open(f"{base_dir}/data/dense-propagation/geant4/chart_eloss_{momentum}GeV.root")["reading"].arrays(
+        uproot.open(f"{base_dir}/data/dense-propagation/geant4/msc_{momentum}GeV.root")["reading"].arrays(
             library="ak"
         )
     )

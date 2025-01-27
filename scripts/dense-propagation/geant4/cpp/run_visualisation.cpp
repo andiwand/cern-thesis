@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
   G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-  analysisManager->OpenFile("chart_visualisation.root");
+  analysisManager->OpenFile("visualisation.root");
 
   // runManager->SetVerboseLevel(2);
   // G4EventManager::GetEventManager()->SetVerboseLevel(2);

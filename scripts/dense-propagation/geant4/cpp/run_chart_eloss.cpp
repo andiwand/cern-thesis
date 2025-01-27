@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
 
   G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-  analysisManager->OpenFile("chart_eloss.root");
+  analysisManager->OpenFile("eloss.root");
 
   // runManager->SetVerboseLevel(2);
   // analysisManager->SetVerboseLevel(1);
@@ -59,9 +59,9 @@ int main(int argc, char **argv) {
   G4UImanager *uiManager = G4UImanager::GetUIpointer();
   // inactivate to disable the process
   uiManager->ApplyCommand("/process/activate muIoni");
-  uiManager->ApplyCommand("/process/inactivate muBrems");
-  uiManager->ApplyCommand("/process/inactivate muPairProd");
-  uiManager->ApplyCommand("/process/inactivate muonNuclear");
+  uiManager->ApplyCommand("/process/activate muBrems");
+  uiManager->ApplyCommand("/process/activate muPairProd");
+  uiManager->ApplyCommand("/process/activate muonNuclear");
 
   runManager->BeamOn(1000000);
 

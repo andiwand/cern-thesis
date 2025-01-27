@@ -7,7 +7,6 @@ from scipy.optimize import curve_fit
 import uproot
 import awkward as ak
 import numpy as np
-import argparse
 
 
 """

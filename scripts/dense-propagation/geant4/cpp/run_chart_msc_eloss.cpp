@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 
   G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-  analysisManager->OpenFile("chart_eloss.root");
+  analysisManager->OpenFile("msc.root");
 
   // runManager->SetVerboseLevel(2);
   // analysisManager->SetVerboseLevel(1);

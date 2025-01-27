@@ -12,7 +12,7 @@ Usually tracking is done in as little material as possible to increase the resol
 
 One has two options to model the material in the calorimeter. Either virtual surfaces are inserted and the material of the calorimeter is projected on them similar to what is usually done in the inner detector. Or the material is modeled as a continous media. A volume-based approach also allows for continous energy loss and multiple scattering which can only be approximated by a surface-based approach. Ultimately, an experiment independet tracking software should be able to handle both cases.
 
-While the surface-based approach is a long standing feature in ACTS, the volume-based approach was not implemented yet. This thesis aims to close this gap by implementing and validating volume-based tracking in ACTS.
+While the surface-based approach is a long standing feature in ACTS, the volume-based approach was not implemented yet. This thesis aims to close this gap by implementing and validating volume-based material in ACTS.
 
 This implementation focues on two interactions with the material, continuous energy loss and multiple scattering, which are described in the following sections. Aftwerwards, a reference with Geant4 is established and the implementation in ACTS is described. Finally, the performance of the implementation is evaluated.
 
@@ -43,6 +43,10 @@ While thin scatterers only incrase directional uncertainty, as the particle will
     \item illustration
 \end{itemize}
 
+A toy model is used to simplify the implementation and validation of the volume-based material handling in ACTS. It consists of a box filled with dense material and a screen with some distance to the box. Muons are emitted from the left side of the box and their hits on the screen are recorded. This captures the essence of the problem without the complexity of a full detector simulation. Inside the dense material, the muons lose energy and scatter multiple times. The scattering not only affects the uncertainty of the direction but also the positional uncertainty on the screen. After passing the dense material, the muons are transported in a vacuum which should keep the uncertainty in direction unchanged but the positional uncertainty to further increase.
+
+Note that this toy model does not include the magnetic field which is present in a real detector. The magnetic field bends the trajectory of the muons and potentially influences the covariance transport.
+
 \section{Baseline with Geant4}
 
 \begin{itemize}
@@ -54,20 +58,20 @@ While thin scatterers only incrase directional uncertainty, as the particle will
     \item results for energy loss + fit
 \end{itemize}
 
-A reference with Geant4 is established to compare it to the analytical solutions which will be implemented in ACTS. Geant4 is a widely used particle transport simulation framework which is capable of simulating the interactions of particles with matter. It covers a wide range of interactions beyond the Bethe-Bloch energy loss and the Molière multiple scattering which are used in this thesis.
+A reference is established using Geant4 to compare it to the analytical solution which will be implemented in ACTS. Geant4 is a widely used particle transport simulation framework which is capable of simulating the interactions of particles with matter. It covers a wide range of interactions beyond the Bethe-Bloch energy loss and the Molière multiple scattering which are used in ACTS.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{parts/2_developments/08_dense-material-developments/figures/geant4_events.png}
-    \caption{TODO}
-    \label{fig:geant4-events}
+    \caption{Event display showing 1000 muons passing through the toy geometry in Geant4. The outer box represents the world volume. The inner box represents the dense material. The muons are shown as red lines and originate from the left. The surface on the right represents the screen and the blue points are the hits on the screen.}
+    \label{fig:dev/dense/geant4-events}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/geant4_msc.pdf}
-    \caption{TODO}
-    \label{fig:geant4-msc}
+    \caption{The top row shows the density of the hits on the screen in local cartesian coordinates. For each column muons with a different energy are shown. The bottom row shows the hit positions of the local x coordinate on the screen with a fit to a Gaussian distribution.}
+    \label{fig:dev/dense/geant4-msc}
 \end{figure}
 
 \section{First attempts with EigenStepper}
@@ -86,6 +90,13 @@ ACTS already has volume material and an extension mechanism for the EigenStepper
 Since steppers in ACTS primirily deal with Jacobian transport and transport the covariance only on demand, the additional angle and positional uncertainty due to multiple scattering cannot be simply added. To work around this, an additional covariance term was intoduced which is used to accumulate the multiple scattering uncertainty. This term is then added when the covariance is transported to the next surface.
 
 While this approach worked, it was unsatisfactory because the multiple scattering contribution had to be recalculated at each step which is computationally inefficient. The extension mechanism needed a redesign to allow for multiple scattering to be calculated only once and then added to the covariance only when it is transported to the next surface. At the same time it was unclear how multiple extensions should cooperate on this additional covariance. This bigger architectural change of ACTS was not directly attempted and this first solution was only a proof of concept and kept in a separate branch.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/eloss_cmp.pdf}
+    \caption{A comparison of the energy loss computed by ACTS and Geant4 for muons with different energies. The vertical bars represent the uncertainty of the energy loss.}
+    \label{fig:dev/dense/eloss_cmp}
+\end{figure}
 
 \section{SympyStepper}
 
