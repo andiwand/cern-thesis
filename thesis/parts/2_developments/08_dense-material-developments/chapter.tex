@@ -30,7 +30,7 @@ The main difference between the two approaches is how the material is handled du
         \end{tikzpicture}
         \caption{Thick scatterer}
     \end{subfigure}
-    \caption{Illustration of thin and thick scatterers. Due to the thickness of the scatterer, the particle will have an offset to the unimpeeded trajectory.}
+    \caption{Illustration of a particle passing a thin and a thick scatterer. Due to the thickness of the scatterer, the particle will have an offset to the unimpeeded trajectory.}
     \label{fig:dev/dense/scatterers}
 \end{figure}
 
@@ -42,18 +42,83 @@ This implementation focues on two interactions with the material, continuous ene
 
 \begin{itemize}
     \color{red}
-    \item correct equation of motion
     \item how to compute the energy loss
     \item cite derivations of transport Jacobian
 \end{itemize}
 
-Continuous energy loss affects the trajectory of a particle and needs to be treated in the equation of motion. Secion \ref{sec:equation-of-motion} describes the equation of motion for a particle in a magnetic field. The equation of motion can be extended to include continuous energy loss by adding a term for the energy loss rate.
+Continuous energy loss affects the trajectory of a particle and needs to be treated in the equation of motion. Secion \ref{sec:into/reco/equation-of-motion} describes the equation of motion for a particle in a magnetic field. The equation of motion can be extended to include continuous energy loss:
 
 \begin{equation}
-    \frac{d^2\vec{p}}{dt^2} = q \vec{v} \times \vec{B} - \frac{d\vec{p}}{dt}
+    \frac{d^2\mathbf{r}}{ds^2} = \frac{q}{p} \frac{d\mathbf{r}}{ds} \times \mathbf{B}(\mathbf{r}) = \lambda \mathbf{T} \times \mathbf{B}(\mathbf{r})
 \end{equation}
 
-The modified equation of motion is integrated using a Runge-Kutta-Nystrom method which is described in section \ref{}. This also affects the transport Jacobian which is used to transport the covariance of the particle. Derivations of the transport Jacobian for the modified equation of motion can be found in \cite{}.
+\begin{equation}
+    \frac{d\lambda}{ds} = -\frac{\lambda^3 g E}{q^2}
+\end{equation}
+
+With the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, the energy loss rate $g$, and the energy $E$ of the particle.
+
+The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions.\cite{pub-2008-003}
+
+\begin{equation}
+    g = \left( \frac{dE}{ds} \right)_{\text{ion}} + \left( \frac{dE}{ds} \right)_{\text{brem}} + \left( \frac{dE}{ds} \right)_{\text{pair + photo nuclear}}
+\end{equation}
+
+\textbf{Mean energy loss from ionization}
+
+The mean energy loss from ionization is calculated using the Bethe-Bloch formula. The Bethe-Bloch formula describes the energy loss of a charged particle in matter due to ionization of the medium. It is given by\cite{pdg2024}
+
+\begin{equation}
+    \left( \frac{dE}{ds} \right)_{\text{ion}} = - K z^2 \frac{Z}{A} \frac{\rho}{\beta^2} \left[ \frac{1}{2} \ln \frac{2m_e c^2 \beta^2 \gamma^2 W_{\text{max}}}{I^2} - \beta^2 - \frac{\delta}{2} \right]
+\end{equation}
+
+in $\text{MeV} \, \text{cm}^{-1}$ with the constant $K = 4 \pi N_A r_e^2 m_e c^2 \approx 0.307075 \, \text{MeV} \, \text{mol}^{-1} \, \text{cm}^2$, the charge of the particle $z$, the atomic number of the medium $Z$, the atomic mass of the medium $A$, the material density $\rho$ in $\text{g} \, \text{cm}^{-3}$, the maximum kinetic energy transfer in a single collision $W_{\text{max}}$ in $\text{MeV}$, the mean excitation energy of the medium $I$ in $\text{MeV}$, and the density effect correction $\delta$.
+
+The maximum kinetic energy transfer in a single collision is given by\cite{pdg2024}
+
+\begin{equation}
+    W_{\text{max}} = \frac{2 m_e c^2 \beta^2 \gamma^2}{1 + 2 \gamma m_e / M + (m_e / M)^2}
+\end{equation}
+
+in $\text{MeV}$ with the electron mass $m_e$ in $\text{MeV}/c^2$, and the mass of the particle $M$ in $\text{MeV}/c^2$.
+
+At high energies, \cite{pub-2008-003} suggests $\gamma \ge 10$, the density effect is given by\cite{pdg2024}
+
+\begin{equation}
+    \frac{\delta}{2} = \ln \frac{\hbar \omega_p}{I} + \ln \beta \gamma - \frac{1}{2}
+\end{equation}
+
+with the plasma energy $\hbar \omega_p = \sqrt{4 \pi N_e r_e^3} m_e c^2 / \alpha$ in $\text{MeV}$. For lower energies, the density effect is ignored.
+
+The mean excitation energy is a material property and should be provided by the user. \cite{pub-2008-003} suggests a crude approximation of $I = 16 \, \text{eV} \, Z^{0.9}$.
+
+\textbf{Mean energy loss from bremsstrahlung}
+
+The mean energy loss from bremsstrahlung is calculated using the Bethe-Heitler formula. The Bethe-Heitler formula describes the energy loss of a charged particle in matter due to bremsstrahlung. It is given by\cite{}
+
+\begin{equation}
+    \left( \frac{dE}{ds} \right)_{\text{brem}} = - \frac{E}{X_0} \left( \frac{m_e}{M} \right)^2
+\end{equation}
+
+\textbf{Mean energy loss from pair production and photonuclear interactions for muons}
+
+The mean energy loss from pair production and photonuclear interactions for muons is parameterized from data provided in \cite{}. The energy loss is given by
+
+\begin{equation}
+    \left( \frac{dE}{ds} \right)_{\text{p.+p.n.}} = 0.5345 \frac{1}{X_0} - 6.803 \cdot 10^{-6} \frac{E}{X_0} - 2.278 \cdot 10^{-11} \frac{E^2}{X_0} + 9.899 \cdot 10^{-18} \frac{E^3}{X_0}
+\end{equation}
+
+for $8 \, \text{GeV} < E < 1 \, \text{TeV}$ and
+
+\begin{equation}
+    \left( \frac{dE}{ds} \right)_{\text{pair + photo nuclear}} = 2.986 \frac{1}{X_0} - 9.253 \cdot 10^{-5} \frac{E}{X_0}
+\end{equation}
+
+for $E > 1 \, \text{TeV}$. Below $8 \, \text{GeV}$ the energy loss is negligible.
+
+\textbf{Integration}
+
+The equation of motion is integrated using a Runge-Kutta-Nystrom method which is described in section \ref{sec:into/reco/runge-kutta-nystrom}. This also affects the transport Jacobian which is used to transport the covariance of the particle. Derivations of the transport Jacobian for the modified equation of motion can be found in \cite{pub-2009-002}.
 
 Apart from the energy loss, the particle's trajectory is also affected by multiple scattering. Multiple scattering is a random deflection of the particle's trajectory due to the Coulomb interaction with the material. Since this is a stochastic process which averages to no deflection over a large number of particles it has no effect on the average trajectory. However, it does affect the resolution of the track parameters which needs to be taken into account for the covariance transport.
 
