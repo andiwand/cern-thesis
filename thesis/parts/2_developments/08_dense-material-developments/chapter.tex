@@ -9,7 +9,7 @@ The main difference between the two approaches is how the material is handled du
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \begin{tikzpicture}
-            \draw[fill=gray!20] (-0.25,-2.5) rectangle (0.25,2.5);
+            \draw[fill=gray!20] (-0.25,-2) rectangle (0.25,2);
             \draw[black, thick, dotted] (-2,0) -- (2,0);
             \draw[black, thick] (-2,0) -- (-0.25,0) -- (-0.1,0.1) -- (0.1,-0.05) -- (0.25,0.1) -- (2,0.5);
             \node at (0.4,0.4) {$\theta$};
@@ -20,7 +20,7 @@ The main difference between the two approaches is how the material is handled du
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \begin{tikzpicture}
-            \draw[fill=gray!20] (-1,-2.5) rectangle (1,2.5);
+            \draw[fill=gray!20] (-1,-2) rectangle (1,2);
             \draw[black, thick, dotted] (-2,0) -- (2,0);
             \draw[black, thick] (-2,0) -- (-1,0) -- (-0.7,0.1) -- (-0.4,0.05) -- (-0.3,0.15) -- (-0.2,0.2) -- (0,0.2) -- (0.3,0.35) -- (0.4,0.4) -- (0.7,0.37) -- (1,0.42) -- (2,0.7);
             \draw[black, thick, dotted] (1,0.42) -- (2,0.42);
@@ -40,23 +40,16 @@ This implementation focues on two interactions with the material, continuous ene
 
 \section{Modified Equation of Motion}
 
-\begin{itemize}
-    \color{red}
-    \item how to compute the energy loss
-    \item cite derivations of transport Jacobian
-\end{itemize}
-
 Continuous energy loss affects the trajectory of a particle and needs to be treated in the equation of motion. Secion \ref{sec:into/reco/equation-of-motion} describes the equation of motion for a particle in a magnetic field. The equation of motion can be extended to include continuous energy loss:
 
-\begin{equation}
-    \frac{d^2\mathbf{r}}{ds^2} = \frac{q}{p} \frac{d\mathbf{r}}{ds} \times \mathbf{B}(\mathbf{r}) = \lambda \mathbf{T} \times \mathbf{B}(\mathbf{r})
-\end{equation}
+\begin{align}
+    \frac{d^2\mathbf{r}}{ds^2} &= \frac{q}{p} \frac{d\mathbf{r}}{ds} \times \mathbf{B}(\mathbf{r}) = \lambda \mathbf{T} \times \mathbf{B}(\mathbf{r}) \\
+    \frac{d\lambda}{ds} &= -\frac{\lambda^2 g}{q} \\
+    \frac{dt}{ds} &= \sqrt{1 + \frac{m^2}{p^2}} \\
+    \frac{d^2t}{ds^2} &= \frac{g m^2 l^3}{q^3 \frac{dt}{ds}}
+\end{align}
 
-\begin{equation}
-    \frac{d\lambda}{ds} = -\frac{\lambda^3 g E}{q^2}
-\end{equation}
-
-With the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, the energy loss rate $g$, and the energy $E$ of the particle.
+With the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, and the energy loss rate $g$ of the particle.
 
 The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions.\cite{pub-2008-003}
 
@@ -92,7 +85,7 @@ with the plasma energy $\hbar \omega_p = \sqrt{4 \pi N_e r_e^3} m_e c^2 / \alpha
 
 The mean excitation energy is a material property and should be provided by the user. \cite{pub-2008-003} suggests a crude approximation of $I = 16 \, \text{eV} \, Z^{0.9}$.
 
-\textbf{Mean energy loss from bremsstrahlung}
+\textbf{Mean energy loss from bremsstrahlung in matter}
 
 The mean energy loss from bremsstrahlung is calculated using the Bethe-Heitler formula. The Bethe-Heitler formula describes the energy loss of a charged particle in matter due to bremsstrahlung. It is given by\cite{}
 
@@ -118,15 +111,15 @@ for $E > 1 \, \text{TeV}$. Below $8 \, \text{GeV}$ the energy loss is negligible
 
 \textbf{Integration}
 
-The equation of motion is integrated using a Runge-Kutta-Nystrom method which is described in section \ref{sec:into/reco/runge-kutta-nystrom}. This also affects the transport Jacobian which is used to transport the covariance of the particle. Derivations of the transport Jacobian for the modified equation of motion can be found in \cite{pub-2009-002}.
+The equations of motion are integrated using the Runge-Kutta-Nystrom method which is described in section \ref{sec:into/reco/runge-kutta-nystrom}. This also affects the transport Jacobian which is used to transport the covariance of the particle. Derivations of the transport Jacobian for the modified equation of motion can be found in \cite{pub-2009-002}.
 
 Apart from the energy loss, the particle's trajectory is also affected by multiple scattering. Multiple scattering is a random deflection of the particle's trajectory due to the Coulomb interaction with the material. Since this is a stochastic process which averages to no deflection over a large number of particles it has no effect on the average trajectory. However, it does affect the resolution of the track parameters which needs to be taken into account for the covariance transport.
 
 \section{Covariance transport through thick scatterers}
 
-While thin scatterers only incrase directional uncertainty, as the particle will pass through the scatterer before a positional uncertainty can build up, thick scatterers also increase the positional uncertainty while the particle passes through them. This effect needs to be taken into account when transporting the covariance through the material.
+While thin scatterers only incrase directional uncertainty, as the particle will pass through the scatterer before a significant positional uncertainty can build up. Thick scatterers increase the positional uncertainty significantly while the particle passes through them. This effect needs to be taken into account when transporting the covariance through the material.
 
-One also needs to be careful with continous covariance updates as both, the energy loss and the multiple scattering, are non-Gaussian processes. To estimate the uncertainty correctly, all the encountered material needs to be taken into acount at once. This is in conflict with the usual approach of updating the covariance at each surface with the accumulated transport Jacobian, because we cannot split the material effects into individual updates which are then transported using individual Jacobians.
+One also needs to be careful with continous covariance updates as both, the energy loss and the multiple scattering, are non-Gaussian processes and the convolution property is not fullfilled. To estimate the uncertainty correctly, all the encountered material needs to be taken into acount at once. This is in conflict with the usual approach of updating the covariance at each surface with the accumulated transport Jacobian, because we cannot split the material effects into individual updates which are then transported using individual Jacobians.
 
 To overcome this issue, the additional covariance due to the material is calculated without taking the transport Jacobian into account. Material during the transport is accumulated and applied to the covariance only when it is transported to the next surface. This way the covariance is only updated once for all the material the particle has passed through, which is the correct way to estimate the uncertainty.
 
