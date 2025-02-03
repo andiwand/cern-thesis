@@ -33,10 +33,10 @@ int main(int argc, char **argv) {
       new MyDetectorConstruction("G4_lAr", 1 * m));
 
   // Physics list
-  G4VModularPhysicsList *physicsList = new FTFP_BERT;
+  G4VModularPhysicsList *physicsList = new FTFP_BERT();
 
-  G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
-  physicsList->RegisterPhysics(stepLimitPhys);
+  // G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
+  // physicsList->RegisterPhysics(stepLimitPhys);
 
   runManager->SetUserInitialization(physicsList);
 

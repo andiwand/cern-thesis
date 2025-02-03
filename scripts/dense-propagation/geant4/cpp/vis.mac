@@ -18,10 +18,13 @@
 /vis/scene/endOfEventAction accumulate 500
 #/vis/scene/add/axes 0 0 0 1 m
 /vis/scene/add/trajectories smooth
+
 /vis/scene/add/hits
 
 /vis/modeling/trajectories/create/drawByParticleID
 /vis/modeling/trajectories/drawByParticleID-0/set mu- red
+/vis/modeling/trajectories/drawByParticleID-0/default/setDrawStepPts true
+/vis/modeling/trajectories/drawByParticleID-0/default/setStepPtsSize 2
 
 /vis/filtering/trajectories/create/particleFilter
 /vis/filtering/trajectories/particleFilter-0/add mu-

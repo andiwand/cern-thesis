@@ -14,17 +14,17 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/src/*.hpp)
 
-add_executable(run_chart_eloss run_chart_eloss.cpp ${sources} ${headers})
-target_link_libraries(run_chart_eloss ${Geant4_LIBRARIES})
+add_executable(run_logscale_momentum run_logscale_momentum.cpp ${sources} ${headers})
+target_link_libraries(run_logscale_momentum ${Geant4_LIBRARIES})
 
-add_executable(run_chart_msc_eloss run_chart_msc_eloss.cpp ${sources} ${headers})
-target_link_libraries(run_chart_msc_eloss ${Geant4_LIBRARIES})
+add_executable(run_single_momentum run_single_momentum.cpp ${sources} ${headers})
+target_link_libraries(run_single_momentum ${Geant4_LIBRARIES})
+
+add_executable(run_visualisation run_visualisation.cpp ${sources} ${headers})
+target_link_libraries(run_visualisation ${Geant4_LIBRARIES})
 
 add_executable(run_print_material run_print_material.cpp ${sources} ${headers})
 target_link_libraries(run_print_material ${Geant4_LIBRARIES})
 
 add_executable(run_print_physics_list run_print_physics_list.cpp ${sources} ${headers})
 target_link_libraries(run_print_physics_list ${Geant4_LIBRARIES})
-
-add_executable(run_visualisation run_visualisation.cpp ${sources} ${headers})
-target_link_libraries(run_visualisation ${Geant4_LIBRARIES})

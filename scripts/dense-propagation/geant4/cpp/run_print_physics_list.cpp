@@ -28,8 +28,8 @@ int main(int argc, char **argv) {
   // Physics list
   G4VModularPhysicsList *physicsList = new FTFP_BERT();
 
-  G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
-  physicsList->RegisterPhysics(stepLimitPhys);
+  // G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
+  // physicsList->RegisterPhysics(stepLimitPhys);
 
   runManager->SetUserInitialization(physicsList);
 

@@ -30,13 +30,13 @@ int main(int argc, char **argv) {
   //
   // Detector construction
   runManager->SetUserInitialization(
-      new MyDetectorConstruction("G4_lAr", 1 * m));
+      new MyDetectorConstruction("G4_lAr", 1000 * mm));
 
   // Physics list
   G4VModularPhysicsList *physicsList = new FTFP_BERT();
 
-  G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
-  physicsList->RegisterPhysics(stepLimitPhys);
+  // G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
+  // physicsList->RegisterPhysics(stepLimitPhys);
 
   runManager->SetUserInitialization(physicsList);
 
@@ -57,6 +57,12 @@ int main(int argc, char **argv) {
 
   G4UImanager *uiManager = G4UImanager::GetUIpointer();
   uiManager->ApplyCommand(("/gun/energy " + energy).c_str());
+
+  // inactivate to disable the process
+  uiManager->ApplyCommand("/process/activate muIoni");
+  uiManager->ApplyCommand("/process/activate muBrems");
+  uiManager->ApplyCommand("/process/activate muPairProd");
+  uiManager->ApplyCommand("/process/activate muonNuclear");
 
   runManager->BeamOn(10000);
 

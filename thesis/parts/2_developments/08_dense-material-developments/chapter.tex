@@ -44,9 +44,9 @@ Continuous energy loss affects the trajectory of a particle and needs to be trea
 
 \begin{align}
     \frac{d^2\mathbf{r}}{ds^2} &= \frac{q}{p} \frac{d\mathbf{r}}{ds} \times \mathbf{B}(\mathbf{r}) = \lambda \mathbf{T} \times \mathbf{B}(\mathbf{r}) \\
-    \frac{d\lambda}{ds} &= -\frac{\lambda^2 g}{q} \\
     \frac{dt}{ds} &= \sqrt{1 + \frac{m^2}{p^2}} \\
-    \frac{d^2t}{ds^2} &= \frac{g m^2 l^3}{q^3 \frac{dt}{ds}}
+    \frac{d\lambda}{ds} &= \frac{dt}{ds} \frac{\lambda^2 g}{q} \\
+    \frac{d^2t}{ds^2} &= \frac{g m^2 l^3}{q^3}
 \end{align}
 
 With the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, and the energy loss rate $g$ of the particle.
@@ -75,7 +75,7 @@ The maximum kinetic energy transfer in a single collision is given by\cite{pdg20
 
 in $\text{MeV}$ with the electron mass $m_e$ in $\text{MeV}/c^2$, and the mass of the particle $M$ in $\text{MeV}/c^2$.
 
-At high energies, \cite{pub-2008-003} suggests $\gamma \ge 10$, the density effect is given by\cite{pdg2024}
+At high energies (\textcite{pub-2008-003} suggests $\gamma \ge 10$) the density effect is given by\cite{pdg2024}
 
 \begin{equation}
     \frac{\delta}{2} = \ln \frac{\hbar \omega_p}{I} + \ln \beta \gamma - \frac{1}{2}
@@ -83,7 +83,7 @@ At high energies, \cite{pub-2008-003} suggests $\gamma \ge 10$, the density effe
 
 with the plasma energy $\hbar \omega_p = \sqrt{4 \pi N_e r_e^3} m_e c^2 / \alpha$ in $\text{MeV}$. For lower energies, the density effect is ignored.
 
-The mean excitation energy is a material property and should be provided by the user. \cite{pub-2008-003} suggests a crude approximation of $I = 16 \, \text{eV} \, Z^{0.9}$.
+The mean excitation energy is a material property and should be provided by the user. \textcite{pub-2008-003} suggests a crude approximation of $I = 16 \, \text{eV} \, Z^{0.9}$.
 
 \textbf{Mean energy loss from bremsstrahlung in matter}
 
@@ -95,7 +95,7 @@ The mean energy loss from bremsstrahlung is calculated using the Bethe-Heitler f
 
 \textbf{Mean energy loss from pair production and photonuclear interactions for muons}
 
-The mean energy loss from pair production and photonuclear interactions for muons is parameterized from data provided in \cite{}. The energy loss is given by
+The mean energy loss from pair production and photonuclear interactions for muons is parameterized from data provided in \textcite{}. The energy loss is given by
 
 \begin{equation}
     \left( \frac{dE}{ds} \right)_{\text{p.+p.n.}} = 0.5345 \frac{1}{X_0} - 6.803 \cdot 10^{-6} \frac{E}{X_0} - 2.278 \cdot 10^{-11} \frac{E^2}{X_0} + 9.899 \cdot 10^{-18} \frac{E^3}{X_0}
@@ -111,21 +111,58 @@ for $E > 1 \, \text{TeV}$. Below $8 \, \text{GeV}$ the energy loss is negligible
 
 \textbf{Integration}
 
-The equations of motion are integrated using the Runge-Kutta-Nystrom method which is described in section \ref{sec:into/reco/runge-kutta-nystrom}. This also affects the transport Jacobian which is used to transport the covariance of the particle. Derivations of the transport Jacobian for the modified equation of motion can be found in \cite{pub-2009-002}.
+The equations of motion are integrated using the Runge-Kutta-Nystrom method which is described in section \ref{sec:into/reco/runge-kutta-nystrom}. This also affects the transport Jacobian which is used to transport the covariance of the particle. Derivations of the transport Jacobian for the modified equation of motion can be found in \textcite{pub-2009-002}.
 
 Apart from the energy loss, the particle's trajectory is also affected by multiple scattering. Multiple scattering is a random deflection of the particle's trajectory due to the Coulomb interaction with the material. Since this is a stochastic process which averages to no deflection over a large number of particles it has no effect on the average trajectory. However, it does affect the resolution of the track parameters which needs to be taken into account for the covariance transport.
 
 \section{Covariance transport through thick scatterers}
 
-While thin scatterers only incrase directional uncertainty, as the particle will pass through the scatterer before a significant positional uncertainty can build up. Thick scatterers increase the positional uncertainty significantly while the particle passes through them. This effect needs to be taken into account when transporting the covariance through the material.
+The covariance of a particle transported through material needs to be adjusted due to the additional uncertainty from the interactions with the material. There are two main contributions: multiple scattering and energy loss uncertainty. Multiple scattering increases the directional uncertainty of the particle which then increases the positional uncertainty. Similarly energy loss uncertainty increases the temporal uncertainty.
 
-One also needs to be careful with continous covariance updates as both, the energy loss and the multiple scattering, are non-Gaussian processes and the convolution property is not fullfilled. To estimate the uncertainty correctly, all the encountered material needs to be taken into acount at once. This is in conflict with the usual approach of updating the covariance at each surface with the accumulated transport Jacobian, because we cannot split the material effects into individual updates which are then transported using individual Jacobians.
+\textbf{Multiple scattering}
 
-To overcome this issue, the additional covariance due to the material is calculated without taking the transport Jacobian into account. Material during the transport is accumulated and applied to the covariance only when it is transported to the next surface. This way the covariance is only updated once for all the material the particle has passed through, which is the correct way to estimate the uncertainty.
+{\color{red}TODO} Molière vs Highland
+
+For small scattering angles, the multiple scattering angle is given by\cite{pdg2024}
+
+\begin{equation}
+    \theta_0 = \frac{13.6 \, \text{MeV}}{\beta c p} z \sqrt{\frac{x}{X_0}} \left[ 1 + 0.038 \ln \left( \frac{x z^2}{X_0 \beta^2} \right) \right]
+\end{equation}
+
+with the radiation length $X_0$, the thickness of the material $x$, the charge number of the particle $z$, the momentum of the particle $p$ in $\text{MeV}/c$, and the velocity of the particle $\beta c$. $\theta_0$ is the standard deviation of the multiple scattering angle in any plane colinear with the particle's direction.
+
+Thin scatterers only incrase directional uncertainty, as the particle will pass through the scatterer before a significant positional uncertainty can build up. Thick scatterers increase the positional uncertainty significantly while the particle passes through them. This effect needs to be taken into account when transporting the covariance through the material.
+
+\textbf{Energy loss uncertainty}
+
+The energy loss uncertainty is highly non-Gaussian and has a long tail towards higher energy loss. This is due to the Landau distribution which describes the energy loss of a charged particle in matter. It is subjective how to model the energy loss uncertainty as a Gaussian distribution. One can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width.
+
+The estimate of the energy loss uncertainty in ACTS is given by \textcite{pdg2024} Figure 34.7 with
+
+\begin{align}
+    \text{fwhm}_E &\approx 4 \xi \\
+    \xi &= \frac{K}{2} \langle \rho \, Z/A \rangle \frac{x z^2}{\beta^2} \\
+    \sigma_E &= \frac{\text{fwhm}_E}{2 \sqrt{2 \ln 2}} \\
+    \sigma_\lambda &= \frac{q}{\beta p^2} \sigma_E
+\end{align}
+
+with the molar electron density $\langle \rho \, Z/A \rangle$ in $\text{g} \, \text{cm}^{-2}$, and otherwise the same variables as before.
+
+\textbf{Transport}
+
+One needs to be careful with continous covariance updates as both, the energy loss and the multiple scattering, are non-Gaussian processes and the convolution property is not fullfilled. As such, naively adding up variances after passing some amount of material will not give the correct result. To estimate the angle and energy uncertainty correctly, all the encountered material needs to be taken into acount at once. At the same time these uncertainties will influence the positional and temporal uncertainty of the particle which need to be accounted for.
+
+A big challenge is that this kind of covariance transport was not foreseen in ACTS. The covariance is transported from one surface to the next using the transport Jacobian. There is no notion of a covariance in free coordinates in ACTS where additional material effects can be accumulated.
+
+To overcome this issue, the problem is decomposed and the additional covariance due to the material is calculated without taking the general transport Jacobian into account. Encountered material during the transport is accumulated and applied to the bound covariance only when it is transported to the next surface. This way the additional covariance is accumulated independently from the transport Jacobian which is justified by the fact that the multiple scattering does not affect the trajectory and increases the uncertainty orthogonal to the propagation direction.
+
+\begin{equation}
+    \mathbf{\Sigma}_\text{final} = \mathbf{J} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}^T + \mathbf{\Sigma}_\text{additional}
+\end{equation}
 
 \section{Toy Model}
 
-A toy model is used to simplify the implementation and validation of the volume-based material handling in ACTS. It consists of a box filled with dense material and a screen with some distance to the box. Muons are emitted from the left side of the box and their hits on the screen are recorded. Figure \ref{fig:dev/dense/toy-model} illustrates the setup. 
+A toy model is used to simplify the implementation and validation of the volume-based material handling in ACTS. It consists of a box filled with dense material and a screen with some distance behind the box. Muons are emitted at some distance to the box and their hits are recorded on the screen. Figure \ref{fig:dev/dense/toy-model} illustrates the setup.
 
 This captures the essence of the problem without the complexity of a full detector simulation. Inside the dense material, the muons lose energy and scatter multiple times. The scattering not only affects the uncertainty of the direction but also the positional uncertainty on the screen. After passing the dense material, the muons are transported in a vacuum which should keep the uncertainty in direction unchanged but the positional uncertainty to further increase.
 
@@ -148,11 +185,6 @@ Note that this toy model does not include a magnetic field which is present in a
 
 \section{Baseline with Geant4}
 
-\begin{itemize}
-    \color{red}
-    \item setup, configuration and results
-\end{itemize}
-
 A reference is established using Geant4 to compare it to the analytical solution which will be implemented in ACTS. Geant4 is a widely used particle transport simulation framework which is capable of simulating the interactions of particles with matter. It covers a wide range of interactions beyond the Bethe-Bloch energy loss and the Molière multiple scattering which are used in ACTS.
 
 \begin{figure}[ht]
@@ -169,7 +201,7 @@ When reaching the screen, the states of the muons are recorded as entries in a T
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/geant4_msc.pdf}
-    \caption{The top row shows the density of the hits on the screen in local cartesian coordinates. For each column muons with a different energy are shown. The bottom row shows the hit positions of the local x coordinate on the screen with a fit to a Gaussian distribution.}
+    \caption{Multiple scattering acting on muons with different momentum after passing 1 meter of liquid Argon. The top row shows the density of the hits on the screen in local cartesian coordinates. For each column muons with a different energy are shown. The bottom row shows the hit positions of the local x coordinate on the screen with a fit to a Gaussian distribution.}
     \label{fig:dev/dense/geant4-msc}
 \end{figure}
 
@@ -177,44 +209,41 @@ Figure \ref{fig:dev/dense/geant4-msc} shows the density of the hits on the scree
 
 \section{First attempts with EigenStepper}
 
-\begin{itemize}
-    \color{red}
-    \item EigenStepper dealt with integration of equations of motion but not multiple scattering
-    \item Existing stepper abstraction did not allow for an easy integration of multiple scattering
-    \item Simplification by removing stepper extension list and auctioneer
-    \item Change of extension interface to allow for multiple scattering
-    \item Link to the EigenStepper introduction and developments
-\end{itemize}
-
 ACTS already had a volume-based material description and an extension mechanism for the EigenStepper to deal with continuous energy loss. A natural first attempt in implementing a full covariance transport through volume-based material was using this extension mechanism to also deal with multiple scattering.
 
-Since steppers in ACTS primirily deal with Jacobian transport and transport the covariance only on demand, the additional angle and positional uncertainty due to multiple scattering cannot be simply patched in the code. To work around this, an additional covariance term was intoduced which is used to accumulate the multiple scattering uncertainty. This term is then added when the covariance is transported to the next surface.
-
-While this approach leads to promising results, it is unsatisfactory as the multiple scattering contribution had to be recalculated at each step which is computationally inefficient. The extension mechanism needed a redesign to allow for multiple scattering to be calculated only once and then added to the covariance only when it is transported to the next surface. At the same time it was unclear how multiple extensions should cooperate on this additional covariance. This bigger architectural change of ACTS was not directly attempted and this first solution was only a proof of concept and kept in a separate branch.
+Since steppers in ACTS primirily deal with Jacobian transport and transport the covariance only on demand, the additional angle and positional uncertainty due to multiple scattering cannot be simply patched into the code. To work around this, an additional covariance term was intoduced which is used to accumulate the multiple scattering and energy uncertainty. This term is then added when the covariance is transported to the next surface.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/eloss_cmp.pdf}
-    \caption{A comparison of the energy loss computed by ACTS and Geant4 for muons with different energies. The vertical bars represent the uncertainty of the energy loss. A Moyal distribution is fitted to the Geant4 data for each bin and summarized as the mean and standard deviation computed from the FWHM. ACTS is able to reproduce the mean energy loss well over the full spectrum. The standard deviation is well reproduced around 1 GeV but deviates at higher energies.}
+    \caption{A comparison of the energy loss computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The vertical bars represent the uncertainty of the energy loss. A Moyal distribution is fitted to the Geant4 data for each bin and summarized as the mean and standard deviation computed from the FWHM. ACTS is able to reproduce the mean energy loss well over the full spectrum. The standard deviation is well reproduced around 1 GeV but deviates at higher energies.}
     \label{fig:dev/dense/eloss_cmp}
 \end{figure}
 
-Figure \ref{fig:dev/dense/eloss_cmp} shows the energy loss computed by ACTS and Geant4 for muons with different energies. The mean energy loss is represented well with ACTS while the uncertainty only partially agrees with Geant4. Generally, the energy loss distribution is skewed and has a long tail towards higher energy loss. In ACTS we represent uncertainties as Gaussian distributions to simplify the covariance transport and fitting procedures. Modeling the energy loss as a Gaussian distribution is subjective as one can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width. For the high energy regime, like 10 GeV and above, the observed energy loss distribution from Geant4 is very broad and does not fit well with the Moyal distribution.
+Figure \ref{fig:dev/dense/eloss_cmp} shows the energy loss computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The mean energy loss is represented well with ACTS while the uncertainty only partially agrees with Geant4. Generally, the energy loss distribution is skewed and has a long tail towards higher energy loss. In ACTS we represent uncertainties as Gaussian distributions to simplify the covariance transport and fitting procedures. Modeling the energy loss as a Gaussian distribution is subjective as one can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width. For the high energy regime, like 10 GeV and above, the observed energy loss distribution from Geant4 is very broad and does not fit well with the Moyal distribution.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/msc_cmp.pdf}
+    \caption{A comparison of the multiple scattering effect computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. A Gaussian is fitted to the Geant4 data for each bin to estimate the standard deviation of the positional uncertainty. ACTS is able to reproduce the positional uncertainty well over the full spectrum.}
+    \label{fig:dev/dense/msc_cmp}
+\end{figure}
+
+Figure \ref{fig:dev/dense/msc_cmp} shows the effects of multiple scattering computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The positional uncertainty is well represented by ACTS and agrees with Geant4.
+
+While this approach leads to promising results, it is unsatisfactory as the multiple scattering contribution had to be recalculated at each step which is computationally inefficient. The extension mechanism needed a redesign to allow for multiple scattering to be calculated only once and then added to the covariance only when it is transported to the next surface. At the same time it was unclear how multiple extensions should cooperate on this additional covariance. This bigger architectural change of ACTS was not directly attempted and this first solution was only a proof of concept and kept in a separate branch.
 
 \section{SympyStepper}
 
-\begin{itemize}
-    \color{red}
-    \item Alternative to EigenStepper with explicit math expressions
-    \begin{itemize}
-        \item avoids extension by having different RK4 integration routines. removes one layer of abstraction
-    \end{itemize}
-    \item Link to the SympyStepper introduction and developments
-\end{itemize}
+The SympyStepper is a new stepper implementation in ACTS based on symbolic math expressions with are transformed into code. This is an alternative approach to the EigenStepper where the math has to be done first and manually implemented in code using a linear algebra framework like Eigen. This has the benefit of writing concise and readable math expressions which are used to generate the stepping code, including the derivation of the transport Jacobian. As such, including the continous energy loss is just a matter of changing the equations of motion, which then automatically affects the transport Jacobian.
 
-The SympyStepper is a new stepper implementation in ACTS which uses symbolic math expressions and transforms them into code. This has the benefit of writing concise and readable math expressions which are then used to generate the stepping code including the derivation of the transport Jacobian. As such, including the continous energy loss is just a matter of adding the energy loss term to the equation of motion, which then automatically updates the transport Jacobian.
+With this new implementation a generalized stepping extension mechanism is avoided and the continous multiple scattering and energy loss is implemented as a separate routine. It is called internally by the SympyStepper when the particle passes through dense material. Instead of trying to generalize this we just enumerate the two cases we are aware of: vacuum and dense material.
 
-As this is a new implementation we could avoid the extension mechanism of the EigenStepper completely and think of a way to integrate dense material from the beginning. The extended equation of motion to deal with continous energy loss was implemented in a separate routine which is called internally by the SympyStepper when the particle is in dense material. So instead of trying to generalize this we just enumerate the two cases we are aware of: vacuum and dense material.
+Apart from this new stepper implementation, a generalized covariance transport tool for dense material is implemented which is not tied to the stepper and can also be used by the EigenStepper. This tool accumulates material and stepper information to estimate positional and directional uncertainty of the particle. This can be done in two ways, either by having a bookkeeping of the material and stepper information and calculating the covariance at the end of the transport, or by accumulating the additional covariance during the transport and adding it to the bound covariance when transporting to the next surface. Both of these methods were explored during the work on this thesis.
+
+The bookkeeping method has the benefit of knowing the transport distances from each material passage to the next surface. This simplifies the calculation of the additional covariance but might involve heap allocations during the stepping which can be a performance bottleneck. During the work on this method it was found that estimating the positional uncertainty in one step will not lead to correct results for $x/X_0 > 1$. Breaking the transport into smaller steps and treating the individual increases in directional and positional uncertainty separately was found to be more accurate.
+
+The accumulation method has the benefit of not needing heap allocations during the stepping. The additional covariance is accumulated in the stepper and added to the bound covariance when transporting to the next surface. This method has the downside of not knowing the transport distances from each material passage to the next surface. After some algebraic manipulations it was found that the distance to the next surface is not needed to estimate the additional covariance and the covariance quantities can be transported iteratively until reaching the next surface.
 
 \section{Performance}
 
