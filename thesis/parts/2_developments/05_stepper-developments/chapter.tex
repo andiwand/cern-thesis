@@ -39,13 +39,14 @@ Adaptive step size is a technique to improve the performance of the numerical in
 This is done by computing an error estimate after each step of the numerical integration and comparing it to the requested accuracy target. If the error estimate is larger than the requested accuracy target the step size is reduced. If the error estimate is smaller than the requested accuracy target the step size is increased.
 
 \section{EigenStepper}
-\label{sc:eigenstepper}
+\label{sec:dev/stepper/eigen}
 
 The \texttt{EigenStepper} is a long standing stepper implementation in ACTS with the goal of being readable, maintainable and fast. It uses the C++ Eigen library for linear algebra operations which is the de facto standard. The math was once derived by hand and then transcribed into C++ code.
 
 While some of the math operations are quite readable and maintainable, the extension mechanism diminishes these qualities. The idea behind the extension mechanism is to have one stepper implementation for different kinds of material and interation environments. There is a \texttt{DefaultExtension} which handles the integration in a vakuum and a \texttt{DenseExtension} which handles the integration in a dense material. Another layer inbetween, \texttt{StepperExtensionList}, allowed to switch between any number of extensions depending on their priority. This complexity was removed during the work on this thesis and the \texttt{EigenStepper} was simplified to deal with only a single extension, while the dense extension will automatically fall back to the default extension if no volume material is present.
 
 \section{SympyStepper}
+\label{sec:dev/stepper/sympy}
 
 \begin{itemize}
     \color{red}

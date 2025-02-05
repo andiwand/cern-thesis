@@ -67,21 +67,21 @@ A reconstruction chain is a preceedure of steps to ultimately extract all the in
 
 Free, energetic particles interact with matter in a variety of ways. The most common interactions are ionization, bremsstrahlung, pair production, and nuclear interactions. These interactions are used to determine the particle's properties but will also limit the detector's performance. For this reason, the material budget of a detector is a critical parameter during the design and can be used to determine the detector's resolution and efficiency.
 
-\section{Equation of Motion}
-\label{sec:into/reco/equation-of-motion}
+\section{Equations of Motion}
+\label{sec:into/reco/equations-of-motion}
 
 \begin{itemize}
     \color{red}
-    \item what is the equation of motion
+    \item what is the equations of motion
 \end{itemize}
 
-The equation of motion describes the trajectory of a free, charged particle in the presents of a magnetic field. Ignoring any material interactions, the equation is a second order differential equation.
+The equations of motion describes the trajectory of a free, charged particle in the presents of a magnetic field. Ignoring any material interactions, the equation is a second order differential equation.
 
 \begin{equation}
     \frac{d^2\vec{p}}{dt^2} = q \vec{v} \times \vec{B}
 \end{equation}
 
-In a homogenous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. In reality, the magnetic field is not homogenous and the equation of motion are solved numerically. The most common method to solve the equation of motion is the Runge-Kutta-Nystrom method, which is discussed in the next section.
+In a homogenous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. In reality, the magnetic field is not homogenous and the equations of motion are solved numerically. The most common method to solve the equations of motion is the Runge-Kutta-Nystrom method, which is discussed in the next section.
 
 This equation can be extended to include the effects of continous energy loss.
 
@@ -93,7 +93,7 @@ This equation can be extended to include the effects of continous energy loss.
     \item formalism
 \end{itemize}
 
-The Runge-Kutta-Nystrom method is a numerical method to solve ordinary differential equations. It is a generalization of the Runge-Kutta method to second order differential equations. In track reconstruction, the method is used to solve the equation of motion of a charged particle in a magnetic field.
+The Runge-Kutta-Nystrom method is a numerical method to solve ordinary differential equations. It is a generalization of the Runge-Kutta method to second order differential equations. In track reconstruction, the method is used to solve the equations of motion of a charged particle in a magnetic field.
 
 \subsection{Jacobian and Covariance Transport}
 
