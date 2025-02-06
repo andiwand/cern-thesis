@@ -52,7 +52,7 @@ Continuous energy loss affects the trajectory of a particle and needs to be trea
 
 with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, the absolute momentum $p$, the energy loss rate $g$, the mass $m$, and the charge $q$ of the particle.
 
-The integration variables are chosen as $y = (\mathbf{r} \; t \; \Lambda)^T$ with their first derivatives $y' = (\mathbf{T} \; \frac{dt}{ds} \; \lambda)^T$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nystrom method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
+The dependent variables to be integrated are chosen as $y = (\mathbf{r}^T \; t \; \Lambda)^T$ with their first derivatives $y' = (\mathbf{T}^T \; \frac{dt}{ds} \; \lambda)^T$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nystrom method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
 
 The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions.\cite{pub-2008-003}
 
@@ -169,11 +169,11 @@ Taking the multiple scattering as an example, \ref{eq:dev/dense/msc} gives the s
     \text{Var}[\theta]_\text{\,at $x_1$} &= \theta_0^2(x_1) \\
     \text{Var}[y]_\text{\,at $x_1$} &= 0 \\
     \\
-    \text{Var}[\theta]_\text{\,at $x_2$} &= \theta_0^2(x_2) = \theta_0^2(x_1) + (\theta_0^2(x_2) - \theta_0^2(x_1)) \\
+    \text{Var}[\theta]_\text{\,at $x_2$} &= \theta_0^2(x_2) = \theta_0^2(x_1) + \Delta\theta_0^2(x_1,x_2) \\
     \text{Var}[y]_\text{\,at $x_2$} &= (x_2 - x_1)^2 \theta_0^2(x_1) \\
     \\
-    \text{Var}[\theta]_\text{\,at $x_3$} &= \theta_0^2(x_3) = \theta_0^2(x_2) + (\theta_0^2(x_3) - \theta_0^2(x_2)) \\
-    \text{Var}[y]_\text{\,at $x_3$} &= (x_3 - x_1)^2 \theta_0^2(x_1) + (x_3 - x_2)^2 (\theta_0^2(x_2) - \theta_0^2(x_1)) \\
+    \text{Var}[\theta]_\text{\,at $x_3$} &= \theta_0^2(x_3) = \theta_0^2(x_2) + \Delta\theta_0^2(x_2,x_3) \\
+    \text{Var}[y]_\text{\,at $x_3$} &= (x_3 - x_1)^2 \theta_0^2(x_1) + (x_3 - x_2)^2 \Delta\theta_0^2(x_1,x_2) \\
     \\
     \text{...} \quad\quad\quad\;\; &
 \end{split}
@@ -190,11 +190,13 @@ During the developments of the SympyStepper for dense material described in Sect
     \text{Cov}[\theta,y]_\text{\,at $x_1$} &= 0 \\
     \text{Var}[y]_\text{\,at $x_1$} &= 0 \\
     \\
-    \text{Var}[\theta]_\text{\,at $x_2$} &= \text{Var}[\theta]_\text{\,at $x_1$} + (\theta_0^2(x_2) - \theta_0^2(x_1)) \\
+    \Delta\theta_0^2(x_1,x_2) &= \theta_0^2(x_2) - \theta_0^2(x_1) \\
+    \text{Var}[\theta]_\text{\,at $x_2$} &= \text{Var}[\theta]_\text{\,at $x_1$} + \Delta\theta_0^2(x_1,x_2) \\
     \text{Cov}[\theta,y]_\text{\,at $x_2$} &= \text{Cov}[\theta,y]_\text{\,at $x_1$} + h_2 \text{Var}[\theta]_\text{\,at $x_1$} \\
     \text{Var}[y]_\text{\,at $x_2$} &= \text{Var}[y]_\text{\,at $x_1$} + h_2^2 \text{Var}[\theta]_\text{\,at $x_1$} + 2 h_2 \text{Cov}[\theta,y]_\text{\,at $x_1$} \\
     \\
-    \text{Var}[\theta]_\text{\,at $x_3$} &= \text{Var}[\theta]_\text{\,at $x_2$} + (\theta_0^2(x_3) - \theta_0^2(x_2)) \\
+    \Delta\theta_0^2(x_2,x_3) &= \theta_0^2(x_3) - \theta_0^2(x_2) \\
+    \text{Var}[\theta]_\text{\,at $x_3$} &= \text{Var}[\theta]_\text{\,at $x_2$} + \Delta\theta_0^2(x_2,x_3) \\
     \text{Cov}[\theta,y]_\text{\,at $x_3$} &= \text{Cov}[\theta,y]_\text{\,at $x_2$} + h_3 \text{Var}[\theta]_\text{\,at $x_2$} \\
     \text{Var}[y]_\text{\,at $x_3$} &= \text{Var}[y]_\text{\,at $x_2$} + h_3^2 \text{Var}[\theta]_\text{\,at $x_2$} + 2 h_3 \text{Cov}[\theta,y]_\text{\,at $x_2$} \\
     \\
@@ -203,15 +205,31 @@ During the developments of the SympyStepper for dense material described in Sect
 \label{eq:dev/dense/split-var-iter}
 \end{equation}
 
-with the step size $h_i = x_i - x_{i-1}$.
+with the step size $h_i = x_i - x_{i-1}$. To include the continous energy loss in the multiple scattering estimation, $\Delta\theta_0^2$ can be evaluated with an average momentum at the middle of the step.
 
 A major challenge during the dense material handling for the EigenStepper, described in Section \ref{sec:dev/dense/eigen}, was that this kind of covariance transport was not foreseen in ACTS. The covariance is transported from one surface to the next using the transport Jacobian. There is no notion of a covariance in free coordinates in ACTS where additional material effects can be accumulated.
 
 To overcome this issue, the problem is decomposed and the additional covariance due to the material is calculated without taking the general transport Jacobian into account. Encountered material during the transport is accumulated and applied to the bound covariance only when it is transported to the next surface. This way, the additional covariance is accumulated independently from the transport Jacobian which is justified by the fact that the multiple scattering does not affect the trajectory and increases the uncertainty orthogonal to the propagation direction.
 
 \begin{equation}
-    \mathbf{\Sigma}_\text{final} = \mathbf{J} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}^T + \mathbf{\Sigma}_\text{additional}
+    \mathbf{\Sigma}_\text{final} = \mathbf{J}_{\text{b\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}_{\text{b\textrightarrow b}}^T + \mathbf{J}_{\text{f\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{additional} \cdot \mathbf{J}_{\text{f\textrightarrow b}}^T
 \end{equation}
+
+with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and the free to bound Jacobian $\mathbf{J}_{\text{f\textrightarrow b}}$.
+
+$\mathbf{\Sigma}_\text{additional}$ can be calculated by projecting the uncertainties into free parameter space:
+
+\begin{equation}
+    \mathbf{\Sigma}_\text{additional} =
+        \begin{pmatrix}
+            \text{Var}[y] \, \mathbf{P} & \mathbf{0} & \text{Cov}[\theta,y] \, \mathbf{P} & \mathbf{0} \\
+            \mathbf{0} & 0 & \mathbf{0} & \text{Cov}[t,\lambda] \\
+            \text{Cov}[\theta,y] \, \mathbf{P} & \mathbf{0} & \text{Var}[\theta] \, \mathbf{P} & \mathbf{0} \\
+            \mathbf{0} & \text{Cov}[t,\lambda] & \mathbf{0} & \text{Var}[\lambda]
+        \end{pmatrix}
+\end{equation}
+
+with the projector $\mathbf{P} = \mathbf{I} - \mathbf{T} \cdot \mathbf{T}^T$.
 
 \section{Toy Model}
 
@@ -276,15 +294,6 @@ Since steppers in ACTS primirily deal with Jacobian transport and transport the 
 
 Figure \ref{fig:dev/dense/eloss-cmp} shows the energy loss computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The mean energy loss is represented well with ACTS while the uncertainty only partially agrees with Geant4. The energy loss distribution is skewed and has a long tail towards higher energy loss. ACTS represents uncertainties as Gaussian distributions to simplify the covariance transport and fitting procedures. Modeling the energy loss as a Gaussian distribution is subjective as one can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width. For the high energy regime, like 10 GeV and above, the observed energy loss distribution from Geant4 is very broad and does not fit well with the Moyal distribution.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/msc_cmp.pdf}
-    \caption{A comparison of the multiple scattering effect computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. A Gaussian is fitted to the Geant4 data for each bin to estimate the standard deviation of the positional uncertainty. ACTS is able to reproduce the positional uncertainty well over the full spectrum.}
-    \label{fig:dev/dense/msc-cmp}
-\end{figure}
-
-Figure \ref{fig:dev/dense/msc-cmp} shows the effects of multiple scattering computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The positional uncertainty is well represented by ACTS and agrees with Geant4.
-
 While this approach leads to promising results, the implementation is unsatisfactory as the multiple scattering contribution had to be recalculated at each step which is computationally inefficient. The EigenStepper extension mechanism needs a redesign to only calculate the multiple scattering once and then added to the covariance only when it is transported to the next surface. At the same time it was unclear how multiple extensions should cooperate on this additional covariance as the positional uncertainty keeps increasing due to the direciton uncertainty even in vacuum. This bigger architectural change of ACTS was not directly attempted and this first solution was only a proof of concept and kept in a separate branch.
 
 \section{SympyStepper}
@@ -302,7 +311,16 @@ The accumulation method has the benefit of not needing heap allocations during t
 
 \section{Performance}
 
-The physics performance was shown in Figure \ref{fig:dev/dense/eloss-cmp} and \ref{fig:dev/dense/msc-cmp}. Both, the energy loss and the multiple scattering are in good agreement with Geant4 for the EigenStepper. The SympyStepper produces the same results and is not explicitly shown here.
+The performance of the EigenStepper and SympyStepper is evaluated by propagating particles through the toy geometry and comparing the output against Geant4 and measuring the CPU time consumption.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/msc_cmp_rel_stack.pdf}
+    \caption{A comparison of the multiple scattering effect computed by ACTS and Geant4 for muons over different momenta after passing 10, 100, 1000 mm of iron. A Gaussian is fitted to the Geant4 data for each bin to estimate the standard deviation of the positional uncertainty.}
+    \label{fig:dev/dense/msc-cmp}
+\end{figure}
+
+Figure \ref{fig:dev/dense/msc-cmp} shows the effects of multiple scattering computed by ACTS and Geant4 for muons over different momenta after passing different amounts of iron. ACTS is able to reproduce the standard deviation of the positional uncertainty to about 5\% over the full spectrum. A bias is building over increasing material thickness which is not understood yet and needs further investigation.
 
 \begin{table}[ht]
     \centering

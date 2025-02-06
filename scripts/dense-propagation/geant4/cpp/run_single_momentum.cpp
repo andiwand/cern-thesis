@@ -3,19 +3,24 @@
 
 #include "FTFP_BERT.hh"
 #include "G4RunManagerFactory.hh"
-#include "G4StepLimiterPhysics.hh"
 #include "G4SteppingVerbose.hh"
 #include "G4UImanager.hh"
 
 #include <iostream>
 
 int main(int argc, char **argv) {
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " energy" << std::endl;
+  if (argc != 4) {
+    std::cerr << "Usage: " << argv[0] << " energy material thickness"
+              << std::endl;
+    std::cerr << "Example: " << argv[0] << " \"1 GeV\" G4_lAr 1000"
+              << std::endl;
+    std::cerr << "Example materials: G4_lAr, G4_Fe" << std::endl;
     return 1;
   }
 
   std::string energy = argv[1];
+  std::string material = argv[2];
+  double thickness = std::stod(argv[3]);
 
   // use G4SteppingVerboseWithUnits
   G4int precision = 4;
@@ -30,7 +35,7 @@ int main(int argc, char **argv) {
   //
   // Detector construction
   runManager->SetUserInitialization(
-      new MyDetectorConstruction("G4_lAr", 1000 * mm));
+      new MyDetectorConstruction(material, thickness * mm));
 
   // Physics list
   G4VModularPhysicsList *physicsList = new FTFP_BERT();
@@ -45,7 +50,18 @@ int main(int argc, char **argv) {
 
   G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-  analysisManager->OpenFile("single_mom.root");
+  std::string filename = "single_mom_";
+  filename += energy + "_";
+  if (material == "G4_lAr") {
+    filename += "lar";
+  } else if (material == "G4_Fe") {
+    filename += "fe";
+  } else {
+    filename += material;
+  }
+  filename += "_" + std::to_string(static_cast<int>(thickness)) + "mm";
+  filename += ".root";
+  analysisManager->OpenFile(filename);
 
   // runManager->SetVerboseLevel(2);
   // analysisManager->SetVerboseLevel(1);

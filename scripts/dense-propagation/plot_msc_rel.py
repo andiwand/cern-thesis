@@ -27,7 +27,7 @@ parser.add_argument(
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/dense-propagation/msc_cmp.pdf",
+    default=f"{base_dir}/plots/dense-propagation/msc_cmp_rel.pdf",
     help="Path to output file",
 )
 parser.add_argument("--bins", type=int, default=30, help="Number of bins")
@@ -40,28 +40,26 @@ args = parser.parse_args()
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_title("Positional uncertainty of muons passing 100 mm Fe")
+ax.set_title("Relative positional uncertainty of muons passing 100 mm Fe")
 ax.set_xlabel("Initial momentum [GeV]")
-ax.set_ylabel("Positional uncertainty [mm]")
+ax.set_ylabel("Relative positional uncertainty")
 
 log_range = (np.log10(args.e_range[0]), np.log10(args.e_range[1]))
 edges = 10 ** np.linspace(log_range[0], log_range[1], args.bins)
 mid = 0.5 * (edges[:-1] + edges[1:])
 
 if args.g4_input is not None:
-    g4_data = read_g4_data(args.g4_input)
+    g4_data = read_g4_data(args.g4_input, args.min_p_out)
     g4_std, g4_std_std = make_g4_stats(g4_data, edges, log_range)
 
-    ax.errorbar(mid, g4_std, yerr=g4_std_std, marker="o", linestyle="", label="Geant4")
-
 if args.acts_input is not None:
-    acts_data = read_acts_data(args.acts_input)
+    acts_data = read_acts_data(args.acts_input, args.min_p_out)
     acts_std = make_acts_stats(acts_data, edges, log_range)
 
-    ax.plot(mid, acts_std, marker="^", linestyle="", label="ACTS")
+ax.hlines(1, edges[0], edges[-1], linestyle="--", color="black", label="Geant4")
+ax.plot(mid, acts_std / g4_std, marker="o", linestyle="", label="ACTS")
 
 ax.set_xscale("log")
-ax.set_yscale("log")
 
 ax.legend()
 

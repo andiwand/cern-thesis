@@ -7,13 +7,15 @@
 #include "G4UImanager.hh"
 
 int main(int argc, char **argv) {
-  if (argc != 2) {
-    std::cerr << "Usage: " << argv[0] << " material" << std::endl;
-    std::cerr << "  example materials: G4_lAr, G4_Fe" << std::endl;
+  if (argc != 3) {
+    std::cerr << "Usage: " << argv[0] << " material thickness" << std::endl;
+    std::cerr << "Example: " << argv[0] << " G4_lAr" << std::endl;
+    std::cerr << "Example materials: G4_lAr, G4_Fe" << std::endl;
     return 1;
   }
 
   std::string material = argv[1];
+  double thickness = std::stod(argv[2]);
 
   // Optionally: choose a different Random engine...
   // G4Random::setTheEngine(new CLHEP::MTwistEngine);
@@ -31,7 +33,7 @@ int main(int argc, char **argv) {
   //
   // Detector construction
   runManager->SetUserInitialization(
-      new MyDetectorConstruction(material.c_str(), 100 * mm));
+      new MyDetectorConstruction(material.c_str(), thickness * mm));
 
   // Physics list
   G4VModularPhysicsList *physicsList = new FTFP_BERT();
@@ -46,7 +48,17 @@ int main(int argc, char **argv) {
 
   G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-  analysisManager->OpenFile("logscale_mom.root");
+  std::string filename = "logscale_mom_";
+  if (material == "G4_lAr") {
+    filename += "lar";
+  } else if (material == "G4_Fe") {
+    filename += "fe";
+  } else {
+    filename += material;
+  }
+  filename += "_" + std::to_string(static_cast<int>(thickness)) + "mm";
+  filename += ".root";
+  analysisManager->OpenFile(filename);
 
   // runManager->SetVerboseLevel(2);
   // analysisManager->SetVerboseLevel(1);
