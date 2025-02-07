@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-from common import read_g4_data, read_acts_data, make_g4_stats, make_acts_stats
+from common import read_g4_data, read_acts_data, make_g4_msc_stats, make_acts_msc_stats
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -50,11 +50,11 @@ mid = 0.5 * (edges[:-1] + edges[1:])
 
 if args.g4_input is not None:
     g4_data = read_g4_data(args.g4_input, args.min_p_out)
-    g4_std, g4_std_std = make_g4_stats(g4_data, edges, log_range)
+    g4_std, g4_std_std = make_g4_msc_stats(g4_data, edges, log_range)
 
 if args.acts_input is not None:
     acts_data = read_acts_data(args.acts_input, args.min_p_out)
-    acts_std = make_acts_stats(acts_data, edges, log_range)
+    acts_std = make_acts_msc_stats(acts_data, edges, log_range)
 
 ax.hlines(1, edges[0], edges[-1], linestyle="--", color="black", label="Geant4")
 ax.plot(mid, acts_std / g4_std, marker="o", linestyle="", label="ACTS")

@@ -18,11 +18,15 @@ public:
 
     analysisManager->CreateNtuple("reading", "reading");
     analysisManager->CreateNtupleDColumn("particle");
+    analysisManager->CreateNtupleDColumn("p_initial");
     analysisManager->CreateNtupleDColumn("x");
     analysisManager->CreateNtupleDColumn("y");
+    analysisManager->CreateNtupleDColumn("t");
+    analysisManager->CreateNtupleDColumn("dir0");
+    analysisManager->CreateNtupleDColumn("dir1");
+    analysisManager->CreateNtupleDColumn("dir2");
+    analysisManager->CreateNtupleDColumn("p_final");
     analysisManager->CreateNtupleDColumn("e_loss");
-    analysisManager->CreateNtupleDColumn("e_init");
-    analysisManager->CreateNtupleDColumn("e_final");
     analysisManager->FinishNtuple();
   }
 

@@ -41,17 +41,23 @@ public:
 
     G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-    double eloss = primaryParticle->GetKineticEnergy() -
-                    aStep->GetTrack()->GetKineticEnergy();
+    double p_initial = primaryParticle->GetKineticEnergy();
+    double t_final = aStep->GetTrack()->GetGlobalTime();
+    double p_final = aStep->GetTrack()->GetKineticEnergy();
+    double eloss =
+        primaryParticle->GetTotalEnergy() - aStep->GetTrack()->GetTotalEnergy();
+    G4ThreeVector direction = aStep->GetTrack()->GetMomentumDirection().unit();
 
     analysisManager->FillNtupleDColumn(0, particle);
-    analysisManager->FillNtupleDColumn(1, x / CLHEP::mm);
-    analysisManager->FillNtupleDColumn(2, y / CLHEP::mm);
-    analysisManager->FillNtupleDColumn(3, eloss / CLHEP::GeV);
-    analysisManager->FillNtupleDColumn(
-        4, primaryParticle->GetKineticEnergy() / CLHEP::GeV);
-    analysisManager->FillNtupleDColumn(
-        5, aStep->GetTrack()->GetKineticEnergy() / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(1, p_initial / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(2, x / CLHEP::mm);
+    analysisManager->FillNtupleDColumn(3, y / CLHEP::mm);
+    analysisManager->FillNtupleDColumn(4, t_final / CLHEP::ns * 2.997925e+02);
+    analysisManager->FillNtupleDColumn(5, direction[0]);
+    analysisManager->FillNtupleDColumn(6, direction[1]);
+    analysisManager->FillNtupleDColumn(7, direction[2]);
+    analysisManager->FillNtupleDColumn(8, p_final / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(9, eloss / CLHEP::GeV);
     analysisManager->AddNtupleRow();
 
     return true;

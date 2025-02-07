@@ -10,21 +10,22 @@ def read_g4_data(path, min_p_out):
     g4_data = ak.to_dataframe(
         uproot.open(path)["reading"].arrays(library="ak")
     )
-    g4_data = g4_data[g4_data["e_final"] > min_p_out]
+    g4_data = g4_data[g4_data["p_final"] > min_p_out]
 
     return g4_data
 
 
-def read_acts_data(path, min_p_out):
+def read_acts_data(path, min_p_out=None):
     acts_data = pd.read_csv(path)
-    acts_data = acts_data[acts_data["p_final"] > min_p_out]
+
+    if min_p_out is not None:
+        acts_data = acts_data[acts_data["p_final"] > min_p_out]
 
     return acts_data
 
 
-
-def make_g4_stats(g4_data, edges, log_range):
-    g4_e_init = g4_data["e_init"]
+def make_g4_msc_stats(g4_data, edges, log_range):
+    g4_e_init = g4_data["p_initial"]
     g4_x = g4_data["x"]
 
     g4_std, _, _ = scipy.stats.binned_statistic(
@@ -45,16 +46,45 @@ def make_g4_stats(g4_data, edges, log_range):
     return g4_std, g4_std_std
 
 
-def make_acts_stats(acts_data, edges, log_range):
+def make_acts_msc_stats(acts_data, edges, log_range):
     acts_std, _, _ = scipy.stats.binned_statistic(
         acts_data["p_initial"],
-        acts_data["sigma"],
+        acts_data["x_sigma"],
         bins=edges,
         range=log_range,
         statistic=stat_mean,
     )
 
     return acts_std
+
+
+def make_g4_eloss_stats(g4_data, edges, log_range):
+    g4_e_init = g4_data["p_initial"]
+    g4_e_loss = g4_data["e_loss"]
+
+    g4_mode, _, _ = scipy.stats.binned_statistic(
+        g4_e_init,
+        g4_e_loss,
+        bins=edges,
+        range=log_range,
+        statistic=stat_mode_landau,
+    )
+    g4_mean, _, _ = scipy.stats.binned_statistic(
+        g4_e_init,
+        g4_e_loss,
+        bins=edges,
+        range=log_range,
+        statistic=stat_mean,
+    )
+    g4_std, _, _ = scipy.stats.binned_statistic(
+        g4_e_init,
+        g4_e_loss,
+        bins=edges,
+        range=log_range,
+        statistic=stat_fwhm_std_landau,
+    )
+
+    return g4_mode, g4_mean, g4_std
 
 
 def robust_gauss_fit_naive(data):
@@ -111,6 +141,11 @@ def stat_mean(data):
     return np.mean(data)
 
 
+def stat_std(data):
+    s = np.std(data)
+    return s
+
+
 def stat_robust_std(data):
     if len(data) == 0:
         return None
@@ -123,3 +158,45 @@ def stat_robust_std_std(data):
         return None
     (_, _), cov = robust_gauss_fit(data)
     return np.sqrt(cov[1, 1])
+
+
+def fit_landau(data):
+    if len(data) == 0:
+        return None, None
+    loc, scale = scipy.stats.landau.fit(data, method="mle")
+    return loc, scale
+
+
+def stat_mode_landau(data):
+    loc, scale = fit_landau(data)
+    return loc
+
+
+def fwhm_landau(loc, scale):
+    pdf_max = scipy.stats.landau.pdf(loc, loc, scale)
+    left_space = np.linspace(0, loc, 10000)
+    left = left_space[
+        np.argmax(scipy.stats.landau.pdf(left_space, loc, scale) > pdf_max / 2)
+    ]
+    right_space = np.linspace(loc, 4 * loc, 10000)
+    right = right_space[
+        np.argmax(scipy.stats.landau.pdf(right_space, loc, scale) < pdf_max / 2)
+    ]
+    return left, right
+
+
+def fwhm_to_std(fwhm):
+    return fwhm * 0.42466090014400953
+
+
+def stat_fwhm_landau(data):
+    loc, scale = fit_landau(data)
+    left, right = fwhm_landau(loc, scale)
+    return right - left
+
+
+def stat_fwhm_std_landau(data):
+    loc, scale = fit_landau(data)
+    left, right = fwhm_landau(loc, scale)
+    fwhm = abs(right - left)
+    return fwhm_to_std(fwhm)
