@@ -19,14 +19,20 @@ parser.add_argument(
     "--g4-input",
     nargs=3,
     type=Path,
-    default=[f"{base_dir}/data/dense-propagation/geant4/logscale_mom_fe_{t}mm.root" for t in [10, 100, 1000]],
+    default=[
+        f"{base_dir}/data/dense-propagation/geant4/logscale_mom_fe_{t}mm.root"
+        for t in [10, 100, 1000]
+    ],
     help="Path to Geant4 input file",
 )
 parser.add_argument(
     "--acts-input",
     nargs=3,
     type=Path,
-    default=[f"{base_dir}/data/dense-propagation/acts/msc_eloss_fe_{t}mm.csv" for t in [10, 100, 1000]],
+    default=[
+        f"{base_dir}/data/dense-propagation/acts/msc_eloss_fe_{t}mm.csv"
+        for t in [10, 100, 1000]
+    ],
     help="Path to ACTS input file",
 )
 parser.add_argument(
@@ -37,20 +43,24 @@ parser.add_argument(
 )
 parser.add_argument("--show", action="store_true", help="Show plot")
 parser.add_argument("--bins", type=int, default=30, help="Number of bins")
+parser.add_argument("--e-range", nargs=2, default=[2, 300], help="Energy range in GeV")
 parser.add_argument(
-    "--e-range", nargs=2, default=[2, 300], help="Energy range in GeV"
+    "--min-p-out", type=float, default=0, help="Minimum output momentum"
 )
-parser.add_argument("--min-p-out", type=float, default=0, help="Minimum output momentum")
 args = parser.parse_args()
 
 labels = ["10 mm", "100 mm", "1000 mm"]
 
-fig, axs = plt.subplots(3, 1, figsize=(8, 4), sharex=True, sharey=True, gridspec_kw={'hspace': 0.0})
+fig, axs = plt.subplots(
+    3, 1, figsize=(8, 4), sharex=True, sharey=True, gridspec_kw={"hspace": 0.0}
+)
 
-#fig.suptitle("Relative energy loss of muons passing Fe")
+# fig.suptitle("Relative energy loss of muons passing Fe")
 fig.supylabel("Ratio")
 
-for i, ax, label, g4_input, acts_input in zip(range(3), axs, labels, args.g4_input, args.acts_input):
+for i, ax, label, g4_input, acts_input in zip(
+    range(3), axs, labels, args.g4_input, args.acts_input
+):
     ax.set_xlabel("Initial momentum [GeV]")
     ax.set_ylabel(label)
 
@@ -82,7 +92,9 @@ for i, ax, label, g4_input, acts_input in zip(range(3), axs, labels, args.g4_inp
         )
 
     ax.hlines(1, edges[0], edges[-1], linestyle="--", color="C1", label="ACTS")
-    ax.errorbar(mid, g4_mean / acts_mean, marker="o", linestyle="", color="C0", label="Geant4")
+    ax.errorbar(
+        mid, g4_mean / acts_mean, marker="o", linestyle="", color="C0", label="Geant4"
+    )
 
     ax.set_xscale("log")
     ax.set_xlim(edges[0], edges[-1])

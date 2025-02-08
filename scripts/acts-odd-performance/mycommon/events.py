@@ -4,7 +4,12 @@ import itertools
 
 def list_event_labels(config):
     return (
-        [f"1{particle}-pt{pt}GeV" for particle, pt in zip(["mu", "pi", "e"], config["events"]["single_particles"]["pts"])]
+        [
+            f"1{particle}-pt{pt}GeV"
+            for particle, pt in zip(
+                ["mu", "pi", "e"], config["events"]["single_particles"]["pts"]
+            )
+        ]
         + [f"1{particle}-pt1-100GeV" for particle in ["mu", "pi", "e"]]
         + [f"ttbar-pu{pu}" for pu in config["events"]["others"]["pileups"]]
     )

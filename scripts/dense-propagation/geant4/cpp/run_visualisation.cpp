@@ -3,7 +3,6 @@
 
 #include "FTFP_BERT.hh"
 #include "G4RunManagerFactory.hh"
-#include "G4StepLimiterPhysics.hh"
 #include "G4SteppingVerbose.hh"
 #include "G4UIExecutive.hh"
 #include "G4UImanager.hh"
@@ -24,7 +23,7 @@ int main(int argc, char **argv) {
   // Construct the default run manager
   //
   auto *runManager =
-      G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
+      G4RunManagerFactory::CreateRunManager(G4RunManagerType::MT);
 
   // Set mandatory initialization classes
   //
@@ -41,7 +40,7 @@ int main(int argc, char **argv) {
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
-  runManager->SetUserInitialization(new MyActionInitialization());
+  runManager->SetUserInitialization(new MyActionInitialization(""));
 
   // Initialize visualization
   //
@@ -52,10 +51,6 @@ int main(int argc, char **argv) {
 
   // Get the pointer to the User Interface manager
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
-
-  G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
-
-  analysisManager->OpenFile("visualisation.root");
 
   // runManager->SetVerboseLevel(2);
   // G4EventManager::GetEventManager()->SetVerboseLevel(2);

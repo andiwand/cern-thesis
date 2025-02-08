@@ -11,11 +11,9 @@ class G4Run;
 
 class MySensitiveDetector : public G4VSensitiveDetector {
 public:
-  MySensitiveDetector(G4String name) : G4VSensitiveDetector(name) {
+  explicit MySensitiveDetector(G4String name) : G4VSensitiveDetector(name) {
     collectionName.insert("hits");
   }
-
-  ~MySensitiveDetector() override = default;
 
   G4bool ProcessHits(G4Step *aStep, G4TouchableHistory *ROhist) override {
     int particle = aStep->GetTrack()->GetTrackID();
@@ -48,17 +46,18 @@ public:
         primaryParticle->GetTotalEnergy() - aStep->GetTrack()->GetTotalEnergy();
     G4ThreeVector direction = aStep->GetTrack()->GetMomentumDirection().unit();
 
-    analysisManager->FillNtupleDColumn(0, particle);
-    analysisManager->FillNtupleDColumn(1, p_initial / CLHEP::GeV);
-    analysisManager->FillNtupleDColumn(2, x / CLHEP::mm);
-    analysisManager->FillNtupleDColumn(3, y / CLHEP::mm);
-    analysisManager->FillNtupleDColumn(4, t_final / CLHEP::ns * 2.997925e+02);
-    analysisManager->FillNtupleDColumn(5, direction[0]);
-    analysisManager->FillNtupleDColumn(6, direction[1]);
-    analysisManager->FillNtupleDColumn(7, direction[2]);
-    analysisManager->FillNtupleDColumn(8, p_final / CLHEP::GeV);
-    analysisManager->FillNtupleDColumn(9, eloss / CLHEP::GeV);
-    analysisManager->AddNtupleRow();
+    analysisManager->FillNtupleIColumn(1, 0, particle);
+    analysisManager->FillNtupleDColumn(1, 1, p_initial / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(1, 2, x / CLHEP::mm);
+    analysisManager->FillNtupleDColumn(1, 3, y / CLHEP::mm);
+    analysisManager->FillNtupleDColumn(1, 4,
+                                       t_final / CLHEP::ns * 2.997925e+02);
+    analysisManager->FillNtupleDColumn(1, 5, direction[0]);
+    analysisManager->FillNtupleDColumn(1, 6, direction[1]);
+    analysisManager->FillNtupleDColumn(1, 7, direction[2]);
+    analysisManager->FillNtupleDColumn(1, 8, p_final / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(1, 9, eloss / CLHEP::GeV);
+    analysisManager->AddNtupleRow(1);
 
     return true;
   }

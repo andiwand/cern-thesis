@@ -7,9 +7,7 @@ from scipy.optimize import curve_fit
 
 
 def read_g4_data(path, min_p_out):
-    g4_data = ak.to_dataframe(
-        uproot.open(path)["reading"].arrays(library="ak")
-    )
+    g4_data = ak.to_dataframe(uproot.open(path)["reading"].arrays(library="ak"))
     g4_data = g4_data[g4_data["p_final"] > min_p_out]
 
     return g4_data

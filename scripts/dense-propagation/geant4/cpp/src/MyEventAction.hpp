@@ -1,15 +1,12 @@
 #pragma once
 
+#include "G4AnalysisManager.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4UserEventAction.hh"
 
 class MyEventAction : public G4UserEventAction {
 public:
-  MyEventAction() {}
-
-  ~MyEventAction() override = default;
-
   void BeginOfEventAction(const G4Event *event) override {}
 
   void EndOfEventAction(const G4Event *event) override {
@@ -18,8 +15,9 @@ public:
     G4TrajectoryContainer *trajectoryContainer =
         event->GetTrajectoryContainer();
     G4int n_trajectories = 0;
-    if (trajectoryContainer)
+    if (trajectoryContainer) {
       n_trajectories = trajectoryContainer->entries();
+    }
 
     // periodic printing
 
@@ -34,5 +32,11 @@ public:
       G4cout << "    " << hc->GetSize() << " hits stored in this event"
              << G4endl;
     }
+
+    G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+
+    analysisManager->FillNtupleIColumn(0, 0, event->GetEventID());
+    analysisManager->FillNtupleIColumn(0, 1, n_trajectories);
+    analysisManager->AddNtupleRow(0);
   }
 };

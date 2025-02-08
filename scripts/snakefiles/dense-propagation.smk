@@ -1,0 +1,78 @@
+rule all_dense_propagation:
+    input:
+        expand("data/dense-propagation/geant4/single_mom_{momentum}GeV_{material}_{thickness}mm.root", momentum = [1, 10, 100], material = ["lar"], thickness = [1000]),
+        expand("data/dense-propagation/geant4/logscale_mom_{material}_{thickness}mm.root", material = ["lar", "fe"], thickness = [10, 100, 1000]),
+
+        expand("plots/dense-propagation/geant4_screen_{material}_{thickness}mm.pdf", material = ["lar", "fe"], thickness = [10, 100, 1000]),
+        expand("plots/dense-propagation/eloss_rate_{material}_{thickness}mm.pdf", material = ["lar", "fe"], thickness = [10, 100, 1000]),
+        expand("plots/dense-propagation/eloss_rel_stack_{material}.pdf", material = ["lar", "fe"]),
+        expand("plots/dense-propagation/msc_rel_stack_{material}.pdf", material = ["lar", "fe"]),
+
+rule geant4_single_momentum:
+    input:
+        script = "scripts/dense-propagation/geant4/cpp/build/run_single_momentum",
+    output:
+        "data/dense-propagation/geant4/single_mom_{momentum}GeV_{material}_{thickness}mm.root",
+    threads: 4
+    shell:
+        """
+        {input.script} {threads} {wildcards.momentum} {wildcards.material} {wildcards.thickness} {output}
+        """
+
+rule geant4_logscale_momentum:
+    input:
+        script = "scripts/dense-propagation/geant4/cpp/build/run_logscale_momentum",
+    output:
+        "data/dense-propagation/geant4/logscale_mom_{material}_{thickness}mm.root",
+    threads: 4
+    shell:
+        """
+        {input.script} {threads} {wildcards.material} {wildcards.thickness} {output}
+        """
+
+rule plot_screen:
+    input:
+        data = expand("data/dense-propagation/geant4/single_mom_{momentum}GeV_{{material}}_{{thickness}}mm.root", momentum = [1, 10, 100]),
+        script = "scripts/dense-propagation/geant4/plot_screen.py",
+    output:
+        "plots/dense-propagation/geant4_screen_{material}_{thickness}mm.pdf",
+    shell:
+        """
+        python {input.script} --input {input.data} --output {output}
+        """
+
+rule plot_eloss_rate:
+    input:
+        g4_data = "data/dense-propagation/geant4/logscale_mom_{material}_{thickness}mm.root",
+        acts_data = "data/dense-propagation/acts/eloss_{material}.csv",
+        script = "scripts/dense-propagation/plot_eloss_rate.py",
+    output:
+        "plots/dense-propagation/eloss_rate_{material}_{thickness}mm.pdf",
+    shell:
+        """
+        python {input.script} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
+        """
+
+rule plot_eloss_rel_stack:
+    input:
+        g4_data = expand("data/dense-propagation/geant4/logscale_mom_{{material}}_{thickness}mm.root", thickness = [10, 100, 1000]),
+        acts_data = expand("data/dense-propagation/acts/msc_eloss_{{material}}_{thickness}mm.csv", thickness = [10, 100, 1000]),
+        script = "scripts/dense-propagation/plot_eloss_rel_stack.py",
+    output:
+        "plots/dense-propagation/eloss_rel_stack_{material}.pdf",
+    shell:
+        """
+        python {input.script} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
+        """
+
+rule plot_msc_rel_stack:
+    input:
+        g4_data = expand("data/dense-propagation/geant4/logscale_mom_{{material}}_{thickness}mm.root", thickness = [10, 100, 1000]),
+        acts_data = expand("data/dense-propagation/acts/msc_eloss_{{material}}_{thickness}mm.csv", thickness = [10, 100, 1000]),
+        script = "scripts/dense-propagation/plot_msc_rel_stack.py",
+    output:
+        "plots/dense-propagation/msc_rel_stack_{material}.pdf",
+    shell:
+        """
+        python {input.script} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
+        """

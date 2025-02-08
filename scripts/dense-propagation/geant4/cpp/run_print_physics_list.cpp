@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
-  runManager->SetUserInitialization(new MyLogActionInitialization());
+  runManager->SetUserInitialization(new MyLogActionInitialization(""));
 
   runManager->Initialize();
   runManager->BeamOn(0);

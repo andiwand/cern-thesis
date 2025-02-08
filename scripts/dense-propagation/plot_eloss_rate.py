@@ -3,12 +3,21 @@
 
 import argparse
 from pathlib import Path
+import re
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats
 
-from common import read_g4_data, read_acts_data, make_g4_eloss_stats, fit_landau, fwhm_landau, fwhm_to_std, stat_mean
+from common import (
+    read_g4_data,
+    read_acts_data,
+    make_g4_eloss_stats,
+    fit_landau,
+    fwhm_landau,
+    fwhm_to_std,
+    stat_mean,
+)
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -37,12 +46,14 @@ parser.add_argument("--bins", type=int, default=30, help="Number of bins")
 parser.add_argument(
     "--e-range", nargs=2, default=[0.05, 300], help="Energy range in GeV"
 )
-parser.add_argument("--min-p-out", type=float, default=0, help="Minimum output momentum")
+parser.add_argument(
+    "--min-p-out", type=float, default=0, help="Minimum output momentum"
+)
 args = parser.parse_args()
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_title("Energy loss of muons in 100 mm Fe")
+# ax.set_title("Energy loss of muons in 100 mm Fe")
 ax.set_xlabel("Initial momentum [GeV]")
 ax.set_ylabel("Energy loss [GeV/mm]")
 
@@ -54,7 +65,8 @@ if args.g4_input is not None:
     g4_data = read_g4_data(args.g4_input, args.min_p_out)
 
     # thickness in mm
-    g4_data["e_loss"] = g4_data["e_loss"] / 100
+    thickness = float(re.search(r"_(\d+)mm", args.g4_input.stem).group(1))
+    g4_data["e_loss"] = g4_data["e_loss"] / thickness
 
     for p_min, p_max in [
         # (290, 310),
@@ -105,7 +117,9 @@ if args.g4_input is not None:
             )
 
         acts_eloss = pd.read_csv(f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv")
-        acts_mask = (acts_eloss["p_initial"] > p_min) & (acts_eloss["p_initial"] < p_max)
+        acts_mask = (acts_eloss["p_initial"] > p_min) & (
+            acts_eloss["p_initial"] < p_max
+        )
         acts_mean = acts_eloss["bethe"][acts_mask].mean()
         acts_mode = 0.9 * acts_mean
         acts_std = acts_eloss["landau_sigma"][acts_mask].mean()

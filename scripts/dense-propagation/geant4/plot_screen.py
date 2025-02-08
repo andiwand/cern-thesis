@@ -91,7 +91,7 @@ fig, axs = plt.subplots(
     2, 3, figsize=(8, 4), height_ratios=[2, 1], layout="constrained"
 )
 
-fig.suptitle("Recorded positions with muons passing 1 m of LAr")
+# fig.suptitle("Recorded positions with muons passing 1 m of LAr")
 
 for i, file, axs_cols, momentum, x_range, e_range in zip(
     range(3),
@@ -104,7 +104,7 @@ for i, file, axs_cols, momentum, x_range, e_range in zip(
     data = ak.to_dataframe(uproot.open(file)["reading"].arrays(library="ak"))
 
     x, y = data["x"], data["y"]
-    e = data["e_final"]
+    e = data["p_final"]
 
     axs_cols[0].set_aspect("equal")
     axs_cols[0].set_title(f"{momentum} GeV")

@@ -7,15 +7,30 @@
 #include "G4UImanager.hh"
 
 int main(int argc, char **argv) {
-  if (argc != 3) {
-    std::cerr << "Usage: " << argv[0] << " material thickness" << std::endl;
-    std::cerr << "Example: " << argv[0] << " G4_lAr" << std::endl;
-    std::cerr << "Example materials: G4_lAr, G4_Fe" << std::endl;
+  if (argc != 5) {
+    std::cerr << "Usage: " << argv[0] << " threads material thickness output"
+              << std::endl;
+    std::cerr << "Example: " << argv[0] << " 1 G4_lAr 1000 output.root"
+              << std::endl;
     return 1;
   }
 
-  std::string material = argv[1];
-  double thickness = std::stod(argv[2]);
+  int threads = std::stoi(argv[1]);
+  std::string material = argv[2];
+  double thickness = std::stod(argv[3]);
+  std::string output = argv[4];
+
+  if (material == "lar") {
+    material = "G4_lAr";
+  } else if (material == "fe") {
+    material = "G4_Fe";
+  }
+  G4NistManager *nist = G4NistManager::Instance();
+  G4Material *mat = nist->FindOrBuildMaterial(material.c_str());
+  if (mat == nullptr) {
+    std::cerr << "Material " << material << " not found" << std::endl;
+    return 1;
+  }
 
   // Optionally: choose a different Random engine...
   // G4Random::setTheEngine(new CLHEP::MTwistEngine);
@@ -26,8 +41,8 @@ int main(int argc, char **argv) {
 
   // Construct the default run manager
   //
-  auto *runManager =
-      G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
+  auto *runManager = G4RunManagerFactory::CreateRunManager(
+      threads <= 1 ? G4RunManagerType::Serial : G4RunManagerType::MT, threads);
 
   // Set mandatory initialization classes
   //
@@ -44,21 +59,7 @@ int main(int argc, char **argv) {
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
-  runManager->SetUserInitialization(new MyLogActionInitialization());
-
-  G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
-
-  std::string filename = "logscale_mom_";
-  if (material == "G4_lAr") {
-    filename += "lar";
-  } else if (material == "G4_Fe") {
-    filename += "fe";
-  } else {
-    filename += material;
-  }
-  filename += "_" + std::to_string(static_cast<int>(thickness)) + "mm";
-  filename += ".root";
-  analysisManager->OpenFile(filename);
+  runManager->SetUserInitialization(new MyLogActionInitialization(output));
 
   // runManager->SetVerboseLevel(2);
   // analysisManager->SetVerboseLevel(1);
@@ -76,9 +77,6 @@ int main(int argc, char **argv) {
   uiManager->ApplyCommand("/process/activate muonNuclear");
 
   runManager->BeamOn(1000000);
-
-  analysisManager->Write();
-  analysisManager->CloseFile();
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are

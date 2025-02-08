@@ -237,7 +237,9 @@ def addMyDetectorScan(
         )
         output_files.append({"file": "material_tracks.root"})
     elif sim_label == "geant4":
-        detectorConstructionFactory = acts.examples.geant4.dd4hep.DDG4DetectorConstructionFactory(detector)
+        detectorConstructionFactory = (
+            acts.examples.geant4.dd4hep.DDG4DetectorConstructionFactory(detector)
+        )
 
         sequencer.addAlgorithm(
             acts.examples.geant4.Geant4MaterialRecording(
@@ -302,6 +304,7 @@ def add_my_simulation_chain(
         ),
         outputDirRoot=tp,
     )
+
 
 def add_my_material_scan_chain(
     output_files: list[dict[str, str]],

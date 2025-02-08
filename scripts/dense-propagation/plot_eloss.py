@@ -4,7 +4,6 @@
 import argparse
 from pathlib import Path
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.stats
 
@@ -38,12 +37,14 @@ parser.add_argument("--bins", type=int, default=30, help="Number of bins")
 parser.add_argument(
     "--e-range", nargs=2, default=[0.05, 300], help="Energy range in GeV"
 )
-parser.add_argument("--min-p-out", type=float, default=0, help="Minimum output momentum")
+parser.add_argument(
+    "--min-p-out", type=float, default=0, help="Minimum output momentum"
+)
 args = parser.parse_args()
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_title("Energy loss of muons in 100 mm Fe")
+# ax.set_title("Energy loss of muons in 100 mm Fe")
 ax.set_xlabel("Initial momentum [GeV]")
 ax.set_ylabel("Energy loss [GeV/mm]")
 
@@ -76,7 +77,9 @@ if args.acts_input is not None:
         statistic=stat_mean,
     )
 
-    ax.errorbar(mid, acts_total_mean, yerr=acts_std, marker="^", linestyle="", label="ACTS")
+    ax.errorbar(
+        mid, acts_total_mean, yerr=acts_std, marker="^", linestyle="", label="ACTS"
+    )
 
 ax.set_xscale("log")
 ax.set_yscale("log")
@@ -84,8 +87,8 @@ ax.set_yscale("log")
 ax.legend()
 
 for p_min, p_max in [
-    #(290, 310),
-    #(0.9, 1.1),
+    # (290, 310),
+    # (0.9, 1.1),
 ]:
     ofig, oax = plt.subplots(1, 1, figsize=(4, 3))
     oax.set_title(f"{p_min} {p_max}")

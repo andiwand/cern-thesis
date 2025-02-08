@@ -6,7 +6,13 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-from common import read_g4_data, read_acts_data, make_g4_msc_stats, make_acts_msc_stats, stat_robust_std
+from common import (
+    read_g4_data,
+    read_acts_data,
+    make_g4_msc_stats,
+    make_acts_msc_stats,
+    stat_robust_std,
+)
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -31,16 +37,16 @@ parser.add_argument(
     help="Path to output file",
 )
 parser.add_argument("--bins", type=int, default=30, help="Number of bins")
+parser.add_argument("--e-range", nargs=2, default=[2, 300], help="Energy range in GeV")
 parser.add_argument(
-    "--e-range", nargs=2, default=[2, 300], help="Energy range in GeV"
+    "--min-p-out", type=float, default=2, help="Minimum output momentum"
 )
-parser.add_argument("--min-p-out", type=float, default=2, help="Minimum output momentum")
 parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_title("Positional uncertainty of muons passing 100 mm Fe")
+# ax.set_title("Positional uncertainty of muons passing 100 mm Fe")
 ax.set_xlabel("Initial momentum [GeV]")
 ax.set_ylabel("Positional uncertainty [mm]")
 
@@ -67,7 +73,7 @@ ax.legend()
 
 for p_min, p_max in [
     (290, 310),
-    #(0.9, 1.1),
+    # (0.9, 1.1),
 ]:
     import scipy.stats
 
@@ -80,7 +86,11 @@ for p_min, p_max in [
     oaxs[0].hist(g4_data["x"], bins=100, histtype="step", label="Geant4", density=True)
 
     acts_xs = np.linspace(g4_data["x"].min(), g4_data["x"].max(), 300)
-    oaxs[0].plot(acts_xs, scipy.stats.norm.pdf(acts_xs, 0, np.mean(acts_data['x_sigma'])), label="ACTS")
+    oaxs[0].plot(
+        acts_xs,
+        scipy.stats.norm.pdf(acts_xs, 0, np.mean(acts_data["x_sigma"])),
+        label="ACTS",
+    )
 
     print("pos")
     print(f"Geant4: {np.mean(g4_data['x']):.2f} ± {np.std(g4_data['x']):.2f}")
@@ -89,10 +99,16 @@ for p_min, p_max in [
 
     oaxs[0].legend()
 
-    oaxs[1].hist(g4_data["dir1"], bins=100, histtype="step", label="Geant4", density=True)
+    oaxs[1].hist(
+        g4_data["dir1"], bins=100, histtype="step", label="Geant4", density=True
+    )
 
     acts_xs = np.linspace(g4_data["dir1"].min(), g4_data["dir1"].max(), 300)
-    oaxs[1].plot(acts_xs, scipy.stats.norm.pdf(acts_xs, 0, np.mean(acts_data['dir_sigma'])), label="ACTS")
+    oaxs[1].plot(
+        acts_xs,
+        scipy.stats.norm.pdf(acts_xs, 0, np.mean(acts_data["dir_sigma"])),
+        label="ACTS",
+    )
 
     print("dir")
     print(f"Geant4: {np.mean(g4_data['dir1'])} ± {np.std(g4_data['dir1'])}")

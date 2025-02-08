@@ -7,20 +7,28 @@
 #include "G4UImanager.hh"
 
 #include <iostream>
+#include <string>
 
 int main(int argc, char **argv) {
-  if (argc != 4) {
-    std::cerr << "Usage: " << argv[0] << " energy material thickness"
+  if (argc != 6) {
+    std::cerr << "Usage: " << argv[0]
+              << " threads energy material thickness output" << std::endl;
+    std::cerr << "Example: " << argv[0] << " 1 1 G4_lAr 1000 output.root"
               << std::endl;
-    std::cerr << "Example: " << argv[0] << " \"1 GeV\" G4_lAr 1000"
-              << std::endl;
-    std::cerr << "Example materials: G4_lAr, G4_Fe" << std::endl;
     return 1;
   }
 
-  std::string energy = argv[1];
-  std::string material = argv[2];
-  double thickness = std::stod(argv[3]);
+  int threads = std::stoi(argv[1]);
+  double energy = std::stod(argv[2]);
+  std::string material = argv[3];
+  double thickness = std::stod(argv[4]);
+  std::string output = argv[5];
+
+  if (material == "lar") {
+    material = "G4_lAr";
+  } else if (material == "fe") {
+    material = "G4_Fe";
+  }
 
   // use G4SteppingVerboseWithUnits
   G4int precision = 4;
@@ -28,8 +36,8 @@ int main(int argc, char **argv) {
 
   // Construct the default run manager
   //
-  auto *runManager =
-      G4RunManagerFactory::CreateRunManager(G4RunManagerType::Serial);
+  auto *runManager = G4RunManagerFactory::CreateRunManager(
+      threads <= 1 ? G4RunManagerType::Serial : G4RunManagerType::MT, threads);
 
   // Set mandatory initialization classes
   //
@@ -46,22 +54,7 @@ int main(int argc, char **argv) {
   runManager->SetUserInitialization(physicsList);
 
   // User action initialization
-  runManager->SetUserInitialization(new MyActionInitialization());
-
-  G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
-
-  std::string filename = "single_mom_";
-  filename += energy + "_";
-  if (material == "G4_lAr") {
-    filename += "lar";
-  } else if (material == "G4_Fe") {
-    filename += "fe";
-  } else {
-    filename += material;
-  }
-  filename += "_" + std::to_string(static_cast<int>(thickness)) + "mm";
-  filename += ".root";
-  analysisManager->OpenFile(filename);
+  runManager->SetUserInitialization(new MyActionInitialization(output));
 
   // runManager->SetVerboseLevel(2);
   // analysisManager->SetVerboseLevel(1);
@@ -72,7 +65,9 @@ int main(int argc, char **argv) {
   runManager->Initialize();
 
   G4UImanager *uiManager = G4UImanager::GetUIpointer();
-  uiManager->ApplyCommand(("/gun/energy " + energy).c_str());
+  uiManager->ApplyCommand(
+      ("/gun/energy " + std::to_string(static_cast<int>(energy)) + " GeV")
+          .c_str());
 
   // inactivate to disable the process
   uiManager->ApplyCommand("/process/activate muIoni");
@@ -81,9 +76,6 @@ int main(int argc, char **argv) {
   uiManager->ApplyCommand("/process/activate muonNuclear");
 
   runManager->BeamOn(10000);
-
-  analysisManager->Write();
-  analysisManager->CloseFile();
 
   // Job termination
   // Free the store: user actions, physics_list and detector_description are

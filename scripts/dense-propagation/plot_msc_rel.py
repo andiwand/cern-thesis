@@ -31,16 +31,16 @@ parser.add_argument(
     help="Path to output file",
 )
 parser.add_argument("--bins", type=int, default=30, help="Number of bins")
+parser.add_argument("--e-range", nargs=2, default=[2, 300], help="Energy range in GeV")
 parser.add_argument(
-    "--e-range", nargs=2, default=[2, 300], help="Energy range in GeV"
+    "--min-p-out", type=float, default=2, help="Minimum output momentum"
 )
-parser.add_argument("--min-p-out", type=float, default=2, help="Minimum output momentum")
 parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_title("Relative positional uncertainty of muons passing 100 mm Fe")
+# ax.set_title("Relative positional uncertainty of muons passing 100 mm Fe")
 ax.set_xlabel("Initial momentum [GeV]")
 ax.set_ylabel("Relative positional uncertainty")
 

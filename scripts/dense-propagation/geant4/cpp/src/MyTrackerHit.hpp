@@ -12,12 +12,6 @@
 
 class TrackerHit : public G4VHit {
 public:
-  TrackerHit() = default;
-  TrackerHit(const TrackerHit &) = default;
-  ~TrackerHit() override = default;
-
-  // operators
-  TrackerHit &operator=(const TrackerHit &) = default;
   G4bool operator==(const TrackerHit &right) const {
     return (this == &right) ? true : false;
   }
