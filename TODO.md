@@ -17,15 +17,21 @@
 - [ ] put time estimates on chapters including prework
 - [ ] define ITk performance outline
   - rename / focus on track finding using CKF
-- [ ] get volume material chapter done
+- [x] get volume material chapter done
   - should block at least one week for this
-  - [ ] illustrate multiple scattering in thin and thick layers
-  - [ ] Geant4 screenshot with white/alpha background
-  - [ ] remake comparison plots with proper ratio
-  - [ ] technical work
-    - [ ] implement volume material in sympy stepper
-    - [ ] compare geant, eigen, sympy
+  - [x] illustrate multiple scattering in thin and thick layers
+  - [x] Geant4 screenshot with white/alpha background
+  - [x] remake comparison plots with proper ratio
+  - [x] technical work
+    - [x] implement volume material in sympy stepper
+    - [x] compare geant, eigen, sympy
   - [ ] include prospects of this in the thesis
+- [ ] get stepper chapter done
+  - [ ] collect error estimate data for one track going through ODD
+  - [ ] plot error estimate data and threshold bands vs steps
+  - [ ] get performance numbers for eigen vs sympy vs atlas
+    - [ ] syntetic
+    - [ ] track finding
 
 ## plots
 
@@ -134,7 +140,7 @@
     - [ ] 7.7. Track container for branches
     - [ ] 7.8. Branch finalization
     - [ ] 7.9. Initial covariance
-  - [ ] 8. Tracking with dense material
+  - [ ] ✔️✔️ 8. Tracking with dense material
     - [ ] Intro text
     - [ ] 8.1. Motivation
     - [ ] 8.2. Baseline with Geant4

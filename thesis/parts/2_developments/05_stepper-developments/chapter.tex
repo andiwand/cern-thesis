@@ -1,49 +1,90 @@
-The stepper component plays a central role in the propagation of track parameters. It is responsible for the numerical integration of the equation of motion of a charged particle. Apart from that it handles the transport of the Jacobian matrix and the covariance matrix for the track parameters. As such, the stepper is a crucial component for track reconstruction.
+The stepper component plays a central role in the propagation of track parameters. For inhomogeneous magnetic fields the trajectory of a chared particle cannot be expressed analytically. Therefore the stepper is responsible for the numerical integration of the equations of motion. Apart from that, it handles the transport of the Jacobian matrix and the covariance matrix for the track parameters which are used in the Kalman filter to fit tracks to measurements. As such, the stepper is a crucial component for track reconstruction.
 
-\section{Rework Constrained Step}
+Current stepper implementations in ACTS are based on a fourth-order Runge-Kutta-Nystrom integration, which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}. While this is well established for track reconstruction, there is not a single best way to implement this to achieve optimal computational performance. Since the stepper is a performance critical component, developments have continue during the work on this thesis and will continue in the future.
+
+This chapter dicusses the developments on the stepper component in ACTS during the work on this thesis. First, work on the ConstrainedStep is discuessed, which is a central helper class to deal with different step length requirements. Followed by a discussion on the adaptive step size technique which is used to improve the performance of the numerical integration. Then, improvements on the EigenStepper are discussed which is a long standing stepper implementation in ACTS. Afterwards, the SympyStepper is introduced which is a novel stepper implementation in ACTS, conceptualized and implemented as part of this thesis. Finally, the computational cost of the time parameter is discussed.
+
+\section{Reworking the ConstrainedStep}
 
 \begin{itemize}
     \color{red}
     \item what is it and why is it needed
     \begin{itemize}
-        \item key points:
         \item choosing the right step length given multiple constraints
         \item overstepping resolution
     \end{itemize}
     \item what are the modifications
     \begin{itemize}
-        \item key points:
         \item remove propagation direction dependence
         \item remove sign of accuracy limit
     \end{itemize}
 \end{itemize}
 
-\texttt{ConstrainedStep} is a helper class to deal with different step length requests. In the current interface of the stepper in ACTS deals with 4 different request types: \texttt{accuracy}, \texttt{navigator}, \texttt{actor}, and \texttt{user}. The \texttt{accuracy} limit is used to communicate an appropriate step length limit to achieve the requested integration accuracy target from prior \texttt{step} calls. The \texttt{navigator} limit holds the approximated distance to the next target. In case of overstepping this can also be negative. The \texttt{actor} limit holds the approximate distance to the next abort condition, for example trajectory path length limit or target surface distance. Similar to the \texttt{navigator} limit, this can also be negative. The \texttt{user} limit is a user defined limit to restrict the step size to a given maximum.
+The ConstrainedStep is a helper class in ACTS to deal with different step length requirements. Currently, ACTS deals with 4 different step length request types: \textit{accuracy}, \textit{navigator}, \textit{actor}, and \textit{user}. The \textit{accuracy} limit is used to communicate an appropriate step length limit to achieve the requested integration accuracy target from prior \textit{step} calls. The \textit{navigator} limit holds the approximated distance to the next target. In case of overstepping this can also be negative. The \textit{actor} limit holds the approximate distance to the next abort condition, for example trajectory path length limit or target surface distance. Similar to the \textit{navigator} limit, this can also be negative. The \textit{user} limit is a user defined limit to restrict the step size to a given maximum.
 
-\texttt{ConstrainedStep} takes inputs from the different sources and provides a single step length. The step length is determined by the minimum of the \texttt{accuracy}, \texttt{navigator}, \texttt{actor}, and \texttt{user} limits, while overstepping resolution is always preferred over smaller absolute distances.
+ConstrainedStep takes inputs from the different sources and provides a single step length. The step length is determined by the minimum of the \textit{accuracy}, \textit{navigator}, \textit{actor}, and \textit{user} limits, while overstepping resolution is always preferred over smaller absolute distances.
 
-This class used to be quite involved and a central cause of problems for the propagation. Over multiple iterations it has been effectively rewritten to be more robust and easier to understand. One major compilcation was the handling of step direction inside \texttt{ConstrainedStep}. The propagation can be done in both directions, forward and backward. During a backward propagation we might overstep a target. To resolve this we need to reverse direction, effectively stepping forward. This was all handled inside \texttt{ConstrainedStep} and made the code fail in certain cases. In the new implementation this was simplified by removing the propagation direction sign from \texttt{ConstrainedStep}. It only deals with distances given the propagation direction as the behavior has to be symmetrical in forward and backward propagation.
+This class used to be quite involved and a central cause of problems for the propagation. Over multiple iterations it has been effectively rewritten to be more robust and easier to understand. One major compilcation was the handling of step direction inside \textit{ConstrainedStep}. The propagation can be done in both directions, forward and backward. During a backward propagation we might overstep a target. To resolve this we need to reverse direction, effectively stepping forward. This was all handled inside \textit{ConstrainedStep} and made the code fail in certain cases. In the new implementation this was simplified by removing the propagation direction sign from \textit{ConstrainedStep}. It only deals with distances given the propagation direction as the behavior has to be symmetrical in forward and backward propagation.
 
-Another major change was removing the sign of the \texttt{accuracy} limit. In rare cases the accuracy was set during overstep resolution which caused it get a negative sign and thus the limit was locked and could not be changed resulting in a failed propagation. The new implementation decides the sign for the accuracy limit based on the \texttt{navigator} and \texttt{actor} limits.
+Another major change was removing the sign of the \textit{accuracy} limit. In rare cases the accuracy was set during overstep resolution which caused it get a negative sign and thus the limit was locked and could not be changed resulting in a failed propagation. The new implementation decides the sign for the accuracy limit based on the \textit{navigator} and \textit{actor} limits.
 
 \section{Adaptive step size}
 
+Adaptive step size is a technique to improve the performance of the numerical integration given a certain accuracy target. The idea is to adjust the step size based on the local curvature of the trajectory. In regions of high curvature a smaller step size is used to resolve the trajectory more accuratly. In regions of low curvature a larger step size is used to accelerate the propagation and to limit the accumulation of machine precision errors.
+
+This is done by computing an error estimate after each step of the numerical integration and comparing it to the requested accuracy target. If the error estimate is larger than the requested accuracy target the step size is reduced, otherwise it is increased.
+
+A derivation of the expected error for the fourth-order Runge-Kutte-Nystrom is provided in \textcite{pub-2009-001} and only summarized here. The error estimate is given by
+
+\begin{equation}
+    \epsilon = h^2 \, \left\lVert \mathbf{k}_1 - \mathbf{k}_2 - \mathbf{k}_3 + \mathbf{k}_4 \right\rVert_1
+\end{equation}
+
+with the intermediate steps of the Runge-Kutta-Nystrom integration $\mathbf{k}_1$, $\mathbf{k}_2$, $\mathbf{k}_3$, and $\mathbf{k}_4$. Given the requested accuracy target and the used step length the next step length can be calculated with:\cite{}
+
+\begin{equation}
+    h_{\text{next}} = h \, \left( \frac{\tau}{\epsilon} \right)^{1/4}
+    \label{eq:dev/stepper/adaptive-step-size}
+\end{equation}
+
+with the requested accuracy target $\tau$. The exponent of 1/4 is determined by the order of the Runge-Kutta-Nystrom integration.
+
+Equation \ref{eq:dev/stepper/adaptive-step-size} is used after each step of the numerical integration to adjuste the step size. If the error estimate is too large, the step size is reduced and the step is reattempted. If the error estimate is too small, the step size is increased for the next integration step.
+
+Since the error estimate can fluctuate, an upper and lower limit is imposed to the updated step size:
+
+\begin{equation}
+    \frac{1}{4} h < h_{\text{next}} < 4 h
+\end{equation}
+
+This ensures that the step size is not increased or decreased too much at once. The accuracy condition is the following:
+
+\begin{equation}
+    \epsilon < 4 \tau
+\end{equation}
+
+If this is not satisfied the step is rejected and reattempted. The factor 4 gives some margin for the requested accuracy target and allows $\epsilon$ to fluctuate around $\tau$ without immediately rejecting steps.
+
+The adaptive step size technique was implemented in ACTS during the work on this thesis and tested with the EigenStepper.
+
 \begin{itemize}
     \color{red}
-    \item what is it and why is it needed
-    \item what are the modifications
+    \item plot epsilon and tau over steps for one track
+    \item table with performance results
+    \begin{itemize}
+        \item syntetic benchmark
+        \item track finding benchmark
+    \end{itemize}
 \end{itemize}
-
-Adaptive step size is a technique to improve the performance of the numerical integration given a certain accuracy target. The idea is to adjust the step size based on the local curvature of the trajectory. In regions of high curvature a smaller step size is used to resolve the trajectory better. In regions of low curvature a larger step size is used to speed up the propagation and to limit the accumulation of machine precision errors.
-
-This is done by computing an error estimate after each step of the numerical integration and comparing it to the requested accuracy target. If the error estimate is larger than the requested accuracy target the step size is reduced. If the error estimate is smaller than the requested accuracy target the step size is increased.
 
 \section{EigenStepper}
 \label{sec:dev/stepper/eigen}
 
 The \texttt{EigenStepper} is a long standing stepper implementation in ACTS with the goal of being readable, maintainable and fast. It uses the C++ Eigen library for linear algebra operations which is the de facto standard. The math was once derived by hand and then transcribed into C++ code.
 
-While some of the math operations are quite readable and maintainable, the extension mechanism diminishes these qualities. The idea behind the extension mechanism is to have one stepper implementation for different kinds of material and interation environments. There is a \texttt{DefaultExtension} which handles the integration in a vakuum and a \texttt{DenseExtension} which handles the integration in a dense material. Another layer inbetween, \texttt{StepperExtensionList}, allowed to switch between any number of extensions depending on their priority. This complexity was removed during the work on this thesis and the \texttt{EigenStepper} was simplified to deal with only a single extension, while the dense extension will automatically fall back to the default extension if no volume material is present.
+The EigenStepper has an extension mechanism, mainly to deal with vacuum and dense material stepping, but also to allow for potential future applications. Extensions are collected in a list and can bid for their priority in the given environment. An Auctioneer decides which extension is used for the current step based on the priority. The choosen extension is then used to calculate the intermediate steps of the Runge-Kutta-Nystrom integration and, in case of covariance transport, the transport Jacobian.
+
+While the EigenStepper implementation is arguably doing well in terms of readability and maintainability, the extension mechanism diminishes these qualities. The Runge-Kutta-Nystrom integration is scattered between the stepper and the extensions which makes it hard to follow. To improve the situation, the EigenStepper was simplified during the work on this thesis. Instead of dealing with a list of extensions, only a single extension can now be provided. With that, the dense extension explicitly falls back to the default extension, if no volume material is present. This solved complications discovered during the work on the dense material propagation described in Chapter \ref{ch:dev/dense}, more specifically in Section \ref{sec:dev/dense/eigen}.
 
 \section{SympyStepper}
 \label{sec:dev/stepper/sympy}
@@ -57,7 +98,7 @@ While some of the math operations are quite readable and maintainable, the exten
 
 The \texttt{SympyStepper} is a novel stepper implementation in ACTS, conceptualized and implemented as part of this thesis. It is based on generated code from the symbolic math library \texttt{SymPy}. The motivation for this stepper was to improve CPU performance while keeping or improving the readable representation of the mathematics.
 
-The \texttt{EigenStepper} uses the C++ Eigen library for linear algebra operations which results in readable and hopefully fast code, as the library is sort of a de facto standard for linear algebra in C++ and supports vectorization. There are still a few weeknesses in terms of readability and maintainability with this implementation which is discussed in section \ref{sc:eigenstepper}. However, it was observed that the \texttt{AtlasStepper} is significantly faster than the \texttt{EigenStepper}. The \texttt{AtlasStepper} is based on the Athena numerical implementation STEP and does not rely on any external libraries. The math operations are decomposed by hand and optimized for performance. This indeed results in fast code but is also practically unreadable and impossible to maintain. For example introducing a time parameter in the \texttt{AtlasStepper} would be significantly more involved than in the \texttt{EigenStepper}. It was attempted to improve the performance of the \texttt{EigenStepper} but turned out to be quite difficult and potentially reducing again readability and maintainability.
+The \texttt{EigenStepper} uses the C++ Eigen library for linear algebra operations which results in readable and hopefully fast code, as the library is sort of a de facto standard for linear algebra in C++ and supports vectorization. There are still a few weeknesses in terms of readability and maintainability with this implementation which is discussed in Section \ref{sec:dev/dense/eigen}. However, it was observed that the \texttt{AtlasStepper} is significantly faster than the \texttt{EigenStepper}. The \texttt{AtlasStepper} is based on the long standing Athena STEP algorithm and does not rely on any external libraries. The math operations are decomposed by hand and optimized for performance. This indeed results in fast code but is also practically unreadable and impossible to maintain. For example introducing a time parameter in the \texttt{AtlasStepper} would be significantly more involved than in the \texttt{EigenStepper}. It was attempted to improve the performance of the \texttt{EigenStepper} but turned out to be quite difficult and potentially reducing again readability and maintainability.
 
 The \texttt{SympyStepper} can be thought of as the midpoint between the \texttt{EigenStepper} and the \texttt{AtlasStepper}. The stepper math is written in Python using the \texttt{SymPy} library. This allows for high level linear algebra operations while also deriving the linear error propagation from the Runge-Kutta-Nystrom integration. Apart from that we can use common subexpression elimination to simplify the math upfront and reduce the number of operations. Another big advantage is that we can encode known values and symmetries which will automatically result in simplified terms and fewer operations. Known values can be zeros in Jacobians we know from the beginning. We can also make use of the symmetry of the covariance matrix to avoid duplicate work. These kinds of simplifications are not possible with Eigen. Finally, we can generate C++ code from the \texttt{SymPy} expressions which can be used in the ACTS stepper implementation. The generated code is not meant to be readable but fast, can be thought of as binary code produced by a compiler and could be generated by a build system during the compilation of ACTS.
 
