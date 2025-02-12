@@ -1,32 +1,18 @@
-The stepper component plays a central role in the propagation of track parameters. For inhomogeneous magnetic fields the trajectory of a chared particle cannot be expressed analytically. Therefore the stepper is responsible for the numerical integration of the equations of motion. Apart from that, it handles the transport of the Jacobian matrix and the covariance matrix for the track parameters which are used in the Kalman filter to fit tracks to measurements. As such, the stepper is a crucial component for track reconstruction.
+The stepper component plays a central role in the propagation of track parameters. For inhomogeneous magnetic fields the trajectory of a chared particle cannot be expressed analytically. The stepper is responsible for the numerical integration of the equations of motion. Apart from that, it handles the transport of the Jacobian matrix and the covariance matrix for the track parameters which are used in the Kalman filter to fit tracks to measurements. As such, the stepper is a crucial component for track reconstruction.
 
-Current stepper implementations in ACTS are based on a fourth-order Runge-Kutta-Nystrom integration, which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}. While this is well established for track reconstruction, there is not a single best way to implement this to achieve optimal computational performance. Since the stepper is a performance critical component, developments have continue during the work on this thesis and will continue in the future.
+Current stepper implementations in ACTS are based on a fourth-order Runge-Kutta-Nystrom integration, which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}. While this is well established for track reconstruction, there is not a single best way to implement this to achieve optimal computational performance. Since the stepper is a performance critical component, developments have continued during the work on this thesis and will continue in the future.
 
-This chapter dicusses the developments on the stepper component in ACTS during the work on this thesis. First, work on the ConstrainedStep is discuessed, which is a central helper class to deal with different step length requirements. Followed by a discussion on the adaptive step size technique which is used to improve the performance of the numerical integration. Then, improvements on the EigenStepper are discussed which is a long standing stepper implementation in ACTS. Afterwards, the SympyStepper is introduced which is a novel stepper implementation in ACTS, conceptualized and implemented as part of this thesis. Finally, the computational cost of the time parameter is discussed.
+This chapter dicusses the developments on the stepper component in ACTS during the work on this thesis. First, work on the ConstrainedStep is presented, which is a central helper class to deal with different step length requirements. Followed by a discussion on the adaptive step size technique, which is used to improve the performance of the numerical integration. Then, improvements on the EigenStepper are discussed which is a long standing stepper implementation in ACTS. Afterwards, the SympyStepper is introduced which is a novel stepper implementation in ACTS, conceptualized and implemented as part of this thesis. Finally, the computational cost of the time parameter is discussed.
 
 \section{Reworking the ConstrainedStep}
 
-\begin{itemize}
-    \color{red}
-    \item what is it and why is it needed
-    \begin{itemize}
-        \item choosing the right step length given multiple constraints
-        \item overstepping resolution
-    \end{itemize}
-    \item what are the modifications
-    \begin{itemize}
-        \item remove propagation direction dependence
-        \item remove sign of accuracy limit
-    \end{itemize}
-\end{itemize}
+ConstrainedStep is a helper class in ACTS to deal with different step length requirements. Currently, ACTS deals with 4 different types of step length request: \texttt{accuracy}, \texttt{navigator}, \texttt{actor}, and \texttt{user}. The \texttt{accuracy} limit is used to communicate an appropriate step length limit to achieve the requested integration accuracy target set by prior integration steps. The \texttt{navigator} limit holds the approximated distance to the next surface target. In case of overstepping the target, this can also be negative. The \texttt{actor} limit holds the approximate distance to the next abort condition, for example a trajectory path length limit or a target surface distance. Similar to the \texttt{navigator} limit, this can also be negative. The \texttt{user} limit is a user defined limit to restrict the step size to a given maximum.
 
-The ConstrainedStep is a helper class in ACTS to deal with different step length requirements. Currently, ACTS deals with 4 different step length request types: \textit{accuracy}, \textit{navigator}, \textit{actor}, and \textit{user}. The \textit{accuracy} limit is used to communicate an appropriate step length limit to achieve the requested integration accuracy target from prior \textit{step} calls. The \textit{navigator} limit holds the approximated distance to the next target. In case of overstepping this can also be negative. The \textit{actor} limit holds the approximate distance to the next abort condition, for example trajectory path length limit or target surface distance. Similar to the \textit{navigator} limit, this can also be negative. The \textit{user} limit is a user defined limit to restrict the step size to a given maximum.
+A ConstrainedStep takes inputs from the different sources and provides a single step length. The step length is determined by the minimum of the \texttt{accuracy}, \texttt{navigator}, \texttt{actor}, and \texttt{user} limits, while overstepping resolution is always preferred over smaller absolute distances.
 
-ConstrainedStep takes inputs from the different sources and provides a single step length. The step length is determined by the minimum of the \textit{accuracy}, \textit{navigator}, \textit{actor}, and \textit{user} limits, while overstepping resolution is always preferred over smaller absolute distances.
+This class used to be quite involved and a central cause of problems for the propagation. Over multiple iterations it has been effectively rewritten during the work on this thesis, to be more robust and easier to understand. One major compilcation was the handling of the step direction inside the ConstrainedStep. The propagation can be done in both directions, forward and backward. During a backward propagation we might overstep a target. To resolve this we need to reverse direction, effectively stepping forward. This was all handled inside \texttt{ConstrainedStep} and resulted in failures in certain edge cases. In the new implementation this was simplified by removing the propagation direction sign from ConstrainedStep. With this change, it only deals with distances that have the propagation direction factored in. This is possible because the behavior of ConstrainedStep has to be symmetrical in forward and backward propagation.
 
-This class used to be quite involved and a central cause of problems for the propagation. Over multiple iterations it has been effectively rewritten to be more robust and easier to understand. One major compilcation was the handling of step direction inside \textit{ConstrainedStep}. The propagation can be done in both directions, forward and backward. During a backward propagation we might overstep a target. To resolve this we need to reverse direction, effectively stepping forward. This was all handled inside \textit{ConstrainedStep} and made the code fail in certain cases. In the new implementation this was simplified by removing the propagation direction sign from \textit{ConstrainedStep}. It only deals with distances given the propagation direction as the behavior has to be symmetrical in forward and backward propagation.
-
-Another major change was removing the sign of the \textit{accuracy} limit. In rare cases the accuracy was set during overstep resolution which caused it get a negative sign and thus the limit was locked and could not be changed resulting in a failed propagation. The new implementation decides the sign for the accuracy limit based on the \textit{navigator} and \textit{actor} limits.
+Another major change was removing the sign of the \texttt{accuracy} limit. In rare cases the accuracy was set during overstep resolution which caused it to be negative. This effectively locked the step size resulting in a failed propagation due to reaching the step count limit. The new implementation decides the sign for the accuracy limit based on the \texttt{navigator} and \texttt{actor} limits.
 
 \section{Adaptive step size}
 
@@ -40,16 +26,16 @@ A derivation of the expected error for the fourth-order Runge-Kutte-Nystrom is p
     \epsilon = h^2 \, \left\lVert \mathbf{k}_1 - \mathbf{k}_2 - \mathbf{k}_3 + \mathbf{k}_4 \right\rVert_1
 \end{equation}
 
-with the intermediate steps of the Runge-Kutta-Nystrom integration $\mathbf{k}_1$, $\mathbf{k}_2$, $\mathbf{k}_3$, and $\mathbf{k}_4$. Given the requested accuracy target and the used step length the next step length can be calculated with:\cite{}
+with the intermediate steps of the Runge-Kutta-Nystrom integration $\mathbf{k}_1$, $\mathbf{k}_2$, $\mathbf{k}_3$, and $\mathbf{k}_4$. Given the requested accuracy target $\tau$ and the used step length the next step length can be calculated with:\cite{pub-2009-001}\cite{numerical-recipes}
 
 \begin{equation}
     h_{\text{next}} = h \, \left( \frac{\tau}{\epsilon} \right)^{1/4}
     \label{eq:dev/stepper/adaptive-step-size}
 \end{equation}
 
-with the requested accuracy target $\tau$. The exponent of 1/4 is determined by the order of the Runge-Kutta-Nystrom integration.
+The exponent of 1/4 is determined by the order of the Runge-Kutta-Nystrom integration.
 
-Equation \ref{eq:dev/stepper/adaptive-step-size} is used after each step of the numerical integration to adjuste the step size. If the error estimate is too large, the step size is reduced and the step is reattempted. If the error estimate is too small, the step size is increased for the next integration step.
+Equation \ref{eq:dev/stepper/adaptive-step-size} is used after each step of the numerical integration to adjuste the step size. If the error estimate is too large, the step size is reduced and the step is reattempted. If the error estimate is too small, the step size is increased to accelerate the next integration step.
 
 Since the error estimate can fluctuate, an upper and lower limit is imposed to the updated step size:
 
@@ -57,25 +43,56 @@ Since the error estimate can fluctuate, an upper and lower limit is imposed to t
     \frac{1}{4} h < h_{\text{next}} < 4 h
 \end{equation}
 
-This ensures that the step size is not increased or decreased too much at once. The accuracy condition is the following:
+These limits ensure that the step size is not changed significantly. The accuracy condition is the following:
 
 \begin{equation}
     \epsilon < 4 \tau
 \end{equation}
 
-If this is not satisfied the step is rejected and reattempted. The factor 4 gives some margin for the requested accuracy target and allows $\epsilon$ to fluctuate around $\tau$ without immediately rejecting steps.
+If not satisfied the step is rejected and reattempted. The factor 4 gives some margin for the requested accuracy target and allows $\epsilon$ to fluctuate around $\tau$ without immediately rejecting steps.
 
 The adaptive step size technique was implemented in ACTS during the work on this thesis and tested with the EigenStepper.
 
-\begin{itemize}
-    \color{red}
-    \item plot epsilon and tau over steps for one track
-    \item table with performance results
-    \begin{itemize}
-        \item syntetic benchmark
-        \item track finding benchmark
-    \end{itemize}
-\end{itemize}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/2_developments/05_stepper-developments/figures/step_size_error.pdf}
+    \caption{Error estimate and step size as a function of integration steps with different transverse momenta in a 2 T magnetic field propagated with $\theta=\pi/4$ for 10 m. The gray band indicates the requested accuracy limits.}
+    \label{fig:dev/stepper/adaptive-step-size}
+\end{figure}
+
+Figure \ref{fig:dev/stepper/adaptive-step-size} shows the error estimate and the step size as a function of integration steps with different transverse momenta in a 2 T magnetic field propagated with $\theta=\pi/4$ for 10 m. The initial step size is set to 100 mm and the stepper successfully adapts the step size to stay close to the requested accuracy target. Tracks with high transverse momenta are followed with fewer steps and larger step sizes which accelerates the propagation. The last step has a smaller size and error as the path length of 10 m is reached with a smaller step size.
+
+% pt=1GeV, B=2T, s=5m, cov=true
+% without adaptive step size; just halfing if too big
+% 13:29:52    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 13:29:54    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 267.9ms total, 13.3340+/-0.0037µs per run, 13334.000+/-3.747ns per iteration
+% 13:29:54    SympyStepper   INFO      average path length = 5000mm
+% 13:29:54    SympyStepper   INFO      average number of steps = 192
+% 13:29:54    SympyStepper   INFO      step efficiency = 0.984615
+% with adaptive step size
+% 13:31:45    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 13:31:47    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 212.0ms total, 10.5830+/-0.0022µs per run, 10583.000+/-2.150ns per iteration
+% 13:31:47    SympyStepper   INFO      average path length = 5000mm
+% 13:31:47    SympyStepper   INFO      average number of steps = 144
+% 13:31:47    SympyStepper   INFO      step efficiency = 0.986301
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ccc}
+        \hline
+        \textbf{Strategy} & \textbf{Steps} & \textbf{Rel. time} \\
+        \hline
+        Half & 192 & 1.00 \\
+        Adaptive & 144 & 0.79 \\
+        \hline
+    \end{tabular}
+    \caption{Number of steps and relative CPU time for tracks with a transverse momentum of 1 GeV in a 2 T magnetic field propagated with $\theta=0$ for 5 m with different step size strategies.}
+    \label{tab:dev/stepper/adaptive-step-size}
+\end{table}
+
+Table \ref{tab:dev/stepper/adaptive-step-size} shows the number of steps and the relative CPU time for tracks with a transverse momentum of 1 GeV in a 2 T magnetic field propagated with $\theta=0$ for 5 m with different step size strategies. \textit{Half} means that the step size is simply divided by 2 if the error estimate is too large. In this syntetic benchmark the adaptive step size strategy reduces the number of steps by 25\% and the CPU time by 21\%.
+
+We should note that this is rather an upper limit for the performance improvement. The propagation inside a detector will not always allow to set the step size to its optimal value, as the navigation will usually require a smaller step size to resolve the geometry of the detector.
 
 \section{EigenStepper}
 \label{sec:dev/stepper/eigen}
@@ -103,11 +120,6 @@ The \texttt{EigenStepper} uses the C++ Eigen library for linear algebra operatio
 The \texttt{SympyStepper} can be thought of as the midpoint between the \texttt{EigenStepper} and the \texttt{AtlasStepper}. The stepper math is written in Python using the \texttt{SymPy} library. This allows for high level linear algebra operations while also deriving the linear error propagation from the Runge-Kutta-Nystrom integration. Apart from that we can use common subexpression elimination to simplify the math upfront and reduce the number of operations. Another big advantage is that we can encode known values and symmetries which will automatically result in simplified terms and fewer operations. Known values can be zeros in Jacobians we know from the beginning. We can also make use of the symmetry of the covariance matrix to avoid duplicate work. These kinds of simplifications are not possible with Eigen. Finally, we can generate C++ code from the \texttt{SymPy} expressions which can be used in the ACTS stepper implementation. The generated code is not meant to be readable but fast, can be thought of as binary code produced by a compiler and could be generated by a build system during the compilation of ACTS.
 
 \section{The cost of the time parameter}
-
-\begin{itemize}
-    \color{red}
-    \item time is not switchable
-\end{itemize}
 
 As mentioned before, the track parametrization is not customizable in ACTS. As such, the time parameter will always be present, even if it is not needed. This is the case for the ATLAS ITk detector which does not provide timing information. Since track reconstruction is a performance critical task, and we do additional operations on the time parameter, we need to be aware of the cost of the time parameter.
 

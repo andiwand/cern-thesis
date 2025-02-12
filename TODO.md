@@ -27,11 +27,11 @@
     - [x] compare geant, eigen, sympy
   - [ ] include prospects of this in the thesis
 - [ ] get stepper chapter done
-  - [ ] collect error estimate data for one track going through ODD
-  - [ ] plot error estimate data and threshold bands vs steps
-  - [ ] get performance numbers for eigen vs sympy vs atlas
-    - [ ] syntetic
-    - [ ] track finding
+  - [x] plot error estimate data and threshold bands vs steps
+  - [x] get performance numbers for eigen vs sympy
+  - [ ] show code for sympy RK4
+  - [ ] killing time branch update
+  - [ ] measure time param removal for EigenStepper and SympyStepper with track finding
 
 ## plots
 
@@ -112,13 +112,13 @@
     - [ ] 4.7. Implementation of a Particle Hypothesis
     - [ ] 4.8. Redesign for Boundary Tolerance
     - [ ] 4.9. Implementation of the mBF Smoother
-  - [ ] 5. Stepper developments
-    - [ ] Into text
-    - [ ] 5.1. Rework Constrained Step
-    - [ ] 5.2. Adaptive step size
-    - [ ] 5.3. EigenStepper
-    - [ ] 5.4. SympyStepper
-    - [ ] 5.5. The cost of the time parameter
+  - [ ] ✔️ 5. Stepper developments
+    - [ ] ✔️✔️ Into text
+    - [ ] ✔️✔️ 5.1. Rework Constrained Step
+    - [ ] ✔️✔️ 5.2. Adaptive step size
+    - [ ] ✔️ 5.3. EigenStepper
+    - [ ] ✔️ 5.4. SympyStepper
+    - [ ] ✔️ 5.5. The cost of the time parameter
   - [ ] 6. Navigator developments
     - [ ] Into text
     - [ ] 6.1. Navigation subtleties and edge cases
@@ -141,12 +141,12 @@
     - [ ] 7.8. Branch finalization
     - [ ] 7.9. Initial covariance
   - [ ] ✔️✔️ 8. Tracking with dense material
-    - [ ] Intro text
-    - [ ] 8.1. Motivation
-    - [ ] 8.2. Baseline with Geant4
-    - [ ] 8.3. First attempts with EigenStepper
-    - [ ] 8.4. SympyStepper
-    - [ ] 8.5. Performance
+    - [ ] ✔️✔️ Intro text
+    - [ ] ✔️✔️ 8.1. Motivation
+    - [ ] ✔️✔️ 8.2. Baseline with Geant4
+    - [ ] ✔️✔️ 8.3. First attempts with EigenStepper
+    - [ ] ✔️✔️ 8.4. SympyStepper
+    - [ ] ✔️✔️ 8.5. Performance
   - [ ] 9. Tracking with time information
     - [ ] Intro text
     - [ ] 9.1. Tracking with time information in ACTS
