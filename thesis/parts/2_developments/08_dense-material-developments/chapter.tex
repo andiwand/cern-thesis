@@ -1,6 +1,6 @@
 Usually tracking is done in as little material as possible to obtain optimal resolution and to increase the chance of detecting particles at all before they are stopped. However, in some cases it is necessary to track particles through dense material. One example is track extension through a calorimeter to combine inner detector and muon system tracklets which improves the momentum resolution at the interaction point for high energy muons.
 
-One has two options to model the material in the calorimeter. Either virtual surfaces are inserted and the material of the calorimeter is projected onto them, similar to what is usually done in the inner detector. Or the material is modeled as a continous media. Such a volume-based approach also allows for continous energy loss and multiple scattering which can only be approximated by a surface-based approach. Ultimately, an experiment independet tracking software should be able to handle both options.
+One has two options to model the material in the calorimeter for tracking. Either virtual surfaces are inserted and the material of the calorimeter is projected onto them, similar to what is usually done in the inner detector. Or the material is modeled as a continous media. Such a volume-based approach also allows for continous energy loss and multiple scattering which can only be approximated by a surface-based approach. Ultimately, an experiment independet tracking software should be able to handle both options.
 
 The main difference between the two approaches is how the material is handled during the covariance transport. In a surface-based approach, the material is modeled as thin scatterers which only affect the direction uncertainty and the energy of the particle. In a volume-based approach, the material is modeled as thick scatterers which also affect the positional uncertainty of the particle. This is illustrated in Figure \ref{fig:dev/dense/scatterers}.
 
@@ -29,14 +29,15 @@ The main difference between the two approaches is how the material is handled du
             \node at (1.2,0.7) {$\theta$};
         \end{tikzpicture}
         \caption{Thick scatterer}
+        \label{fig:dev/dense/scatterers/thick}
     \end{subfigure}
-    \caption{Illustration of a particle passing through a thin and a thick scatterer. Due to the thickness of the scatterer, the particle will have a positional offset to the unimpeeded trajectory.}
+    \caption{Illustration of a particle passing through (a) a thin and (b) a thick scatterer. Due to the thickness of the scatterer, the particle will have a positional offset to the unimpeeded trajectory.}
     \label{fig:dev/dense/scatterers}
 \end{figure}
 
-While the surface-based approach is a long standing feature in ACTS, the volume-based approach was not fully implemented yet. This thesis aims to close this gap by implementing and validating particle transport through volume-based material in ACTS.
+While the surface-based approach is a long standing feature in ACTS, the volume-based approach was not fully implemented yet. The work presented in this thesis aims to close this gap by implementing and validating particle transport through volume-based material in ACTS.
 
-Similar to the existing surface-based approach, this implementation focues on two interactions with the material, continuous energy loss and multiple scattering, which are described in the following sections. Aftwerwards, a reference with Geant4 is established and the implementation in ACTS is described. Finally, the performance of the implementation is evaluated.
+Similar to the existing surface-based approach, this implementation focues on two interactions with the material, continuous energy loss and multiple scattering, which are described in the following sections. Afterwards, a reference with Geant4 is established and the implementation in ACTS is described. Finally, the performance of the implementation is evaluated.
 
 \section{Modified Equations of Motion}
 
@@ -54,7 +55,7 @@ with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\
 
 The dependent variables to be integrated are chosen as $\mathbf{y} = (\mathbf{r}^T \; t \; \Lambda)^T$ with their first derivatives $\mathbf{y}' = (\mathbf{T}^T \; \frac{dt}{ds} \; \lambda)^T$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nystrom method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
 
-The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions.\cite{pub-2008-003}
+The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions \cite{pub-2008-003} :
 
 \begin{equation}
     g = \left( \frac{dE}{ds} \right)_{\text{ion}} + \left( \frac{dE}{ds} \right)_{\text{brem}} + \left( \frac{dE}{ds} \right)_{\text{pair + photo nuclear}}
@@ -64,7 +65,7 @@ The individual energy loss rates are provided by \textcite{pub-2008-003} and lis
 
 \textbf{Mean energy loss from ionization}
 
-The mean energy loss from ionization is calculated using the Bethe-Bloch formula. The Bethe-Bloch formula describes the energy loss of a charged particle in matter due to ionization of the medium. It is given by\cite{pdg2024}
+The mean energy loss from ionization is calculated using the Bethe-Bloch formula. The Bethe-Bloch formula describes the energy loss of a charged particle in matter due to ionization of the medium. It is given by \cite{pdg2024}
 
 \begin{equation}
     \left( \frac{dE}{ds} \right)_{\text{ion}} = - K z^2 \frac{Z}{A} \frac{\rho}{\beta^2} \left[ \frac{1}{2} \ln \frac{2m_e c^2 \beta^2 \gamma^2 W_{\text{max}}}{I^2} - \beta^2 - \frac{\delta}{2} \right]
@@ -72,7 +73,7 @@ The mean energy loss from ionization is calculated using the Bethe-Bloch formula
 
 in $\text{MeV} \, \text{cm}^{-1}$ with the constant $K = 4 \pi N_A r_e^2 m_e c^2 \approx 0.307075 \, \text{MeV} \, \text{mol}^{-1} \, \text{cm}^2$, the charge of the particle $z$, the atomic number of the medium $Z$, the atomic mass of the medium $A$, the material density $\rho$ in $\text{g} \, \text{cm}^{-3}$, the maximum kinetic energy transfer in a single collision $W_{\text{max}}$ in $\text{MeV}$, the mean excitation energy of the medium $I$ in $\text{MeV}$, and the density effect correction $\delta$.
 
-The maximum kinetic energy transfer in a single collision is given by\cite{pdg2024}
+The maximum kinetic energy transfer in a single collision is given by \cite{pdg2024}
 
 \begin{equation}
     W_{\text{max}} = \frac{2 m_e c^2 \beta^2 \gamma^2}{1 + 2 \gamma m_e / M + (m_e / M)^2}
@@ -80,7 +81,7 @@ The maximum kinetic energy transfer in a single collision is given by\cite{pdg20
 
 in $\text{MeV}$ with the electron mass $m_e$ in $\text{MeV}/c^2$, and the mass of the particle $M$ in $\text{MeV}/c^2$.
 
-At high energies (\textcite{pub-2008-003} suggests $\gamma \ge 10$) the density effect correction is given by\cite{pdg2024}
+At high energies (\textcite{pub-2008-003} suggests $\gamma \ge 10$) the density effect correction is given by \cite{pdg2024}
 
 \begin{equation}
     \frac{\delta}{2} = \ln \frac{\hbar \omega_p}{I} + \ln \beta \gamma - \frac{1}{2}
@@ -92,7 +93,7 @@ The mean excitation energy is a material property and should be provided by the 
 
 \textbf{Mean energy loss from bremsstrahlung in matter}
 
-The mean energy loss from bremsstrahlung is calculated using the Bethe-Heitler formula. It is given by\cite{bethe-heitler}
+The mean energy loss from bremsstrahlung is calculated using the Bethe-Heitler formula. It is given by \cite{bethe-heitler}
 
 \begin{equation}
     \left( \frac{dE}{ds} \right)_{\text{brem}} = - \frac{E}{X_0} \left( \frac{m_e}{M} \right)^2
@@ -128,9 +129,9 @@ The covariance of a particle transported through material needs to be adjusted d
 
 \textbf{Multiple scattering}
 
-Charged particles passing through a medium are deflected by many small-angles. Most of these deflections are caused by Coulomb scattering from nuclei which is described by the Rutherford cross section. Given the central limit theorem, the net scattering and displacement distributions are Guassian, with non-Gaussian tails produced by less frequent "hard" scattering.\cite{pdg2024}
+Charged particles passing through a medium are deflected by many small-angles. Most of these deflections are caused by Coulomb scattering from nuclei which is described by the Rutherford cross section. Given the central limit theorem, the net scattering and displacement distributions are Guassian, with non-Gaussian tails produced by less frequent "hard" scattering. \cite{pdg2024}
 
-The multiple scattering angle is given by\cite{pdg2024}
+The multiple scattering angle is given by \cite{pdg2024}
 
 \begin{equation}
     \theta_0 = \frac{13.6 \, \text{MeV}}{\beta c p} z \sqrt{\frac{x}{X_0}} \left[ 1 + 0.038 \ln \left( \frac{x z^2}{X_0 \beta^2} \right) \right]
@@ -145,12 +146,12 @@ Thin scatterers only incrase directional uncertainty, as the particle will pass 
 
 The energy loss distribution of a particle passing through matter is highly non-Gaussian and has a long tail towards higher energy loss. As such, there is not one best solution to model energy loss as a Gaussian distribution. One can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width.
 
-The estimate of the energy loss uncertainty in ACTS is given by \textcite{pdg2024} Figure 34.7 with
+The estimate of the energy loss uncertainty in ACTS is given by \textcite{pdg2024} with
 
 \begin{equation}
 \begin{aligned}
-    \text{fwhm}_E &\approx 4 \xi \qquad&
-    \sigma_E &= \frac{\text{fwhm}_E}{2 \sqrt{2 \ln 2}} \\
+    \text{FWHM}_E &\approx 4 \xi \qquad&
+    \sigma_E &= \frac{\text{FWHM}_E}{2 \sqrt{2 \ln 2}} \\
     \xi &= \frac{K}{2} \langle \rho \, Z/A \rangle \frac{x z^2}{\beta^2} \qquad&
     \sigma_\lambda &= \frac{q}{\beta p^2} \sigma_E
 \end{aligned}
@@ -162,7 +163,7 @@ with the molar electron density $\langle \rho \, Z/A \rangle$.
 
 One needs to be careful with continous covariance updates as both, the energy loss and the multiple scattering are non-Gaussian processes and the convolution property is not fullfilled. As such, naively adding up variances after passing some amount of material will not give the correct result. To estimate the angle and energy uncertainty correctly, all the encountered material needs to be taken into account at once. At the same time these uncertainties will influence the positional and temporal uncertainty of the particle which needs to be accounted for.
 
-Taking the multiple scattering as an example, \ref{eq:dev/dense/msc} gives the standard deviation of the angle uncertainty after passing some amount of material. We can apply this formula even for parts of the material, but it is not correct to "reset" the material amount after each step. For the second step one rather has to take the difference in angle variance $\text{Var}[\theta]$ from the first step into account to calculate the variance of the position $\text{Var}[y]$. Ignoring the evolution of the position variance during a step the variance can be calculated as follows:
+Taking the multiple scattering as an example, Equation \ref{eq:dev/dense/msc} gives the standard deviation of the angle uncertainty after passing some amount of material. We can apply this formula even for parts of the material, but it is not correct to "reset" the material amount after each step. For the second step one rather has to take the difference in angle variance $\text{Var}[\theta]$ from the first step into account to calculate the variance of the position $\text{Var}[y]$. Ignoring the evolution of the position variance during a step the variance can be calculated as follows:
 
 \begin{equation}
 \begin{split}
@@ -182,7 +183,7 @@ Taking the multiple scattering as an example, \ref{eq:dev/dense/msc} gives the s
 
 \textcite{pdg2024} suggests to use a factor $1/3$ to calculate the increase in position variance during a step. This is derived in \textcite{cern-81-06} and due to integration over the step length.
 
-During the developments of the SympyStepper for dense material described in Section \ref{sec:dev/dense/sympy}, it was found that \ref{eq:dev/dense/split-var} can be rewritten to be calculated iteratively. This way a bookkeeping of the material and stepper information is not needed and the additional covariance can be directly updated after each step.
+During the developments of the SympyStepper for dense material described later in Section \ref{sec:dev/dense/sympy}, it was found that Equation \ref{eq:dev/dense/split-var} can be rewritten to be calculated iteratively. This way a bookkeeping of the material and stepper information is not needed and the additional covariance can be directly updated after each step.
 
 \begin{equation}
 \begin{split}
@@ -361,7 +362,7 @@ Figure \ref{fig:dev/dense/eloss-cmp} shows the energy loss computed by ACTS and 
         SympyStepper & 0.83 (1.00) & 1.10 (1.33) \\
         \hline
     \end{tabular}
-    \caption{Relative CPU time consumption of the EigenStepper and SympyStepper in vacuum and dense material propagating through the toy geometry.}
+    \caption{Relative CPU time consumption of the EigenStepper and SympyStepper in vacuum and dense material propagating through the toy geometry. The numbers in the brackets are normalized to the SymPyStepper in vacuum.}
     \label{tab:dev/dense/cpu-performance}
 \end{table}
 
