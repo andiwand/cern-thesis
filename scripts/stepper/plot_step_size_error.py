@@ -23,7 +23,7 @@ parser.add_argument(
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/stepper/step_size_error.pdf",
+    default=f"{base_dir}/plots/stepper/adaptive_step_size_error.pdf",
     help="Path to output file",
 )
 parser.add_argument("--bins", type=int, default=30, help="Number of bins")

@@ -1,0 +1,27 @@
+% pt=1GeV, B=2T, s=5m, cov=true
+% without adaptive step size; just halfing if too big
+% 13:29:52    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 13:29:54    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 267.9ms total, 13.3340+/-0.0037µs per run, 13334.000+/-3.747ns per iteration
+% 13:29:54    SympyStepper   INFO      average path length = 5000mm
+% 13:29:54    SympyStepper   INFO      average number of steps = 192
+% 13:29:54    SympyStepper   INFO      step efficiency = 0.984615
+% with adaptive step size
+% 13:31:45    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 13:31:47    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 212.0ms total, 10.5830+/-0.0022µs per run, 10583.000+/-2.150ns per iteration
+% 13:31:47    SympyStepper   INFO      average path length = 5000mm
+% 13:31:47    SympyStepper   INFO      average number of steps = 144
+% 13:31:47    SympyStepper   INFO      step efficiency = 0.986301
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ccc}
+        \hline
+        \textbf{Strategy} & \textbf{Steps} & \textbf{Rel. time} \\
+        \hline
+        Half & 192 & 1.00 \\
+        Adaptive & 144 & 0.79 \\
+        \hline
+    \end{tabular}
+    \caption{Number of steps and relative CPU time for tracks with a transverse momentum of 1 GeV in a 2 T magnetic field propagated with $\theta=0$ for 5 m with different step size strategies.}
+    \label{tab:dev/stepper/adaptive-step-size}
+\end{table}

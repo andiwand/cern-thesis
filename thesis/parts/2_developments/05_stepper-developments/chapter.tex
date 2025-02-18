@@ -55,40 +55,14 @@ The adaptive step size technique was implemented in ACTS during the work on this
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=1.0\textwidth]{parts/2_developments/05_stepper-developments/figures/step_size_error.pdf}
+    \includegraphics[width=1.0\textwidth]{parts/2_developments/05_stepper-developments/figures/adaptive_step_size_error.pdf}
     \caption{Error estimate and step size as a function of integration steps with different transverse momenta in a 2 T magnetic field propagated with $\theta=\pi/4$ for 10 m. The gray band indicates the requested accuracy limits.}
     \label{fig:dev/stepper/adaptive-step-size}
 \end{figure}
 
 Figure \ref{fig:dev/stepper/adaptive-step-size} shows the error estimate and the step size as a function of integration steps with different transverse momenta in a 2 T magnetic field propagated with $\theta=\pi/4$ for 10 m. The initial step size is set to 100 mm and the stepper successfully adapts the step size to stay close to the requested accuracy target. Tracks with high transverse momenta are followed with fewer steps and larger step sizes which accelerates the propagation. The last step has a smaller size and error as the path length of 10 m is reached with a smaller step size.
 
-% pt=1GeV, B=2T, s=5m, cov=true
-% without adaptive step size; just halfing if too big
-% 13:29:52    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
-% 13:29:54    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 267.9ms total, 13.3340+/-0.0037µs per run, 13334.000+/-3.747ns per iteration
-% 13:29:54    SympyStepper   INFO      average path length = 5000mm
-% 13:29:54    SympyStepper   INFO      average number of steps = 192
-% 13:29:54    SympyStepper   INFO      step efficiency = 0.984615
-% with adaptive step size
-% 13:31:45    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
-% 13:31:47    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 212.0ms total, 10.5830+/-0.0022µs per run, 10583.000+/-2.150ns per iteration
-% 13:31:47    SympyStepper   INFO      average path length = 5000mm
-% 13:31:47    SympyStepper   INFO      average number of steps = 144
-% 13:31:47    SympyStepper   INFO      step efficiency = 0.986301
-
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{ccc}
-        \hline
-        \textbf{Strategy} & \textbf{Steps} & \textbf{Rel. time} \\
-        \hline
-        Half & 192 & 1.00 \\
-        Adaptive & 144 & 0.79 \\
-        \hline
-    \end{tabular}
-    \caption{Number of steps and relative CPU time for tracks with a transverse momentum of 1 GeV in a 2 T magnetic field propagated with $\theta=0$ for 5 m with different step size strategies.}
-    \label{tab:dev/stepper/adaptive-step-size}
-\end{table}
+\input{parts/2_developments/05_stepper-developments/tables/adaptive_perf.tex}
 
 Table \ref{tab:dev/stepper/adaptive-step-size} shows the number of steps and the relative CPU time for tracks with a transverse momentum of 1 GeV in a 2 T magnetic field propagated with $\theta=0$ for 5 m with different step size strategies. \textit{Half} means that the step size is simply divided by 2 if the error estimate is too large. In this syntetic benchmark the adaptive step size strategy reduces the number of steps by 25\% and the CPU time by 21\%.
 
@@ -121,6 +95,6 @@ The \texttt{SympyStepper} can be thought of as the midpoint between the \texttt{
 
 \section{The cost of the time parameter}
 
-As mentioned before, the track parametrization is not customizable in ACTS. As such, the time parameter will always be present, even if it is not needed. This is the case for the ATLAS ITk detector which does not provide timing information. Since track reconstruction is a performance critical task, and we do additional operations on the time parameter, we need to be aware of the cost of the time parameter.
+As mentioned before, the track parametrization is not customizable in ACTS. As such, the time parameter will always be present, even if it is not needed. This is the case for the ATLAS ITk detector which does not provide timing information. Since track reconstruction is a performance critical task, and the time parameter requires additional operations, the cost attached to it has to be evaluated.
 
-Given the situation in ACTS, it is not easy to estimate this cost and any shortcuts might skew the results. For this reason the time parameter was consistently removed from ACTS in a separate branch and the performance was measured. Using the \texttt{EigenStepper} the performance was measured to be 10\% faster without the time parameter. This is a significant improvement and shows that the time parameter is indeed costly. However, after the implementation of the \texttt{SympyStepper} the impact was measured to be below 1\%. This suggests that the \texttt{SympyStepper} is indeed able to optimize the math operations to a high degree as the time parameter adds mostly zeros in derivatives for the linear error propagation.
+Given the situation the current situation in ACTS, it is not easy to estimate this cost and any shortcuts might skew the results. For this reason the time parameter was consistently removed from ACTS in a separate branch and the performance difference was measured. Using the \texttt{EigenStepper} the performance was measured to be 10\% faster without the time parameter. This is a significant improvement and shows that the time parameter is indeed costly even if it is not used. However, after the implementation of the \texttt{SympyStepper} the impact was measured to be below 1\%. This suggests that the \texttt{SympyStepper} is indeed able to optimize the math operations to a high degree as the time parameter adds mostly zeros in derivatives for the linear error propagation.
