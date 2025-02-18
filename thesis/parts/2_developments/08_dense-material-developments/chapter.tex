@@ -4,36 +4,7 @@ One has two options to model the material in the calorimeter for tracking. Eithe
 
 The main difference between the two approaches is how the material is handled during the covariance transport. In a surface-based approach, the material is modeled as thin scatterers which only affect the direction uncertainty and the energy of the particle. In a volume-based approach, the material is modeled as thick scatterers which also affect the positional uncertainty of the particle. This is illustrated in Figure \ref{fig:dev/dense/scatterers}.
 
-\begin{figure}[ht]
-    \centering
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \begin{tikzpicture}
-            \draw[fill=gray!20] (-0.25,-2) rectangle (0.25,2);
-            \draw[black, thick, dotted] (-2,0) -- (2,0);
-            \draw[black, thick] (-2,0) -- (-0.25,0) -- (-0.1,0.1) -- (0.1,-0.05) -- (0.25,0.1) -- (2,0.5);
-            \node at (0.4,0.4) {$\theta$};
-        \end{tikzpicture}
-        \caption{Thin scatterer}
-    \end{subfigure}%
-    ~
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-        \begin{tikzpicture}
-            \draw[fill=gray!20] (-1,-2) rectangle (1,2);
-            \draw[black, thick, dotted] (-2,0) -- (2,0);
-            \draw[black, thick] (-2,0) -- (-1,0) -- (-0.7,0.1) -- (-0.4,0.05) -- (-0.3,0.15) -- (-0.2,0.2) -- (0,0.2) -- (0.3,0.35) -- (0.4,0.4) -- (0.7,0.37) -- (1,0.42) -- (2,0.7);
-            \draw[black, thick, dotted] (1,0.42) -- (2,0.42);
-            \draw [<->] (1.8,0.02) -- (1.8,0.40);
-            \node at (2.2,0.21) {d};
-            \node at (1.2,0.7) {$\theta$};
-        \end{tikzpicture}
-        \caption{Thick scatterer}
-        \label{fig:dev/dense/scatterers/thick}
-    \end{subfigure}
-    \caption{Illustration of a particle passing through (a) a thin and (b) a thick scatterer. Due to the thickness of the scatterer, the particle will have a positional offset to the unimpeeded trajectory.}
-    \label{fig:dev/dense/scatterers}
-\end{figure}
+\input{parts/2_developments/08_dense-material-developments/figures/scatterer_think_thick.tex}
 
 While the surface-based approach is a long standing feature in ACTS, the volume-based approach was not fully implemented yet. The work presented in this thesis aims to close this gap by implementing and validating particle transport through volume-based material in ACTS.
 
@@ -238,20 +209,7 @@ A toy model is used to simplify the implementation and validation of the volume-
 
 This captures the essence of the problem without the complexity of a full detector simulation. Inside the dense material, the muons lose energy and scatter multiple times. The scattering not only affects the uncertainty of the direction but also the position uncertainty on the screen. After passing the dense material, the muons are transported in a vacuum which should keep the uncertainty in direction unchanged but the position uncertainty to further increase.
 
-\begin{figure}[ht]
-    \centering
-    \begin{tikzpicture}
-        \filldraw[red] (-5,0) circle (0.1);
-        \draw[fill=gray!20] (-2,-2) rectangle (2,2);
-        \draw[black, thick] (5,-2) rectangle (5.2,2);
-
-        \draw[black, thick, dotted] (-5,0) -- (6,0);
-        \draw[red, thick] (-5,0) -- (-2,0) -- (-1.5,0.1) -- (-1,0.05) -- (-0.5,0.15) -- (0,0.2) -- (0.5,0.35) -- (1,0.4) -- (1.5,0.37) -- (2,0.42) -- (6,1);
-        \filldraw[blue] (5.1,0.87) circle (0.1);
-    \end{tikzpicture}
-    \caption{Illustration of the toy model. The box represents the dense material. The screen is placed at some distance to the box. Muons are emitted from a source on the left side of the box and their hits are recorded on the screen indicated with a blue dot.}
-    \label{fig:dev/dense/toy-model}
-\end{figure}
+\input{parts/2_developments/08_dense-material-developments/figures/toy_model.tex}
 
 Note that this toy model does not include a magnetic field which is present in a real detector. The magnetic field bends the trajectory of the muons and potentially influences the covariance transport.
 
@@ -297,21 +255,7 @@ The EigenStepper extension mechanism does not provide a way to accumulate the ad
 
 Figure \ref{fig:dev/dense/eloss-cmp-rate} shows the energy loss rate computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The mean energy loss and its uncertainty are represented well with ACTS in comparison to Geant4. The energy loss distribution is skewed and has a long tail towards higher energy loss. ACTS deals with Gaussian uncertainties to simplify the covariance transport and fitting procedures. Modeling the energy loss distribution as a Gaussian is subjective as one can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width.
 
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{r|rr|rr}
-        \hline
-        \multicolumn{1}{c}{\textbf{Initial p [GeV]}} & \multicolumn{2}{c}{\textbf{$\Delta$ Position [mm]}} & \multicolumn{2}{c}{\textbf{Final p [GeV]}} \\
-        & ACTS & Geant4 & ACTS & Geant4 \\
-        \hline
-        1 & 58.94 & 55.97 & 0.77 & 0.77 \\
-        10 & 5.86 & 5.76 & 9.72 & 9.72 \\
-        100 & 0.59 & 0.57 & 99.63 & 99.65 \\
-        \hline
-    \end{tabular}
-    \caption{Comparison of the positional uncertainty and the final momentum of muons with different momenta after passing 1 meter of liquid Argon between ACTS and Geant4.}
-    \label{tab:dev/dense/prototype-performance}
-\end{table}
+\input{parts/2_developments/08_dense-material-developments/tables/prototype_performance.tex}
 
 Table \ref{tab:dev/dense/prototype-performance} shows the positional uncertainty and the final momentum of muons with different momenta after passing 1 meter of liquid Argon using the toy model in ACTS and Geant4. The Geant4 reference corresponds to Figure \ref{fig:dev/dense/geant4-msc}.
 
@@ -352,18 +296,6 @@ Figure \ref{fig:dev/dense/msc-cmp} shows the effects of multiple scattering comp
 
 Figure \ref{fig:dev/dense/eloss-cmp} shows the energy loss computed by ACTS and Geant4 for muons over different momenta after passing different amounts of iron. ACTS is able to reproduce the mean energy loss well over the full spectrum. Fluctuations in the estimated energy loss for low thickness and high momenta are due to limited statistics and the application of an emperical mean to the data.
 
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{ccc}
-        \hline
-        \textbf{Stepper} & \textbf{Vacuum} & \textbf{Dense} \\
-        \hline
-        EigenStepper & 1.00 (1.20) & 4.78 (5.98) \\
-        SympyStepper & 0.83 (1.00) & 1.10 (1.33) \\
-        \hline
-    \end{tabular}
-    \caption{Relative CPU time consumption of the EigenStepper and SympyStepper in vacuum and dense material propagating through the toy geometry. The numbers in the brackets are normalized to the SymPyStepper in vacuum.}
-    \label{tab:dev/dense/cpu-performance}
-\end{table}
+\input{parts/2_developments/08_dense-material-developments/tables/cpu_performance.tex}
 
 The CPU performance is summarized in Table \ref{tab:dev/dense/cpu-performance}. The primary reason for the EigenStepper being significantly slower in dense material is the recalculation of the additional covariance at each step. The SympyStepper does not have this issue as the covariance quantities are accumulated during the transport and only added to the bound covariance when transporting to the next surface.

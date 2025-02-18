@@ -1,0 +1,13 @@
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ccc}
+        \hline
+        \textbf{Stepper} & \textbf{Vacuum} & \textbf{Dense} \\
+        \hline
+        EigenStepper & 1.00 (1.20) & 4.78 (5.98) \\
+        SympyStepper & 0.83 (1.00) & 1.10 (1.33) \\
+        \hline
+    \end{tabular}
+    \caption{Relative CPU time consumption of the EigenStepper and SympyStepper in vacuum and dense material propagating through the toy geometry. The numbers in the brackets are normalized to the SymPyStepper in vacuum.}
+    \label{tab:dev/dense/cpu-performance}
+\end{table}
