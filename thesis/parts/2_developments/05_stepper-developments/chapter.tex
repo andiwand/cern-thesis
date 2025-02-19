@@ -80,12 +80,42 @@ While the EigenStepper implementation is arguably doing well in terms of readabi
 \section{SympyStepper}
 \label{sec:dev/stepper/sympy}
 
-\begin{itemize}
-    \color{red}
-    \item illustrate how this is done
-\end{itemize}
+The \texttt{SympyStepper} is a novel stepper implementation in ACTS, conceptualized and implemented as part of the work on this thesis. It is based on generated code from the symbolic math library \texttt{SymPy}. The motivation for this stepper is to improve CPU performance while keeping or improving a readable representation of the mathematics behind the implementation. Figure \ref{fig:dev/stepper/sympy} shows an example of using \texttt{SymPy} to generate C++ code for the first intermediate step of the Runge-Kutta-Nystrom integration.
 
-The \texttt{SympyStepper} is a novel stepper implementation in ACTS, conceptualized and implemented as part of the work on this thesis. It is based on generated code from the symbolic math library \texttt{SymPy}. The motivation for this stepper is to improve CPU performance while keeping or improving a readable representation of the mathematics behind the implementation.
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{lstlisting}[language=Python,basicstyle=\tiny]
+import sympy
+
+
+l = sympy.Symbol("lambda", real=True)
+d = sympy.MatrixSymbol("d", 3, 1)
+B1 = sympy.MatrixSymbol("B1", 3, 1)
+
+k1 = d.cross(l * B1)
+        \end{lstlisting}
+        \caption{Example Python code using SymPy}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{lstlisting}[language=C++,basicstyle=\tiny]
+double x0 = B1[1] * d[2];
+double x1 = B1[0] * d[2];
+double x2 = B1[2] * d[0];
+double x3 = B1[0] * d[1];
+double k1[3];
+k1[0] = lambda * (-x0 + B1[2] * d[1]);
+k1[1] = lambda * (x1 - x2);
+k1[2] = lambda * (-x3 + B1[1] * d[0]);
+        \end{lstlisting}
+        \caption{Generated C++ code}
+    \end{subfigure}
+    \caption{Example of using SymPy (a) to generate C++ code (b) for the first intermediate step of the Runge-Kutta-Nystrom integration.}
+    \label{fig:dev/stepper/sympy}
+\end{figure}
 
 The \texttt{EigenStepper} uses the Eigen library for linear algebra operations with the goal of having readable and fast code, as the library is the de facto standard for linear algebra in C++ and supports vectorization. While this implementation has benefits in terms of readability and maintainability over the \texttt{AtlasStepper}, the extension mechanism diminishes these qualities. This is further discussed in Section \ref{sec:dev/dense/eigen}.
 
