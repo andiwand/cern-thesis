@@ -30,8 +30,11 @@
   - [x] plot error estimate data and threshold bands vs steps
   - [x] get performance numbers for eigen vs sympy
   - [ ] show code for sympy RK4
-  - [ ] killing time branch update
-  - [ ] measure time param removal for EigenStepper and SympyStepper with track finding
+  - [x] killing time branch update
+  - [x] measure time param removal for EigenStepper and SympyStepper with track finding
+- [ ] noemi's feedback for chapter 8
+- [ ] ToC for chapters?
+- [ ] line break after hyphen?
 
 ## plots
 
@@ -116,9 +119,9 @@
     - [ ] ✔️✔️ Into text
     - [ ] ✔️✔️ 5.1. Rework Constrained Step
     - [ ] ✔️✔️ 5.2. Adaptive step size
-    - [ ] ✔️ 5.3. EigenStepper
+    - [ ] ✔️✔️ 5.3. EigenStepper
     - [ ] ✔️ 5.4. SympyStepper
-    - [ ] ✔️ 5.5. The cost of the time parameter
+    - [ ] ✔️✔️ 5.5. The cost of the time parameter
   - [ ] 6. Navigator developments
     - [ ] Into text
     - [ ] 6.1. Navigation subtleties and edge cases
@@ -143,10 +146,12 @@
   - [ ] ✔️✔️ 8. Tracking with dense material
     - [ ] ✔️✔️ Intro text
     - [ ] ✔️✔️ 8.1. Motivation
-    - [ ] ✔️✔️ 8.2. Baseline with Geant4
-    - [ ] ✔️✔️ 8.3. First attempts with EigenStepper
-    - [ ] ✔️✔️ 8.4. SympyStepper
-    - [ ] ✔️✔️ 8.5. Performance
+    - [ ] ✔️✔️ 8.2. Covariance transport through thick scatterers
+    - [ ] ✔️✔️ 8.3. Toy Model
+    - [ ] ✔️✔️ 8.4. Baseline with Geant4
+    - [ ] ✔️✔️ 8.5. First attempts with EigenStepper
+    - [ ] ✔️✔️ 8.6. SympyStepper
+    - [ ] ✔️✔️ 8.7. Performance
   - [ ] 9. Tracking with time information
     - [ ] Intro text
     - [ ] 9.1. Tracking with time information in ACTS

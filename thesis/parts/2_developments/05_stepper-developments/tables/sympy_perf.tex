@@ -1,0 +1,47 @@
+% % ~/cern/build/acts/acts/perf1/bin/ActsBenchmarkStepper --cov false
+% 10:43:20    AtlasStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 10:43:22    AtlasStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 146.2ms total, 7.2500+/-0.0011µs per run, 7250.000+/-1.082ns per iteration
+% 10:43:22    AtlasStepper   INFO      average path length = 5000mm
+% 10:43:22    AtlasStepper   INFO      average number of steps = 144
+% 10:43:22    AtlasStepper   INFO      step efficiency = 0.966443
+% 10:43:22    EigenStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 10:43:25    EigenStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 218.5ms total, 10.8340+/-0.0027µs per run, 10834.000+/-2.691ns per iteration
+% 10:43:25    EigenStepper   INFO      average path length = 5000mm
+% 10:43:25    EigenStepper   INFO      average number of steps = 144
+% 10:43:25    EigenStepper   INFO      step efficiency = 0.966443
+% 10:43:27    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 10:43:29    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 166.0ms total, 8.2500+/-0.0011µs per run, 8250.000+/-1.069ns per iteration
+% 10:43:29    SympyStepper   INFO      average path length = 5000mm
+% 10:43:29    SympyStepper   INFO      average number of steps = 144
+% 10:43:29    SympyStepper   INFO      step efficiency = 0.966443
+% % ~/cern/build/acts/acts/perf1/bin/ActsBenchmarkStepper --cov true
+% 10:43:38    AtlasStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 10:43:40    AtlasStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 183.8ms total, 9.2090+/-0.0070µs per run, 9209.000+/-6.979ns per iteration
+% 10:43:40    AtlasStepper   INFO      average path length = 5000mm
+% 10:43:40    AtlasStepper   INFO      average number of steps = 144
+% 10:43:40    AtlasStepper   INFO      step efficiency = 0.966443
+% 10:43:40    EigenStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 10:43:43    EigenStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 393.6ms total, 19.6250+/-0.0043µs per run, 19625.000+/-4.275ns per iteration
+% 10:43:43    EigenStepper   INFO      average path length = 5000mm
+% 10:43:43    EigenStepper   INFO      average number of steps = 144
+% 10:43:43    EigenStepper   INFO      step efficiency = 0.966443
+% 10:43:45    SympyStepper   INFO      propagating 20000 tracks with pT = 1GeV in a 2T B-field
+% 10:43:47    SympyStepper   INFO      Execution stats: 20000 runs of 1 iteration(s), 232.0ms total, 11.7080+/-0.0102µs per run, 11708.000+/-10.198ns per iteration
+% 10:43:47    SympyStepper   INFO      average path length = 5000mm
+% 10:43:47    SympyStepper   INFO      average number of steps = 144
+% 10:43:47    SympyStepper   INFO      step efficiency = 0.966443
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{lcc}
+        \hline
+        \textbf{Stepper} & \textbf{Rel. time w/o jac} & \textbf{Rel. time w/ jac} \\
+        \hline
+        EigenStepper & 1.00 & 1.80 \\
+        AtlasStepper & 0.67 & 0.84 \\
+        SympyStepper & 0.76 & 1.06 \\
+        \hline
+    \end{tabular}
+    \caption{Relative CPU time of the EigenStepper, AtlasStepper, and SympyStepper with and without Jacobian transport. The times are normalized to the time of the EigenStepper without Jacobian transport.}
+    \label{tab:dev/stepper/sympy-perf}
+\end{table}
