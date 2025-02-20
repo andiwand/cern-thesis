@@ -115,13 +115,13 @@
     - [ ] 4.7. Implementation of a Particle Hypothesis
     - [ ] 4.8. Redesign for Boundary Tolerance
     - [ ] 4.9. Implementation of the mBF Smoother
-  - [ ] ✔️ 5. Stepper developments
-    - [ ] ✔️✔️ Into text
-    - [ ] ✔️✔️ 5.1. Rework Constrained Step
-    - [ ] ✔️✔️ 5.2. Adaptive step size
-    - [ ] ✔️✔️ 5.3. EigenStepper
-    - [ ] ✔️ 5.4. SympyStepper
-    - [ ] ✔️✔️ 5.5. The cost of the time parameter
+  - [ ] ✔️✔️✔️ 5. Stepper developments
+    - [ ] ✔️✔️✔️ Into text
+    - [ ] ✔️✔️✔️ 5.1. Reworking the ConstrainedStep
+    - [ ] ✔️✔️✔️ 5.2. Implementation of an adaptive step size
+    - [ ] ✔️✔️✔️ 5.3. Improvements to the EigenStepper
+    - [ ] ✔️✔️✔️ 5.4. Implementation of the SympyStepper
+    - [ ] ✔️✔️✔️ 5.5. The cost of the time parameter
   - [ ] 6. Navigator developments
     - [ ] Into text
     - [ ] 6.1. Navigation subtleties and edge cases
@@ -143,15 +143,15 @@
     - [ ] 7.7. Track container for branches
     - [ ] 7.8. Branch finalization
     - [ ] 7.9. Initial covariance
-  - [ ] ✔️✔️ 8. Tracking with dense material
-    - [ ] ✔️✔️ Intro text
-    - [ ] ✔️✔️ 8.1. Motivation
-    - [ ] ✔️✔️ 8.2. Covariance transport through thick scatterers
-    - [ ] ✔️✔️ 8.3. Toy Model
-    - [ ] ✔️✔️ 8.4. Baseline with Geant4
-    - [ ] ✔️✔️ 8.5. First attempts with EigenStepper
-    - [ ] ✔️✔️ 8.6. SympyStepper
-    - [ ] ✔️✔️ 8.7. Performance
+  - [ ] ✔️✔️✔️ 8. Tracking with dense material
+    - [ ] ✔️✔️✔️ Intro text
+    - [ ] ✔️✔️✔️ 8.1. Motivation
+    - [ ] ✔️✔️✔️ 8.2. Covariance transport through thick scatterers
+    - [ ] ✔️✔️✔️ 8.3. Toy Model
+    - [ ] ✔️✔️✔️ 8.4. Baseline with Geant4
+    - [ ] ✔️✔️✔️ 8.5. First attempts with EigenStepper
+    - [ ] ✔️✔️✔️ 8.6. SympyStepper
+    - [ ] ✔️✔️✔️ 8.7. Performance
   - [ ] 9. Tracking with time information
     - [ ] Intro text
     - [ ] 9.1. Tracking with time information in ACTS
