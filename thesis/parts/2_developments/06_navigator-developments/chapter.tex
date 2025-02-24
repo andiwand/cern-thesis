@@ -1,55 +1,46 @@
-Navigation is a core concept in tracking and essential for efficient track propagtion through the detector. The main objective of the navigation is to find the next potential surface the track will intersect with. This is usually done given the tracking geometry and the current position and direction of the track. The navigation has to be both fast and accurate. Fast, because it is computationally a very hot path for high throughput algorithms like fast track simulations, classical combinatorial track finding, and track fitting. Navigation needs to be accurate, because it will ultimately dictate which surfaces will be looked at. Navigation inaccuracies will directly influence the track finding efficiency and the quality of the found tracks. These two goals are usually in conflict and one has to find a sweet spot between them to achieve good performance, for both physics and computing.
+Navigation is a core concept in tracking and essential for efficient track propagtion through the detector. The objective of the navigation is to find the next surface the trajectory will potentially intersect with, given the current position, direction, and tracking geometry. The stepper will then transport the track parameters towards the surface using an estimated distance.
 
-A good understanding of the navigation is essential to understand the performance of the track finding algorithm in ACTS. As such, the navigation has been subject to several improvements during the work on this thesis.
+The navigation has to be both fast and accurate. Fast, because it lives in a computationally hot path for high throughput algorithms like fast track simulation, classical combinatorial track finding, and track fitting. Accurate, because it will ultimately dictate which surfaces will be looked at. Navigation inaccuracies will directly influence the track finding efficiency and the quality of the found tracks. These two goals are usually in conflict and one has to find a sweet spot to achieve good performance for both, physics and compute time.
 
-This chapter will give an overview of the navigation in ACTS, its current implementation, and the improvements that were made.
+A good understanding of the navigation is essential to understand the performance of the track finding algorithm in ACTS. Since track finding performance was a main focus of this thesis, and the navigation turned out to be a limiting factor, it has been subject to several improvements during the work on this thesis.
+
+This chapter will give an overview of the navigation in ACTS, its current implementation, and the improvements that were made. First, general subtleties and edge cases of navigation are discussed, which are not specific to ACTS but are relevant for any algorithm that deals with track propagation. Then, a streamlined navigation model is presented, which includes a robust intersection handling for cylinders, the removal of path and overstep limit, and the decoupling of the navigation from the stepping. After that, two special navigator implementation in ACTS are discussed, the \texttt{DirectNavigator} and the try-all navigators. Finally, a conceptualized solution for surface ambiguity is presented.
 
 \section{Navigation subtleties and edge cases}
 
 \begin{itemize}
     \color{red}
-    \item navigation has to be both fast and accurate
-    \item those two are in conflict and one has to find a sweet spot
-    \item describe how the navigation currently works and what assumptions are made
-    \begin{itemize}
-        \item straight line is a good approximation
-        \item order does not change
-    \end{itemize}
-    \item describe the edge cases and subtleties that are currently not handled
+    \item which of them are handled / not handled in ACTS
+    \item illustrate them
     \begin{itemize}
         \item new candidates after entering a volume
         \item reordering due to overlaps
         \item boundary punching
         \item bending away from candidates
+        \item bending away from candidate in both directions
+        \item bending towards candidates
     \end{itemize}
 \end{itemize}
 
-Naively one would assume that navigation is a simple task and generally a solved problem. This is true for straight tracks where we can accurately predict the next surface the track will intersect with. In such a case one just needs to check the computational performance of the navigation. But since we have to deal with curved tracks, otherwise we cannot do any physics, the navigation becomes a harder problem. Given a homogenous magnetic field (and ignoring any interactions) our tracks become helices. Checking for an intersection between a helix and a surface is a non-trivial problem, even for plane surfaces, and comes with high computational cost. In the very general case, which we have to deal with in ACTS, with arbitrary magnetic fields and interactions, even the helix would just be an approximation.
+Naively one would assume that navigation is a simple task and generally a solved problem. This is true for straight tracks where we can accurately predict the next surface the trajectory will intersect with. In such a case one just needs to check the computational performance of the navigation. But since tracking deals with curved trajectories the navigation becomes a harder problem. Given a homogenous magnetic field and ignoring any interactions our trajectories become helices. Checking for an intersection between a helix and a surface is a non-trivial problem, even for plane surfaces, and comes with additional computational cost. Given inhomogenous magnetic fieds and interactions, which is the general case ACTS has to handle, even the helix would just be an approximation.
 
-The generic navigator implementation in ACTS approximates tracks with straight lines and uses those for surface intersections, which have a direct, algebraic solution. Straight lines are a good approximation as long as the curvature is reasonably small. This approach is prefered for its speed and simplicity. In case of strong curvature one can run straight line intersections until a certain proximity to a surface is reached and then start to target the surface directly. The generic navigator resolves surface candidates when entering a volume or reaching a layer. All candidates will be intersected and filtered given their bounds. The navigator will then order the candidates by their distance to the current position of the track and target the closest one. Note that the order of itersections is stable as long as surfaces do not overlap. This approach is fast and simple, but has some edge cases and subtleties that are not handled.
+The generic navigator implementation in ACTS approximates trajectories with straight lines and uses those for surface intersections, which have a direct, algebraic solution. Straight lines are a good approximation as long as the curvature is reasonably small. This approach is prefered for its computational speed and simplicity. In case of strong curvature one can run straight line intersections until a certain proximity to a surface is reached and then start to target the surface directly. The generic navigator resolves surface candidates when entering a volume or reaching a layer. All candidates will be intersected and filtered given their bounds. The navigator will then order the candidates by their distance to the current position on the trajectory and target the closest one. Note that the order of itersections is stable as long as surfaces do not overlap. This approach is fast and simple, but has comes with some unhandled edge cases.
 
-During reconstruction we have to deal with uncertainties which will also affect the navigation. We know track parameters only up to a certain precision and this will influence surface intersections. In ACTS this can be modeled with a surface boundary tolerance. Surfaces with tolerance will be effectively enlarged and the navigator will find additional candidates that might become valid during the approach.
+\section{A streamlined navigation model for ACTS}
 
-\begin{itemize}
-    \color{red}
-    \item bending away from candidates
-    \item bending away from candidate in both directions
-    \item bending towards candidates
-    \item boundary punching
-\end{itemize}
+ACTS has a generic navigation implementation simply called \texttt{Navigator}. It is a longstanding component and is reasonably optimized. During the work on this thesis the \texttt{Navigator} has been reworked to improve stability, readability, and maintainability, while its computational performance stayed the same.
 
-\section{A streamlined Navigation Model for ACTS}
+The \texttt{Navigator} makes use of the hierarchical structure of the tracking geometry which is composed of volumes, layers and surfaces. On initialization the navigation determines the current volume and layer given the current position on the trajectory. If no current layer is found the navigation will try to find the closest layer in the current volume. Given a layer is found the navigation will resolve the surface candidates which is accelerated by a surface grid and a spatial index given the local position of the trajectoy on the layer. The surface candidates are then intersected using a straight line with the current position and direction of the trajectory. Intersections are discarded if they are not within the boundary of the surface and sorted by their path length. The remaining candidates are targetted one after the other and hits are recorded. The navigation switches to the next layer after all surface candidates have been processed. When all layer inside a volume have been processed the navigation will try to reach a volume boundary and switch to the next volume.
 
-\begin{itemize}
-    \color{red}
-    \item handle ambiguity in a stable way and only when really enough information is available
-    \item rework code design to deal with concrete states and don't recover from all possible states in all places
-    \item one single component should be responsible for the navigation -> target aborter navigation should be removed
-    \item navigation should have a concrete interface and decoupled from the stepper
-    \item tolerances should be configurable and synchronized
-\end{itemize}
+While this approach has proven to work well and is reasonably fast due to acceleration structures and an efficient use of intersections, there are a few caveats. This strategy is optimized for reasonably straight trajectories within a volume. It will definitely break down for looping tracks and result in missing hits for tracks with strong curvature. Given these harsh conditions experiments will have to implement a custom navigator. A more robust strategy could be to only resolve candidates given a certain proximity to a surface and otherwise step blindly forward with a bound step size. This will come with a computational performance penalty, therefore there is not a one-size-fits-all solution, if experiments depend on it.
 
-\section{Robust Intersection Handling for Cylinders}
+Since a straight line is only an approximation of the trajectory, the prediction of an intersection with a surface can become invalid or was discarded wrongly. The \texttt{Navigator} in ACTS will discard intersections which become invalid and move on to the next target. While candidates which were not resolved in the first place will be lost in any case. This might be a good strategy for an experiment which depends on fast navigation and which can tolerate a few missing hits but others might want to have a more robust navigation.
+
+During the work on this thesis the \texttt{Navigator} has been steamlined over multiple iterations. One major improvement was the correct handling of intersection ambiguities and to only discard them when enough information is available. This is covered in more detail in the following section. Furthermore, the \texttt{Navigator} has been reworked to work in concrete steps and not recover from all possible states in multiple places in the code. This makes the code more readable and maintainable and potentially slightly faster. The navigation in ACTS is now decoupled from the stepper and only receives the current position and direction of the trajectory. This is discussed in more detail in the following section. The surface tolerance has been synchronized and can now be set via an option on the propagation.
+
+One shortcoming that was not addressed during the work on this thesis but identified as such and should be addressed in the handling of a target surface during navigation. The target surface is a concept in ACTS which is used to abort the propagation if a certain surface is reached. This surface may not be part of the tracking geometry, and as such not discoverable by the navigator. Since this is an important feature for track reconstruction, a \texttt{SurfaceReached} actor exists which is sort of a second navigator which only tries to reach the target surface. Since these two navigators are not synchronized, they will both try to set a step size to reach their individual targets which led to numerous propagation failures during the work on this thesis. In the future, the \texttt{SurfaceReached} actor should be removed and the navigation should be responsible for reaching the target surface.
+
+\section{Robust intersection handling for cylinders}
 
 \begin{itemize}
     \color{red}
@@ -63,7 +54,7 @@ During reconstruction we have to deal with uncertainties which will also affect 
 
 Cylinders need to be handled differently than plane surfaces when intersected with a straight line, because the intersection will usally happen twice. During the intersection it will not be clear which of the two solutions might relevant. The best thing to do in such a situation is to return both solutions and let the caller decide which one to use. 
 
-\section{Remove path limit and overstep limit}
+\section{Removal of path limit and overstep limit}
 
 \begin{itemize}
     \color{red}
@@ -77,7 +68,7 @@ The path limit was used to hide intersection candidates which are further away t
 
 The overstep limit was used to resolve intersection ambiguities with cylinders.
 
-\section{Decoupling from the stepper}
+\section{Decoupling from the stepping}
 
 \begin{itemize}
     \color{red}
@@ -90,7 +81,7 @@ Since stepper and navigator do not have a virtual interface and are accessed via
 
 The input to the navigation can be trimmed down to the current position and direction of the propagation. The navigation will then return the next surface the track will intersect with. The stepper will propagate the track to this surface and the navigation will be called again.
 
-\section{Direct navigator}
+\section{Developments on the DirectNavigator}
 
 \begin{itemize}
     \color{red}
@@ -101,7 +92,7 @@ The input to the navigation can be trimmed down to the current position and dire
 
 Direct navigation is a technique to side step the surface candidate resolution from the tracking geometry and directly target a pre-defined sequence of surfaces. This is useful in cases where the surface candidates are known before the propagation and CPU time and navigation stability is a concern. The \texttt{DirectNavigator} is a long-standing feature in ACTS and can be used for refitting purposes. It evolved during the work on this thesis and was improved to be more flexible and easier to use. As such it now supports reverse navigation and automatically detects if the start surface is part of the surface sequence.
 
-\section{Try-all navigators}
+\section{Implementation of try-all navigators}
 
 \begin{itemize}
     \color{red}
@@ -126,3 +117,5 @@ These two concepts can be extended to an optimized navigator and combined with r
     \color{red}
     \item what is it and why is it needed
 \end{itemize}
+
+During reconstruction we have to deal with uncertainties which will also affect the navigation. We know track parameters only up to a certain precision and this will influence surface intersections. In ACTS this can be modeled with a surface boundary tolerance. Surfaces with tolerance will be effectively enlarged and the navigator will find additional candidates that might become valid during the approach.
