@@ -1,0 +1,52 @@
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \draw[gray!90,line width=2] (0,-1) -- (0,1);
+            \filldraw (-4,0) circle (0.05);
+            \draw[black, thick, dotted] (-4,0) -- (0.5,0);
+            \filldraw[red] (0,0) circle (0.1);
+            \draw[->,>=stealth',semithick] (-4,0) arc[radius=7, start angle=270, end angle=310];
+            %\draw[blue] (0,1.25) circle (0.1);
+        \end{tikzpicture}
+        \caption{bending away}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \draw[gray!90,line width=2] (0,-1) -- (0,1);
+            \filldraw (-4,-1.5) circle (0.05);
+            \draw[black, thick, dotted] (-4,-1.5) -- (0.5,-1.5);
+            %\draw[red] (0,-1.5) circle (0.1);
+            \draw[->,>=stealth',semithick] (-4,-1.5) arc[radius=7, start angle=270, end angle=310];
+            \filldraw[blue] (0,-0.26) circle (0.1);
+        \end{tikzpicture}
+        \caption{bending towards}
+    \end{subfigure}
+
+    \medskip
+
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \draw[gray!90,line width=2] (0,-1) -- (0,1);
+            \draw[gray!90,line width=2] (-5,1) -- (0,1);
+            \filldraw (-4,0) circle (0.05);
+            \draw[black, thick, dotted] (-4,0) -- (0.5,0);
+            \filldraw[red] (0,0) circle (0.1);
+            \draw[->,>=stealth',semithick] (-4,0) arc[radius=7, start angle=270, end angle=310];
+            \filldraw[blue] (-0.4,1) circle (0.1);
+        \end{tikzpicture}
+        \caption{boundary confusion}
+    \end{subfigure}%
+    ~
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+        \end{tikzpicture}
+    \end{subfigure}
+    \caption{Illustration of navigation edge cases where the trajectory (a) bends away from the obstacle, (b) bends towards the obstacle, and (c) intersects with a different boundary surface. The small back dot represents the starting position on the trajectory, the red dot is the predicted intersection point with the surface, and the blue dot is the actual intersection point.}
+    \label{fig:dev/nev/edge-cases}
+\end{figure}
