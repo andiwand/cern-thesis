@@ -1,17 +1,112 @@
-\section{Vector track container backend}
+\begin{itemize}
+    \color{red}
+    \item key algorithm for track reconstruction
+    \item one of the most expensive algorithms in terms of CPU time
+    \item needs to be fast and efficient
+    \item ACTS comes with a combinatorial Kalman filter (CKF) implementation
+    \begin{itemize}
+        \item new alternatives: GNN or transformer networks
+    \end{itemize}
+    \item relies on starting parameters which can be obtained from triplet seeds
+    \item CKF has been rewritten during the work on this thesis; more flexible, more efficient, more maintainable
+\end{itemize}
 
-\section{Two way track finding}
+\section{The combinatorial Kalman filter}
+
+\begin{itemize}
+    \color{red}
+    \item how does the algorithm work?
+    \begin{itemize}
+        \item relies on transport of track parameters and their covariance
+        \item source link accessor
+        \item how are the track parameters updated? shared with KF
+        \item calibration
+        \item measurement selection
+        \item branch stopper
+    \end{itemize}
+    \item optimal measurement discrimination power
+    \item can provide fully fitted tracks after smoothing pass
+    \item exercised in TrackFindingAlgorithm in Examples
+\end{itemize}
 
 \section{CKF as a component}
 
-\section{Extrapolation}
+\begin{itemize}
+    \color{red}
+    \item CKF used to be a monolithic algorithm which does finding, fitting, smoothing, and extrapolation
+    \item Code was hard to read and follow, bugs resulted in low efficiency
+    \item CKF has been reduced to be a track finding component; only does the finding
+\end{itemize}
 
-\section{Measurement selector}
+\section{Two-way track finding}
+
+\begin{itemize}
+    \color{red}
+    \item Seeds are not guaranteed to start on the first measurement
+    \item Track finding needs to be able to look for measurements in both directions
+    \item After the CKF has been turned into a component, this was implemented by running the CKF twice
+\end{itemize}
 
 \section{Branch stopper}
 
+\begin{itemize}
+    \color{red}
+    \item can safe time by stopping branches early if they are not promising
+    \item allows to continue, stop and drop, and stop and keep
+\end{itemize}
+
 \section{Track container for branches}
+
+\begin{itemize}
+    \color{red}
+    \item branches during CKF ressemble tracks; have measurement count, hole count, outlier count, and chi2
+    \item branches are now stored as tracks in a track container
+    \item branch stopper can observe these tracks and can accumulate statistics
+    \item extensible for experiments through dynamic columns
+\end{itemize}
 
 \section{Branch finalization}
 
+\begin{itemize}
+    \color{red}
+    \item branch finalization used to be done in multiple places
+    \item now done with a single function which can be called from different places
+\end{itemize}
+
+\section{Seed deduplication}
+
+\begin{itemize}
+    \color{red}
+    \item triplet seeding results in duplicates
+    \item this is partially by design to gain redundancy and to mitigate dead modules
+    \item deduplication is done during track finding
+    \item seeds that have been fully covered by an already found track will be skipped
+\end{itemize}
+
+\section{Stay-on-seed strategy}
+
+\begin{itemize}
+    \color{red}
+    \item CKF only uses starting parameters
+    \item given a seed it makes sense to stay on the selected measurements
+    \item can be implemented via source link accessor
+\end{itemize}
+
 \section{Initial covariance}
+
+\begin{itemize}
+    \color{red}
+    \item for unbiased fitting initial covariance needs to be inflated
+    \item during finding the covariance also dictates the search range; with branching it cannot be too large
+    \item cite frühwrith
+\end{itemize}
+
+\section{Shortcomings}
+
+\begin{itemize}
+    \color{red}
+    \item generic measurement selector
+    \item extended bounds for finding
+    \item edge holes
+    \item multi-surface measurement selection
+\end{itemize}

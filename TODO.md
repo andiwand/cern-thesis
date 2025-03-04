@@ -13,28 +13,21 @@
 
 ## current
 
+- [ ] track finding chapter
+- [ ] tracking with time dev chapter?
+- [ ] general developments chapter
+- [ ] develoment summary chapter
+  - get a list of future work
+- [ ] noemi's feedback for chapter 8
+- [ ] noemi's feedback for chapter 5
+- [ ] noemi's feedback for chapter 6
 - [ ] get a sensible todo list
 - [ ] put time estimates on chapters including prework
 - [ ] define ITk performance outline
   - rename / focus on track finding using CKF
-- [x] get volume material chapter done
-  - should block at least one week for this
-  - [x] illustrate multiple scattering in thin and thick layers
-  - [x] Geant4 screenshot with white/alpha background
-  - [x] remake comparison plots with proper ratio
-  - [x] technical work
-    - [x] implement volume material in sympy stepper
-    - [x] compare geant, eigen, sympy
-  - [ ] include prospects of this in the thesis
-- [ ] get stepper chapter done
-  - [x] plot error estimate data and threshold bands vs steps
-  - [x] get performance numbers for eigen vs sympy
-  - [ ] show code for sympy RK4
-  - [x] killing time branch update
-  - [x] measure time param removal for EigenStepper and SympyStepper with track finding
-- [ ] noemi's feedback for chapter 8
-- [ ] ToC for chapters?
 - [ ] line break after hyphen?
+- [ ] class/function name formatting
+- [ ] ToC for chapters?
 
 ## plots
 
@@ -76,45 +69,45 @@
     - [ ] 1.5. The ATLAS Experiment
       - [ ] 1.5.1. The ATLAS Detector
       - [ ] 1.5.2. Phase-2 Upgrade
-  - [ ] 2. Reconstruction of tracks and primary vertices
-    - [ ] Into text
+  - [ ] ✔️ 2. Reconstruction of tracks and primary vertices
+    - [ ] ✔️ Into text
     - [ ] 2.1. History
     - [ ] 2.2. Detection of Charged Particles
-    - [ ] 2.3. Reconstruction Objects
-    - [ ] 2.4. Reconstruction Chains
-    - [ ] 2.5. Particle-Matter Interactions
-    - [ ] 2.6. Equation of Motion
-      - [ ] 2.6.1. Runge-Kutta-Nystrom Method
-      - [ ] 2.6.2. Jacobian and Covariance Transport
-    - [ ] 2.7. Pattern Recognition
-    - [ ] 2.8. Track Finding
-    - [ ] 2.9. Track ambiguity
-    - [ ] 2.10. Track Fitting
-      - [ ] 2.10.1. Kalman Filter
-    - [ ] 2.11. Vertexing
-  - [ ] 3. ACTS: A Common Tracking Software
-    - [ ] Into text
-    - [ ] 3.1. Components and their connections
-    - [ ] 3.2. Units and Constants
-    - [ ] 3.3. Track Parameterization
+    - [ ] ✔️ 2.3. Reconstruction Objects
+    - [ ] ✔️ 2.4. Reconstruction Chains
+    - [ ] ✔️ 2.5. Particle-Matter Interactions
+    - [ ] ✔️ 2.6. Equation of Motion
+      - [ ] ✔️ 2.6.1. Runge-Kutta-Nystrom Method
+      - [ ] ✔️ 2.6.2. Jacobian and Covariance Transport
+    - [ ] ✔️ 2.7. Pattern Recognition
+    - [ ] ✔️ 2.8. Track Finding
+    - [ ] ✔️ 2.9. Track ambiguity
+    - [ ] ✔️ 2.10. Track Fitting
+      - [ ] ✔️ 2.10.1. Kalman Filter
+    - [ ] ✔️ 2.11. Vertexing
+  - [ ] ✔️ 3. ACTS: A Common Tracking Software
+    - [ ] ✔️ Into text
+    - [ ] ✔️ 3.1. Components and their connections
+    - [ ] ✔️ 3.2. Units and Constants
+    - [ ] ✔️ 3.3. Track Parameterization
     - [ ] 3.4. Fatras
-    - [ ] 3.5. Plugins
-    - [ ] 3.6. The ACTS Examples Framework
+    - [ ] ✔️ 3.5. Plugins
+    - [ ] ✔️ 3.6. The ACTS Examples Framework
     - [ ] 3.7. The Open Data Detector
     - [ ] 3.8. Tracking on Accelerators with traccc and detray
 - [ ] II. Developments
-  - [ ] 4. General deveopments of ACTS
-    - [ ] Into text
+  - [ ] ✔️ 4. General deveopments of ACTS
+    - [ ] ✔️ Into text
     - [ ] 4.1. Timeline
-    - [ ] 4.2. Propagator Developments
-      - [ ] 4.2.1. An alternative steering mechanism
+    - [ ] ✔️ 4.2. Propagator Developments
+      - [ ] ✔️ 4.2.1. An alternative steering mechanism
     - [ ] 4.3. Track EDM
     - [ ] 4.4. A new measurement projection mechanism
     - [ ] 4.5. Examples Framework
-    - [ ] 4.6. Implementation of a greedy Ambiguity Resolution
-    - [ ] 4.7. Implementation of a Particle Hypothesis
-    - [ ] 4.8. Redesign for Boundary Tolerance
-    - [ ] 4.9. Implementation of the mBF Smoother
+    - [ ] ✔️ 4.6. Implementation of a greedy Ambiguity Resolution
+    - [ ] ✔️ 4.7. Implementation of a Particle Hypothesis
+    - [ ] ✔️ 4.8. Redesign for Boundary Tolerance
+    - [ ] ✔️ 4.9. Implementation of the mBF Smoother
   - [ ] ✔️✔️✔️ 5. Stepper developments
     - [ ] ✔️✔️✔️ Into text
     - [ ] ✔️✔️✔️ 5.1. Reworking the ConstrainedStep
@@ -122,16 +115,16 @@
     - [ ] ✔️✔️✔️ 5.3. Improvements to the EigenStepper
     - [ ] ✔️✔️✔️ 5.4. Implementation of the SympyStepper
     - [ ] ✔️✔️✔️ 5.5. The cost of the time parameter
-  - [ ] 6. Navigator developments
-    - [ ] Into text
-    - [ ] 6.1. Navigation subtleties and edge cases
-    - [ ] 6.2. A streamlined Navigation Model for ACTS
-    - [ ] 6.3. Robust Intersection Handling for Cylinders
-    - [ ] 6.4. Remove path limit and overstep limit
-    - [ ] 6.5. Decoupling from the stepper
-    - [ ] 6.6. Direct navigator
-    - [ ] 6.7. Try-all navigators
-    - [ ] 6.8. Conceptualized solution for surface ambiguity
+  - [ ] ✔️✔️✔️ 6. Navigator developments
+    - [ ] ✔️✔️✔️ Into text
+    - [ ] ✔️✔️✔️ 6.1. Navigation subtleties and edge cases
+    - [ ] ✔️✔️✔️ 6.2. A streamlined Navigation Model for ACTS
+    - [ ] ✔️✔️✔️ 6.3. Robust Intersection Handling for Cylinders
+    - [ ] ✔️✔️✔️ 6.4. Remove path limit and overstep limit
+    - [ ] ✔️✔️✔️ 6.5. Decoupling from the stepper
+    - [ ] ✔️✔️✔️ 6.6. Direct navigator
+    - [ ] ✔️✔️✔️ 6.7. Try-all navigators
+    - [ ] ✔️✔️✔️ 6.8. Conceptualized solution for surface ambiguity
   - [ ] 7. Track finding developments
     - [ ] Into text
     - [ ] 7.1. Vector track container backend
@@ -152,12 +145,12 @@
     - [ ] ✔️✔️✔️ 8.5. First attempts with EigenStepper
     - [ ] ✔️✔️✔️ 8.6. SympyStepper
     - [ ] ✔️✔️✔️ 8.7. Performance
-  - [ ] 9. Tracking with time information
-    - [ ] Intro text
-    - [ ] 9.1. Tracking with time information in ACTS
-    - [ ] 9.2. Spacepoints with time
-    - [ ] 9.3. Seeding with time
-    - [ ] 9.4. Track finding and fitting with time
+  - [ ] ✔️ 9. Tracking with time information
+    - [ ] ✔️ Intro text
+    - [ ] ✔️ 9.1. Tracking with time information in ACTS
+    - [ ] ✔️ 9.2. Spacepoints with time
+    - [ ] ✔️ 9.3. Seeding with time
+    - [ ] ✔️ 9.4. Track finding and fitting with time
     - [ ] 9.5. Vertex finding with time
     - [ ] 9.6. Vertex fitting with time
   - [ ] 10. Summary of developments
