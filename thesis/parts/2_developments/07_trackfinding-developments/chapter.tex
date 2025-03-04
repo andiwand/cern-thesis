@@ -1,33 +1,21 @@
-\begin{itemize}
-    \color{red}
-    \item key algorithm for track reconstruction
-    \item one of the most expensive algorithms in terms of CPU time
-    \item needs to be fast and efficient
-    \item ACTS comes with a combinatorial Kalman filter (CKF) implementation
-    \begin{itemize}
-        \item new alternatives: GNN or transformer networks
-    \end{itemize}
-    \item relies on starting parameters which can be obtained from triplet seeds
-    \item CKF has been rewritten during the work on this thesis; more flexible, more efficient, more maintainable
-\end{itemize}
+Track finding is one of the key steps in track reconstruction. It is responsible for identifying hits which belong to the same particles. A perfect track finding algorithm can associate all hits to unique tracks which correspond to the particles that traversed the detector. In reality, however, there will be thresholds which will prevent the algorithm from finding all tracks. Particles might create too few hits due to decy, their momentum being too small or being stopped by the material they traverse. This will result in hits which cannot be associated to a track. At the same time, detectors are not perfect and will have dead modules which results in missing hits, and noise which will create fake hits. These additional hits can result in tracks which were not created by a single particle, so called fake tracks. In summary, a good track finding algorithm needs to be able to deal with these issues and find as many tracks as possible while keeping the number of fake tracks as low as possible.
 
-\section{The combinatorial Kalman filter}
+Associating hits to tracks is a combinatorial problem. The number of possible combinations grows superlinearly with the number of hits. For busy events with many hits, the track finding step in a reconstruction chain is usually the most expensive one in terms of compute time. Therefore, it has to be well optimized and balanced between physics and computational performance.
+
+ACTS provides a Combinatorial Kalman Filter (CKF) implementation which can be used as a component for the track finding step in an experiment. The CKF depends on an initial estimate of the track parameters, which can be obtained from a prior seeding step. It searches iteratively for compatible measurements and updates the track parameters and their covariance using the Kalman filter formalism. Given measurement ambiguity, the CKF can branch into multiple hypotheses.
+
+While ACTS already had a working prototype implementation for the CKF, it was effectively rewritten during the work on this thesis to improve its performance, flexibility, and maintainability. The new implementation and the most important changes are presented in this chapter. First, the CKF algorithm and its implementation is described in detail. Then, the refactor of the CKF into a track finding component is discussed. A two-way track finding strategy is introduced which allows to recover all measurements independent from the seed position. The branch stopper extension is presented which allows to stop the track search early. Modeling of branches with the track EDM is discussed and the branch finalization is explained. Two techniques to improve the track finding performance are presented: seed deduplication and stay-on-seed strategy. Finally, the chapter is concluded with a discussion of the initial covariance and the shortcomings of the CKF implementation.
+
+\section{The CombinatorialKalmanFilter}
 
 \begin{itemize}
     \color{red}
-    \item how does the algorithm work?
-    \begin{itemize}
-        \item relies on transport of track parameters and their covariance
-        \item source link accessor
-        \item how are the track parameters updated? shared with KF
-        \item calibration
-        \item measurement selection
-        \item branch stopper
-    \end{itemize}
     \item optimal measurement discrimination power
     \item can provide fully fitted tracks after smoothing pass
     \item exercised in TrackFindingAlgorithm in Examples
 \end{itemize}
+
+The \texttt{CombinatorialKalmanFilter} in ACTS is a Core algorithm that uses initial track parameters to find compatible measurements and fit them on a track.  As such, it heavily relies on the propagation component to transport the track parameters and their covariance, and to find all the sensitive surfaces that the track traverses. When the CKF arrives on a surface, it calls the \texttt{TrackStateCreator} to retrieve all compatible measurements given the predicted track parameters and covariance on the surface. The \texttt{TrackStateCreator} is provided by the experiment and an interface for ACTS to access the measurements. This step can also include calibration of the measurement given the track hypotheses. The newly created track states are then used to update the track parameters and their covariance using the Kalman filter formalism. In case no measurement is found, the hole count of the track is increased. If material is encountered, the CKF will calculate the mean energy loss and multiple scattering and update the track parameters and their covariance. As a final step the \texttt{BranchStopper} is called to decide whether the CKF should continue the search.
 
 \section{CKF as a component}
 
