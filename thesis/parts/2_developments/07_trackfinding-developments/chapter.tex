@@ -10,56 +10,53 @@ While ACTS already had a working prototype implementation for the CKF, it was ef
 
 \begin{itemize}
     \color{red}
-    \item optimal measurement discrimination power
-    \item can provide fully fitted tracks after smoothing pass
-    \item exercised in TrackFindingAlgorithm in Examples
+    \item depth first search
 \end{itemize}
 
-The \texttt{CombinatorialKalmanFilter} in ACTS is a Core algorithm that uses initial track parameters to find compatible measurements and fit them on a track.  As such, it heavily relies on the propagation component to transport the track parameters and their covariance, and to find all the sensitive surfaces that the track traverses. When the CKF arrives on a surface, it calls the \texttt{TrackStateCreator} to retrieve all compatible measurements given the predicted track parameters and covariance on the surface. The \texttt{TrackStateCreator} is provided by the experiment and an interface for ACTS to access the measurements. This step can also include calibration of the measurement given the track hypotheses. The newly created track states are then used to update the track parameters and their covariance using the Kalman filter formalism. In case no measurement is found, the hole count of the track is increased. If material is encountered, the CKF will calculate the mean energy loss and multiple scattering and update the track parameters and their covariance. As a final step the \texttt{BranchStopper} is called to decide whether the CKF should continue the search.
+The \texttt{CombinatorialKalmanFilter} in ACTS is a Core algorithm that uses initial track parameters to find compatible measurements and fit them on a track.  As such, it heavily relies on the propagation of track parameters and their covariance through the tracking geometry and magnetic field to find all the sensitive surfaces that the track traverses. When the CKF arrives on a surface, it calls the \texttt{TrackStateCreator} to retrieve all compatible measurements given the predicted track parameters and covariance on the surface. The \texttt{TrackStateCreator} is provided by the experiment and an interface for ACTS to access the measurements. This step might also perform a calibration of the measurement given the track hypotheses. The newly created track states are then used to update the track parameters and their covariance using the Kalman filter formalism. In case no compatible measurements are found, the hole count of the track is increased. If material is encountered, the CKF will calculate the mean energy loss and multiple scattering and update the track parameters and their covariance. As a final step, the \texttt{BranchStopper} is called to decide whether the CKF should continue or stop the search. This procedure is repeated until the CKF reaches the end of the tracking geometry, the path limit is reached, or the branch stopper decides to stop. The resulting tracks are then stored and returned to the user.
+
+Given that the Kalman filter is optimal for linear systems, the CKF has an optimal discrimination power for selecting measurements in this case. Measurements are usually selected based on their compatibility with the track parameters using a $\chi^2$ test. Given the degrees of freedom, the user effectively selects a p-value threshold to decide whether a measurement is compatible with the track.
+
+The CKF will provide optimal resolution on the last track state that has a measurement. A smoothing pass can be performed, to inform the other track states about all found measurements. This results in fully fitted tracks with optimal resolution, while users may want to refit tracks given an estimated particle hypothesis.
+
+The usage of the \texttt{CombinatorialKalmanFilter} is exercised in the Examples in the \texttt{TrackFindingAlgorithm}. Given a configuration and estimated track parameters, it will try to find all tracks and store them as intermediate event data. Another algorithm can then refit these tracks or perform a vertex search.
 
 \section{CKF as a component}
 
-\begin{itemize}
-    \color{red}
-    \item CKF used to be a monolithic algorithm which does finding, fitting, smoothing, and extrapolation
-    \item Code was hard to read and follow, bugs resulted in low efficiency
-    \item CKF has been reduced to be a track finding component; only does the finding
-\end{itemize}
+The \texttt{CombinatorialKalmanFilter} used to be a monolithic algorithm with multiple responsibilities. It it used to deal with finding compatible measurements, fitting the track parameters, smoothing the track, and extrapolating the track to a reference surface. The code was hard to reason about and the error handling was not done properly. For instance, a problem during the smoothing or extrapolation step would silently affect the finding efficiency.
+
+An important missing piece to the CKF was the ability to find measurements in both directions. The CKF was only able to find measurements in the particles' momentum direction. Since seeds are not required to be formed on the innermost layer of the detector, measurements on such inner layers might be missed which results in degredated efficiency and resolution. Adding this feature to the CKF would have further complicated the code and made it even harder to debug and maintain.
+
+To address these issues, the \texttt{CombinatorialKalmanFilter} has been reduced to a pure track finding component. Smoothing and extrapolation have been extracted to toolbox functions, a track finding algorithm can call if necessary and at the right time. This way, the experiment is in control of the track finding process and can directly steer when to spend precious compute time.
 
 \section{Two-way track finding}
 
 \begin{itemize}
     \color{red}
-    \item Seeds are not guaranteed to start on the first measurement
-    \item Track finding needs to be able to look for measurements in both directions
-    \item After the CKF has been turned into a component, this was implemented by running the CKF twice
+    \item CKF only branches in one direction
 \end{itemize}
+
+In order to find all measurements a particle has left in the detector, the CKF either needs to start at the very first measurement or needs to be able to look for measurements in both directions.
+
+After decoupling the CKF from the smoothing and extrapolation, it can simply be used to run twice. Once with the initial track parameters from the seed, and a second time in reversed direction with the smoothed parameters at the first measurement. This has first beed implemented and validated with the \texttt{TrackFindingAlgorithm} in the ACTS Examples, and later in Athena.
+
+The remaining challenge is to stitch the resulting track segments together. The ACTS track EDM does not dictate a preferred direction for the stored tracks. But it does also not have a way to express the direction of a track. Given that, tracks should always be stored with a consistent direction. For this reason, track segments pointing in the opposite direction need to be reversed before they are concatenated to a full track. This involves an inverse of the bound-to-bound Jacobian which is stored on each track state and used for the smoothing.
 
 \section{Branch stopper}
 
-\begin{itemize}
-    \color{red}
-    \item can safe time by stopping branches early if they are not promising
-    \item allows to continue, stop and drop, and stop and keep
-\end{itemize}
+Seeding algorithms can produce many seeds which will not result in a track. The CKF will then spend compute time to propagate through the tracking geometry, only to find out that the track has too many holes and too few measurements.
+
+A \texttt{BranchStopper} can be used to stop the CKF early if it is clear that the track will not be found. The \texttt{BranchStopper} is a user provided function which can observe the current track and its track states to make its decision. There are three possible outcomes: continue, stop and drop, and stop and keep. The first option will continue the CKF as usual. The second option will stop the CKF and drop the track. The third option will stop the CKF and keep the track.
 
 \section{Track container for branches}
 
-\begin{itemize}
-    \color{red}
-    \item branches during CKF ressemble tracks; have measurement count, hole count, outlier count, and chi2
-    \item branches are now stored as tracks in a track container
-    \item branch stopper can observe these tracks and can accumulate statistics
-    \item extensible for experiments through dynamic columns
-\end{itemize}
+Branches discovered during running the CKF are now stored as tracks in a track container. The reason for this is that these CKF branches ressemble tracks. They have a measurement count, a hole count, an outlier count, and a $\chi^2$ sum. The track container is generic and allows experiments to add additional information through dynamic columns. An immediate benefit of this approach is that the branch stopper can now accumulate experiment specific statistics about the track, for instance the number of pixel subsystem holes, and make a more informed decision about whether to keep or drop the branch.
 
 \section{Branch finalization}
 
-\begin{itemize}
-    \color{red}
-    \item branch finalization used to be done in multiple places
-    \item now done with a single function which can be called from different places
-\end{itemize}
+The branch finalization is triggered when a propagation abort condition is met or a branch is stopped by the user. The current branch is then stored in the output track container, given it is selected to be kept. If other branches are still active, the CKF will continue with the next one, otherwise the CKF will stop.
+
+This act of finalizing a branch was done in multiple places and essentially duplicated. This has been refactored to a single function which can be called from different places. This makes the code more maintainable and easier to reason about.
 
 \section{Seed deduplication}
 
