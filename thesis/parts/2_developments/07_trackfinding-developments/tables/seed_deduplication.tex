@@ -1,0 +1,23 @@
+% w/ deduplication
+% efficiency = 0.953426
+% time per event = 0.902017
+% tracks per event = 1182.3
+%
+% w/o deduplication
+% efficiency = 0.955537
+% time per event = 2.57564
+% tracks per event = 8237.1
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Configuration} & \textbf{Tracks per event} & \textbf{Track eff.} & \textbf{Rel. time} \\
+        \hline
+        w/ deduplication  & 1182.3 & 0.953 & 1.00 \\
+        w/o deduplication & 8237.1 & 0.955 & 2.86 \\
+        \hline
+    \end{tabular}
+    \caption{Comparison of the track finding performance with and without seed deduplication.}
+    \label{tab:dev/trackfinding/seed-deduplication}
+\end{table}

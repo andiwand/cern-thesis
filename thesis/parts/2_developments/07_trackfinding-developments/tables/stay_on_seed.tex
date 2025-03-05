@@ -1,0 +1,25 @@
+% w/ stay on seed
+% efficiency = 0.953426
+% fake rate = 0.00434068
+% time per event = 0.902017
+% tracks per event = 1182.3
+%
+% w/o stay on seed
+% efficiency = 0.955068
+% fake rate = 0.00340216
+% time per event = 1.20037
+% tracks per event = 1652.3
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Configuration} & \textbf{Tracks per event} & \textbf{Track eff.} & \textbf{Rel. time} \\
+        \hline
+        w/ stay on seed  & 1182.3 & 0.953 & 1.00 \\
+        w/o stay on seed & 1652.3 & 0.955 & 1.33 \\
+        \hline
+    \end{tabular}
+    \caption{Comparison of the track finding performance with and without stay on seed.}
+    \label{tab:dev/trackfinding/stay-on-seed}
+\end{table}

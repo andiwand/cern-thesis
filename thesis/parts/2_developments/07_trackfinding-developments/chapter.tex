@@ -60,31 +60,47 @@ This act of finalizing a branch was done in multiple places and essentially dupl
 
 \section{Seed deduplication}
 
-\begin{itemize}
-    \color{red}
-    \item triplet seeding results in duplicates
-    \item this is partially by design to gain redundancy and to mitigate dead modules
-    \item deduplication is done during track finding
-    \item seeds that have been fully covered by an already found track will be skipped
-\end{itemize}
+Seed deduplication is a technique to avoid finding the same tracks multiple times. For instance a triplet seeding algorithm can produce many seeds for the same track. While this is partially by design to gain redundancy and to mitigate dead modules, it is also a waste of compute time.
+
+This technique has been implemented in the \texttt{TrackFindingAlgorithm} in the ACTS Examples and can be toggled in the configuration. After a track has been found, the measurements are checked against the measurements used for the seeds. Seeds which are fully incorporated in the found track are flagged and will be skipped in the following iterations. This implementation has the benefit of only checking the deduplication when a track is found. There is no additional computation for already detected fake tracks. The current implementation will iterate over all possible combinations of triplet seeds on a track and try to flag them using a hash table. While the hash table seems to be an efficient solution, the loop over the combinations might be suboptimal.
+
+\input{parts/2_developments/07_trackfinding-developments/tables/seed_deduplication.tex}
+
+Table \ref{tab:dev/trackfinding/seed-deduplication} shows the performance of the track finding algorithm with and without seed deduplication. The results were obtained with the Open Data Detector, $t\overline{t}$ events at 14 TeV, pile-up 200, using fast simulation and a standard reconstruction workflow. It shows that the deduplication has a significant impact on the time per event, but only a small impact on the track efficiency.
 
 \section{Stay-on-seed strategy}
 
-\begin{itemize}
-    \color{red}
-    \item CKF only uses starting parameters
-    \item given a seed it makes sense to stay on the selected measurements
-    \item can be implemented via source link accessor
-\end{itemize}
+Stay-on-seed is a strategy to keep the CKF on the selected measurements of the seed and prohibit it from branching into other measurements. Since the initial parameter covariance is inflated, the CKF will see a couple of compatible measurements in the vicinity of the seed. In case of a triplet seeder, the combinatorics of these measurements is already explored and the CKF does not need to redo this work.
+
+This strategy has been implemented in the \texttt{TrackFindingAlgorithm} in the ACTS Examples and can be toggled in the configuration. If this feature is turned on, the source link accessor is decorated to only return the seed measurements if the CKF is on one of their surfaces.
+
+\input{parts/2_developments/07_trackfinding-developments/tables/stay_on_seed.tex}
+
+Table \ref{tab:dev/trackfinding/stay-on-seed} shows the performance of the track finding algorithm with and without stay-on-seed. The results were obtained with the Open Data Detector, $t\overline{t}$ events at 14 TeV, pile-up 200, using fast simulation and a standard reconstruction workflow. It shows that the stay-on-seed strategy has a significant impact on the time per event, but only a small impact on the track efficiency.
+
+We should note that this will only make a difference if branching is enabled and the hit density is high enough to provide enough compatible measurements in the vicinity of the seed. In the example shown, the hit density is high and branching was set to a maximum of 10 per surface.
 
 \section{Initial covariance}
 
 \begin{itemize}
     \color{red}
-    \item for unbiased fitting initial covariance needs to be inflated
-    \item during finding the covariance also dictates the search range; with branching it cannot be too large
     \item cite frühwrith
 \end{itemize}
+
+The Kalman filter depends not only on predicted parameters, but also on their covariance to form a filtered state given a measurement. The same is true for the initial parameters and their covariance. To perform an unbiased fit to the measurements for both, the parameters and their covariance, the initial covariance needs to be inflated to express that there is no prior knowledge about the track. In the case of the CKF, the covariance will not only be used to filter the measurements, but also to select them. Given an inflated covariance, the CKF will be able to pick practically any measurement on a sensor since the $\chi^2$ will be scaled down by the inflated covariance.
+
+For this reason the initial covariance needs to be scaled properly by the experiment. If branching is enabled and the hit density is high, an inflated covariance will result in a large search range and the CKF will spend a lot of compute time following all possible branches. If the covariance is too small, the CKF might miss measurements which would have been compatible with the track. At the same time, the estimated parameters and their covariance will be biased.
+
+\begin{itemize}
+    \color{red}
+    \item cross link, write params again
+\end{itemize}
+
+Given the ACTS bound track parameterization ???, it was found that the initial covariance can be set to a diagonal matrix with constant values for all parameters except $\lambda = q/p$. The local position (and if given, time) covariance will be effectively set by the resolution of the module the CKF starts its search. Similarly, the angle covariance will be dominated by two consecutive spatial measurements. The $\lambda$ variance cannot be put to a constant, because the momentum resolution of a detector is usually relative to the momentum itself, $\sigma_{p_T}/p_T \approx \text{const}$, and the conversion from $p_T$ to $p$ introduces a $\theta$ dependance. Explicitly, the $\lambda$ variance can be approximated with
+
+\begin{equation}
+    \sigma^2_\lambda = \left( \lambda \, \frac{\sigma_{p_T}}{p_T} \right)^2 + \left( \frac{\lambda}{\text{tan}\,\theta} \, \sigma_\theta \right)^2
+\end{equation}
 
 \section{Shortcomings}
 
