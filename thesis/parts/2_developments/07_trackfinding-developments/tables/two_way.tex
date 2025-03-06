@@ -1,0 +1,49 @@
+% w/ two way
+
+% 10:31:35    TrackFinderP   INFO      Efficiency with tracks (nMatchedTracks/ nAllTracks) = 0.972257
+% 10:31:35    TrackFinderP   INFO      Fake rate with tracks (nFakeTracks/nAllTracks) = 0.00431363
+% 10:31:35    TrackFinderP   INFO      Duplicate rate with tracks (nDuplicateTracks/nAllTracks) = 0.285038
+% 10:31:35    TrackFinderP   INFO      Efficiency with particles (nMatchedParticles/nTrueParticles) = 0.953426
+% 10:31:35    TrackFinderP   INFO      Fake rate with particles (nFakeParticles/nTrueParticles) = 0.00434068
+% 10:31:35    TrackFinderP   INFO      Duplicate rate with particles (nDuplicateParticles/nTrueParticles) = 0.212342
+
+% 11:03:45    TrackFinderP   INFO      Efficiency with tracks (nMatchedTracks/ nAllTracks) = 0.977853
+% 11:03:45    TrackFinderP   INFO      Fake rate with tracks (nFakeTracks/nAllTracks) = 0.000842561
+% 11:03:45    TrackFinderP   INFO      Duplicate rate with tracks (nDuplicateTracks/nAllTracks) = 0
+% 11:03:45    TrackFinderP   INFO      Efficiency with particles (nMatchedParticles/nTrueParticles) = 0.953308
+% 11:03:45    TrackFinderP   INFO      Fake rate with particles (nFakeParticles/nTrueParticles) = 0.000234632
+% 11:03:45    TrackFinderP   INFO      Duplicate rate with particles (nDuplicateParticles/nTrueParticles) = 0
+
+% time per event = 0.863753
+
+% w/o two way
+
+% 10:26:28    TrackFinderP   INFO      Efficiency with tracks (nMatchedTracks/ nAllTracks) = 0.972883
+% 10:26:28    TrackFinderP   INFO      Fake rate with tracks (nFakeTracks/nAllTracks) = 0.0042537
+% 10:26:28    TrackFinderP   INFO      Duplicate rate with tracks (nDuplicateTracks/nAllTracks) = 0.355716
+% 10:26:28    TrackFinderP   INFO      Efficiency with particles (nMatchedParticles/nTrueParticles) = 0.953426
+% 10:26:28    TrackFinderP   INFO      Fake rate with particles (nFakeParticles/nTrueParticles) = 0.00480995
+% 10:26:28    TrackFinderP   INFO      Duplicate rate with particles (nDuplicateParticles/nTrueParticles) = 0.315462
+
+% 11:04:55    TrackFinderP   INFO      Efficiency with tracks (nMatchedTracks/ nAllTracks) = 0.977735
+% 11:04:55    TrackFinderP   INFO      Fake rate with tracks (nFakeTracks/nAllTracks) = 0.00084246
+% 11:04:55    TrackFinderP   INFO      Duplicate rate with tracks (nDuplicateTracks/nAllTracks) = 0
+% 11:04:55    TrackFinderP   INFO      Efficiency with particles (nMatchedParticles/nTrueParticles) = 0.953308
+% 11:04:55    TrackFinderP   INFO      Fake rate with particles (nFakeParticles/nTrueParticles) = 0.000234632
+% 11:04:55    TrackFinderP   INFO      Duplicate rate with particles (nDuplicateParticles/nTrueParticles) = 0
+
+% time per event = 0.872139
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{cccc}
+        \hline
+        \textbf{Configuration} & \textbf{Duplicate rate} & \textbf{Rel. time} \\
+        \hline
+        w/ two way  & 0.21 & 1.00 \\
+        w/o two way & 0.32 & 1.01 \\
+        \hline
+    \end{tabular}
+    \caption{Comparison of the track finding performance with and without two way search.}
+    \label{tab:dev/trackfinding/two-way}
+\end{table}

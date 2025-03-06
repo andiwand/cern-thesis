@@ -38,13 +38,13 @@ The choice of measuring lengths in millimeters has direct consequences for the t
 
 Track parameters describe the state of a particle at a given point in space and/or time. This includes the position, time, direction and charge/momentum of the particle. There are two kinds of track parameters in ACTS: bound parameters and free parameters. Bound track parameters are expressed with a local position at a given surface and their direction with two spherical coordinate angles, while free track parameters are expressed with a global cartesian position and a normalized direction vector.
 
-\begin{equation*}
+\begin{equation}
     \vec x_{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^T
-\end{equation*}
+\end{equation}
 
-\begin{equation*}
+\begin{equation}
     \vec x_{global} = \left(g_0, g_1, g_2, t, d_0, d_1, d_2, q/p\right)^T
-\end{equation*}
+\end{equation}
 
 The charge/momentum parameter captures the curvature of the trajectory given a magnetic field at the position. This choice can be motivated with the equations of motion for a free particle in a magnetic field. Note that the charge is signed and the momentum is the magnitude of the momentum vector. Using the absolute momentum magnitude over the traverse momentum magnitude is more general given an arbitraty magnetic field. To extract the momentum, one has to assume an absolute charge.
 

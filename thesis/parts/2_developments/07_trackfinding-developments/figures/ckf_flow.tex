@@ -1,0 +1,52 @@
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[node distance=2cm]
+        \tikzstyle{process} = [
+            rectangle,
+            minimum width=3cm,
+            minimum height=1cm,
+            text centered,
+            text width=5cm,
+            draw=black]
+
+        \tikzstyle{decision} = [
+            diamond, 
+            minimum width=2cm,
+            minimum height=1cm,
+            aspect=2,
+            text centered,
+            text width=3cm,
+            draw=black]
+        \tikzstyle{arrow} = [thick,->,>=stealth]
+
+        \node (start) [process] {Start propagation with initial parameters};
+        \node (meas) [process, below of=start] {Call \texttt{TrackStateCreator}};
+        \node (update) [process, below of=meas] {Create branches, update parameters};
+        \node (branchstopper) [decision, below of=update, yshift=-1cm] {Check \texttt{BranchStopper}};
+        \node (matpost) [process, below of=branchstopper, yshift=-1cm] {Process post material effects};
+        \node (prop) [process, below of=matpost] {Propagate to next surface};
+        \node (matpre) [process, below of=prop] {Process pre material effects};
+        \node (abort) [decision, below of=matpre, yshift=-1cm] {Check abort condition};
+
+        \node (finalize) [process, right of=branchstopper, xshift=5cm] {Finalize track};
+        \node (checkbranches) [decision, below of=finalize, yshift=-1cm] {More branches to process?};
+        \node (end) [process, below of=checkbranches, yshift=-1cm] {End propagation};
+
+        \draw [arrow] (start) -- (meas);
+        \draw [arrow] (meas) -- (update);
+        \draw [arrow] (update) -- (branchstopper);
+        \draw [arrow] (branchstopper) -- node[anchor=east] {no} (matpost);
+        \draw [arrow] (matpost) -- (prop);
+        \draw [arrow] (prop) -- (matpre);
+        \draw [arrow] (matpre) -- (abort);
+        \draw [arrow] (abort) -- node[anchor=south] {no} ++(-4, 0) -- ++(0, 15) -- (meas);
+
+        \draw [arrow] (branchstopper) -- node[anchor=south] {yes} (finalize);
+        \draw [arrow] (abort) -- node[anchor=south] {yes} ++(4, 0) -- ++(7, 0) -- ++(0, 10) -- (finalize);
+        \draw [arrow] (finalize) -- (checkbranches);
+        \draw [arrow] (checkbranches) -- node[anchor=south] {yes} (matpost);
+        \draw [arrow] (checkbranches) -- node[anchor=east] {no} (end);
+    \end{tikzpicture}
+    \caption{Illustration of the flow of the CKF track finding algorithm.}
+    \label{fig:dev/trackfinding/ckf-flow}
+\end{figure}
