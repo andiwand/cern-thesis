@@ -2,21 +2,33 @@
     \color{red}
     \item introduce the concept of 4D tracking
     \item motivate the need for 4D tracking
+    \item cite ATLAS and CMS TDRs
+    \item cite physcis study on flavor tagging
     \begin{itemize}
         \item HL-LHC pileup challenge
         \item potential for physics performance
         \item potential for CPU performance
         \item opportunity in ATLAS with Phase-II upgrade and beyond
     \end{itemize}
+    \item additional, mostly othogonal track parameter
+    \item correlations are small given the different resolution scales for spatial and time measurements
+    \item show correlations for ODD? covariance matrix? jacobian?
 \end{itemize}
 
-Tracking sensors with timing information are a recent development in high energy physics. The ATLAS detector will have a partial coverage of timing information with the Phase-II ugparde.
+Tracking sensors with timing information are a relatively recent development in high energy physics. The ATLAS detector will have a partial coverage of timing information with the next ugparde, while the CMS detector will have a full coverage. This new measurement dimension has the potential to improve pile-up rejection, particle identification and flavor tagging. It can also be used to reduce the combinatorial complexity of the event and therefore reduce the computational cost to reconstruct it.
 
-To study the impact of the additional time measurements on the tracking and physics performance, assumtions have to be made about the time resolution of the sensors and the amount of material in the detector. In the best case this involves a detailed simulation of the detector and a reconstruction with algorithms which fully utilize this new dimension.
+To study the impact of the additional time measurements on tracking and physics performance, assumtions have to be made about the time resolution of the sensors and the amount of material in the detector. In the best case this involves a detailed simulation of the detector and a reconstruction with algorithms which fully utilize this new dimension.
 
 The additional information needs to be processed not only in hardward but also software. It needs to be stored in the EDM and processed by the reconstruction algorithms.
 
 \section{Tracking with time information in ACTS}
+
+\begin{itemize}
+    \color{red}
+    \item time is unconditionally part of the track parameterization
+    \item tracks will always have a time parameter, the user needs to decide if it is meaningful
+    \item clustering with time is not implemented yet; could allow splitting clusters based on time information; time measurement resolution might be improved by combining individual segments
+\end{itemize}
 
 Tracking with time information is a long standing feature in ACTS. Time is part of the track parameterization and extrapolated in the propagator. If measurements carry time information, it can be accessed in the same way as other measurement dimensions.
 
@@ -24,11 +36,23 @@ While some algorithms do not need special treatment to utilize time information,
 
 \section{Spacepoints with time}
 
+\begin{itemize}
+    \color{red}
+    \item spacepoints can inherit time information from clusters
+    \item this is optional and modeled as such for now
+    \item might have implications on memory density
+\end{itemize}
+
 After clusters and measurements with time information are created, the information can be further propagated into spacepoints. Spacepoints are a basic building block for pattern recognition algortihms and can be used to cut combinatorics in the seeding stage.
 
-During the work on this thesis spacepoints were extended to carry optional time information. This is a necessary step to further propagate this information to the seed track parameters which is then automatically picked up by the track finding.
+During the work on this thesis, spacepoints were extended to carry optional time information. This was a necessary step to further propagate this information to the seed track parameter estimation. Afterwards it is automatically picked up by the track finding.
 
 \section{Seeding with time}
+
+\begin{itemize}
+    \color{red}
+    \item cite the study on seeding with time information
+\end{itemize}
 
 Seeding is the first step in the track finding process. It is responsible for creating track candidates from spacepoints. This is a combinatorial problem and cuts are used to reduce the number of candidates. Time information can be used to cut the combinatorics even further, therefore reducing the computational cost, but this requires having at least two spacepoints with time information.
 
@@ -38,14 +62,40 @@ During the work on this thesis time information has been included in the paramet
 
 \section{Track finding and fitting with time}
 
-For track finding and fitting algorithms in ACTS the utilization of time information comes practically for free as they rely on the propagation, which does include time, and the measurements, which carry time information if the user provides it.
+\begin{itemize}
+    \color{red}
+    \item ODD track finding performance with and without time measurements, remember to adapt the chi2
+\end{itemize}
+
+Track finding and fitting algorithms in ACTS automatically use time information if it is provided by the measurements. This comes practically for free as both rely heavily on the propagation which transports time unconditionally.
 
 The track finding will automatically select and cut on the additional parameter based on the predicition of the track parameters on the measurement surface. The standard cutting mechanism in ACTS is a $\chi^2$ cut which extends automatically to the time parameter. Users only need to be aware that the $\chi^2$ cut parameter might need to be adjusted to keep the p-value similar to the case without time information.
 
-The same is true for the track fitting. The fitting algorithms in ACTS are generic and do not need to be adapted to make use of time information. The time information is automatically picked up from the measurements and used in the fit. The user only needs to be aware that the time parameter is part of the fit and can be used to cut on the track quality.
+The same is true for the track fitting. Fitting algorithms in ACTS are generic and do not need adaptation to make them work with time information. The time information is automatically picked up from the measurements and used for the fit.
 
 In both cases the initial parameters play a crucial role in the performance of the algorithms. The variance of the time parameter needs to be properly inflated to reflect our initial uncertainty and to avoid biasing the fit.
 
 \section{Vertex finding with time}
 
+\begin{itemize}
+    \color{red}
+    \item provides another dimension to group tracks to vertices
+    \item vertices close in space can be distinguished by time
+    \item reduces merging and fake vertices
+    \item first step in finding is seeding a vertex candidates
+    \item grid based seeder has beed adapted to use time information
+    \item analytical seeder is not adapted for time yet
+    \item truth seeder has been implemented to study the vertexing performance with optimal seeding performance
+    \item vertex finders will automatically use time information of tracks and vertex seeds
+\end{itemize}
+
 \section{Vertex fitting with time}
+
+\begin{itemize}
+    \color{red}
+    \item vertex fitting has beed adapted to include time information; not by me!
+    \item required changes in the linearization and the fit itself
+    \item bias in the fits have been observed due to incorrect particle hypothesis
+    \item CMS has studied estimating the particle hypothesis from the time information during the fit
+    \item ACTS might follow a similiar approach in the future
+\end{itemize}

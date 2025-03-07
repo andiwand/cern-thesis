@@ -13,7 +13,7 @@
 
 ## current
 
-- [ ] track finding chapter
+- [x] track finding chapter
 - [ ] tracking with time dev chapter?
 - [ ] general developments chapter
 - [ ] develoment summary chapter
