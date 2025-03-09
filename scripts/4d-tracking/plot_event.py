@@ -35,7 +35,7 @@ parser.add_argument(
 parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
-fig, axs = plt.subplots(2, 2, figsize=(8, 4))
+fig, axs = plt.subplots(2, 2, figsize=(8, 6))
 
 particles = ak.to_dataframe(
     uproot.open(args.particles)["particles"].arrays(library="ak")
@@ -109,6 +109,9 @@ for i in range(2):
 
     axs[i, 1].set_xlim(vertices.iloc[0]["vz"] - 10, vertices.iloc[0]["vz"] + 10)
     axs[i, 1].set_ylim(-10, 10)
+
+    axs[1, i].set_xlabel("z [mm]")
+    axs[i, 0].set_ylabel("R * sign(x) [mm]")
 
 if args.output is not None:
     fig.savefig(args.output, bbox_inches="tight")
