@@ -35,13 +35,13 @@
     \centering
     \begin{tabular}{lcc}
         \hline
-        \textbf{Stepper} & \textbf{Rel. time w/o jac} & \textbf{Rel. time w/ jac} \\
+        \textbf{Stepper} & \textbf{Rel. time w/o Jac} & \textbf{Rel. time w/ Jac} \\
         \hline
-        EigenStepper & 1.00 & 1.80 \\
-        AtlasStepper & 0.67 & 0.84 \\
-        SympyStepper & 0.76 & 1.06 \\
+        \texttt{EigenStepper} & 1.00 & 1.80 \\
+        \texttt{AtlasStepper} & 0.67 & 0.84 \\
+        \texttt{SympyStepper} & 0.76 & 1.06 \\
         \hline
     \end{tabular}
-    \caption{Relative CPU time of the EigenStepper, AtlasStepper, and SympyStepper with and without Jacobian transport. The times are normalized to the time of the EigenStepper without Jacobian transport.}
+    \caption{Relative CPU time of the \texttt{EigenStepper}, \texttt{AtlasStepper}, and \texttt{SympyStepper} with and without Jacobian transport. The times are normalized to the time of the EigenStepper without Jacobian transport.}
     \label{tab:dev/stepper/sympy-perf}
 \end{table}
