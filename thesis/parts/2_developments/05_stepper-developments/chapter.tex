@@ -40,13 +40,13 @@ Equation \ref{eq:dev/stepper/adaptive-step-size} is used after each step of the 
 Since the error estimate can fluctuate, an upper and lower limit is imposed to the updated step size:
 
 \begin{equation}
-    \frac{1}{4} h < h_{\text{next}} < 4 h
+    \frac{1}{4} h < h_{\text{next}} < 4 h \text{.}
 \end{equation}
 
 The accuracy condition is the following:
 
 \begin{equation}
-    \epsilon < 4 \tau
+    \epsilon < 4 \tau \text{.}
 \end{equation}
 
 If not satisfied, the step is rejected and reattempted. The factor 4 provides some margin for the requested accuracy target and allows $\epsilon$ to fluctuate around $\tau$ without immediately rejecting steps.
@@ -119,7 +119,7 @@ k1[2] = lambda * (-x3 + B1[1] * d[0]);
 
 The \texttt{EigenStepper} uses the Eigen library for linear algebra operations with the goal of having readable and fast code, as the library is the de facto standard for linear algebra in C++ and supports vectorization. While this implementation has benefits in terms of readability and maintainability over the \texttt{AtlasStepper}, the extension mechanism diminishes these qualities. This is further discussed in Section \ref{sec:dev/dense/eigen}.
 
-The \texttt{AtlasStepper} is based on the long standing Athena STEP algorithm and does not rely on any external libraries. The math operations are decomposed by hand and optimized for performance. This indeed results in fast code but is also practically unreadable and impossible to maintain. For example introducing a time parameter in the \texttt{AtlasStepper} would be significantly more involved than in the \texttt{EigenStepper}.
+The \texttt{AtlasStepper} is based on the long standing Athena STEP algorithm and does not rely on any external libraries. The math operations are decomposed by hand and optimized for performance. This indeed results in fast code but is also practically unreadable and impossible to maintain. For example introducing a time parameter in the \texttt{AtlasStepper}, i.e. changing the matrix dimensions to handle, would be significantly more involved than in the \texttt{EigenStepper}.
 
 Since maintainable is one of the key paradigms of ACTS, a stepper implementation cannot only focus on performance but should also be readable and extendable. How much performance can be sacrificed for readability and maintainability is a question each experiment has to answer for itself.
 
