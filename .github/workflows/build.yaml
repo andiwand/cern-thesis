@@ -9,8 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: hspaans/latexmk-action@v2.0.0
+      - uses: xu-cheng/latex-action@v3
         with:
-          format: pdf
-          filename: thesis/thesis.tex
-          options: -shell-escape
+          working_directory: thesis
+          root_file: thesis.tex
+      - uses: actions/upload-artifact@v2
+        with:
+          name: thesis
+          path: thesis/thesis.pdf
