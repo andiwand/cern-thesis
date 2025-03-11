@@ -6,21 +6,14 @@
         \item previously people had to rewrite their own tracking software or extract it from experiments
         \item new challenges: telescope detectors, low momentum tracking, high pileup
     \end{itemize}
+    \item timline
 \end{itemize}
 
 While ACTS is a mature software, there are still areas where improvements can be made. It started out with ambitious goals, for instance being experiment independence and written in modern C++, and they keep creating new challenges. The C++ standard constantly evolves and new features are added which can be utilized to improve ACTS. There is always a next new experiment and their requirements on the tracking software will continue to demand new features and improvements to ACTS.
 
 This chapter will discuss the general developments that were made during the course of this thesis. These developments are not specific to any experiment or use case but are general improvements to the software. The developments are  and are not ordered by importance but the time they were implemented.
 
-\section{Timeline}
-
-\begin{itemize}
-    \color{red}
-    \item necessary?
-    \item how?
-\end{itemize}
-
-\section{Propagator Developments}
+\section{Propagator developments}
 
 \begin{itemize}
     \color{red}
@@ -71,9 +64,10 @@ The \texttt{Propagator} was modified to allow for the creation of a propagation 
     \item Geant4 integration
     \item Event and detector simulation with ACTS
     \item Measurement container
+    \item Vertexing developments
 \end{itemize}
 
-\section{Implementation of a greedy Ambiguity Resolution}
+\section{Implementation of a greedy ambiguity resolution}
 
 \begin{itemize}
     \color{red}
@@ -87,7 +81,7 @@ Such a greedy ambiguity resolution algorithm was implemented in ACTS as part of 
 
 The user can provide a custom track selector to define the quality of a track and a custom track comparator to define the order of tracks. The track selector is used to filter out tracks that are not considered for the ambiguity resolution. The track comparator is used to compare two tracks and decide which one is better. The user can provide a custom track selector and track comparator to implement their own ambiguity resolution strategy.
 
-\section{Implementation of a Particle Hypothesis}
+\section{Implementation of a particle hypothesis}
 
 \begin{itemize}
     \color{red}
@@ -102,7 +96,7 @@ ACTS was missing a central definition of a particle hypothesis. Parameters like 
 
 The goal of this implementation was to be lightweight and flexible to align with the experiment independent design of ACTS. The material interaction model of ACTS only requires the mass, charge, and particle type. To avoid maintaining a full list of particles it was preferred to keep these parameters generic and have a few common particles predefined. The user can then define their own particles by providing the mass, charge, and particle type. The particle type is modeled as an integer holding the absolute PDG code of the particle. The sign of the PDG code encodes the sign of the charge and since the ACTS material interaction model is symmetric with respect to the charge sign this information can be omitted. The mass and charge are stored as \texttt{float}s.
 
-\section{Redesign for Boundary Tolerance}
+\section{Redesign of boundary tolerance}
 
 \begin{itemize}
     \color{red}

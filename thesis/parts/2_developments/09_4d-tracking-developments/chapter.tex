@@ -1,51 +1,48 @@
 \begin{itemize}
     \color{red}
-    \item introduce the concept of 4D tracking
-    \item motivate the need for 4D tracking
-    \item cite physcis study on flavor tagging \cite{pub-2023-023}
-    \begin{itemize}
-        \item HL-LHC pileup challenge
-        \item potential for physics performance
-        \item potential for CPU performance
-        \item opportunity in ATLAS with Phase-II upgrade and beyond
-    \end{itemize}
-    \item additional, mostly othogonal track parameter
-    \item correlations are small given the different resolution scales for spatial and time measurements
-    \item show correlations for ODD? covariance matrix? jacobian?
+    \item cite pile-up numbers
 \end{itemize}
 
-Tracking sensors with timing information are a relatively recent development in high energy physics. The ATLAS detector will have a partial coverage of timing information with the next ugparde \cite{hgtd-tdr} , while the CMS detector will have a full coverage \cite{cms-mtd-tdr} . This new measurement dimension has the potential to improve pile-up rejection, particle identification and flavor tagging. It can also be used to reduce the combinatorial complexity of the event and therefore reduce the computational cost to reconstruct it.
+Tracking sensors with picosecond timing resolution are a relatively recent development for detectors in high energy physics. The ATLAS detector will have a partial coverage of timing information with the next ugparde \cite{hgtd-tdr} , while the CMS detector will have a full coverage \cite{cms-mtd-tdr} . This is an important development to tackle the increasing number of simultaneous proton-proton interactions from an average of 54 in Run-3 to 140 and later 200 in Run-4 (HL-LHC pile-up challenge). During reconstruction, this new measurement dimension can be used for pile-up rejection, particle identification and flavor tagging to improve the physics performance. At the same time it can help to reduce the combinatorial complexity of the event and therefore reduce the computational cost to reconstruct it.
 
-To study the impact of the additional time measurements on tracking and physics performance, assumtions have to be made about the time resolution of the sensors and the amount of material in the detector. In the best case this involves a detailed simulation of the detector and a reconstruction with algorithms which fully utilize this new dimension.
+The additional measurement dimension needs to be processed not only in hardward but also software. This is a challenge for existing tracking software, as algorithms need to be re-evaluated if time information can be used and how. Additional quantities need to be stored in the EDM and processed by reconstruction algorithms.
 
-The additional information needs to be processed not only in hardward but also software. It needs to be stored in the EDM and processed by the reconstruction algorithms.
+To study the impact of the additional time measurements on tracking and physics performance, assumtions have to be made about the time resolution of the sensors and the amount of material in the detector. In the best case, these studies involve detailed simulations of the detector and reconstruction with algorithms that fully utilize this new dimension. In reality, for a detector that has not been designed yet, assumptions have to be made. Reconstruction algorithms including time information have to be developed, tested and optimized which consumes a lot of time and resources. Further assumptions can be made about the performance of the algorithms to obtain early physics results. This was done in a recent ATLAS study which assumes a detector upgrade after Run-4 with full time coverage \cite{pub-2023-023} : It investiages the potential of 4D tracking for vertexing and flavor tagging, and then ultimately for some selected physics analyses.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=1.0\textwidth]{parts/2_developments/09_4d-tracking-developments/figures/ttbar-pu200-event-display.pdf}
-    \caption{}
+    \includegraphics[width=0.8\textwidth]{parts/2_developments/09_4d-tracking-developments/figures/ttbar-pu200-event-display.pdf}
+    \caption{Event display of a simulated $t\bar{t}$ event with 200 pile-up interactions from a Z-R view. Tracks are represented as lines, vertices as dots. The hard scatter vertex is highlighted with an additional circle. The top row show the event without time information, the bottom row with time information. The left column shows the full interaction region, the right column is zoomed in to the primary vertex.}
     \label{fig:dev/4d-tracking/event-display}
 \end{figure}
 
-\section{Tracking with time information in ACTS}
+Figure \ref{fig:dev/4d-tracking/event-display} shows an event display of a simulated $t\bar{t}$ event with 200 pile-up interactions. Given time information, the event visually separates into different vertices. Similarly, algorithms can use this information to group tracks into vertices and distinguish tracks and vertices close in space but separated in time.
+
+This chapter describes the developments in ACTS to further support and improve 4D tracking. It is a summary of the work done during this thesis and the current state of the software. The chapter is structured as follows: First, existing 4D tracking capabilities in ACTS are presented. Then, changes to the individual components of the tracking pipeline are described. This includes the propagation of time information from clusters to spacepoints, seeding with time information, track finding and fitting with time information, and vertex finding and fitting with time information. The chapter concludes with a summary of the current state and an outlook on future developments.
+
+\section{4D tracking in ACTS}
 
 \begin{itemize}
     \color{red}
     \item time is unconditionally part of the track parameterization
     \item tracks will always have a time parameter, the user needs to decide if it is meaningful
     \item clustering with time is not implemented yet; could allow splitting clusters based on time information; time measurement resolution might be improved by combining individual segments
+    \item show correlations for ODD? covariance matrix? jacobian?
+    \item correlations are small given the different resolution scales for spatial and time measurements
 \end{itemize}
 
-Tracking with time information is a long standing feature in ACTS. Time is part of the track parameterization and extrapolated in the propagator. If measurements carry time information, it can be accessed in the same way as other measurement dimensions.
+4D tracking is a long standing capability in ACTS. Time quantities can be stored in almost all EDMs, including measurements, spacepoints, track parameters, track states, and tracks themselves. For cluster cells and seeds it has been explored to some degree but is not fully implemented yet. As such all the algorithms connected to these EDMs can make use of time information, but not all of them are adapted to do so.
 
-While some algorithms do not need special treatment to utilize time information, others need to be adapted and configured correctly to make use of it. At the moment the track EDM does not make a difference if parameters are fitted or not. For this reason tracks with and without time information can only be distinguished by looking into the measurement content or taking a decision based on the variance of the time parameter. The variance will be either on the order of the resolution of the time measurements or practically the initial variance of the time parameter. This is a limitation of the current implementation which has to be addressed in the future.
+If measurements carry time information, it can be accessed in the same way as other measurement dimensions. Time is also automatically transported in the propagation and can therefore be picked up by algorithms that rely on it. Examples are the track finding and fitting algorithms which depend on predicted track parameters to compare them with measurements and compute an update. For these kinds of algorithms the use of time information comes practically for free. If $\chi^2$ cuts are used, the user only needs to be aware that the threshold might need to be adjusted to keep the p-value similar to the case without time information.
+
+While some algorithms do not need special treatment to utilize time information, others need to be adapted and configured correctly to make use of it. At the moment, the track EDM does not make a difference if parameters are fitted or not. For this reason, tracks with and without time information can only be distinguished by looking into the measurement content or taking a decision based on the variance of the time parameter. The variance will be either on the order of the resolution of the time measurements or the initial variance of the time parameter. This is a limitation of the current implementation which has to be addressed in the future.
 
 \section{Spacepoints with time}
 
 \begin{itemize}
     \color{red}
     \item spacepoints can inherit time information from clusters
-    \item this is optional and modeled as such for now
+    \item modeled as optional for now
     \item might have implications on memory density
 \end{itemize}
 
@@ -57,7 +54,7 @@ During the work on this thesis, spacepoints were extended to carry optional time
 
 \begin{itemize}
     \color{red}
-    \item cite the study on seeding with time information
+    \item cite the study on seeding with time information \cite{bos_2023_h2cbz-as705}
 \end{itemize}
 
 Seeding is the first step in the track finding process. It is responsible for creating track candidates from spacepoints. This is a combinatorial problem and cuts are used to reduce the number of candidates. Time information can be used to cut the combinatorics even further, therefore reducing the computational cost, but this requires having at least two spacepoints with time information.
@@ -104,4 +101,13 @@ In both cases the initial parameters play a crucial role in the performance of t
     \item bias in the fits have been observed due to incorrect particle hypothesis
     \item CMS has studied estimating the particle hypothesis from the time information during the fit
     \item ACTS might follow a similiar approach in the future
+\end{itemize}
+
+\section{Outlook}
+
+\begin{itemize}
+    \color{red}
+    \item clustering with time information
+    \item seeding with time information
+    \item particle hypothesis estimation from time information
 \end{itemize}
