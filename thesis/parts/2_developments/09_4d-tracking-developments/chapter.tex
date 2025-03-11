@@ -30,12 +30,51 @@ While some algorithms do not need special treatment to utilize time information,
 
 ACTS does not support clustering with time information yet. This could be a useful feature to split clusters based on time information and the time resolution might be improved by combining individual segments. This is currently under investigation and will be implemented in the future.
 
-Generally it is not expected that time information will have an impact on the spatial resolution of tracks and vertices during the fit. This is due to the different resolution scales of spatial and temporal measurements, and the scales at which experiments are built. The correlations between spatial and time measurements are expected to be small and therefore not have a significant impact on the fit.
+\section{Correlations with the time parameter}
 
-\begin{itemize}
-    \color{red}
-    \item show correlations for ODD? covariance matrix? jacobian?
-\end{itemize}
+Generally it is not expected that time information will have an impact on the spatial resolution of tracks and vertices during the fit. This is due to the different resolution scales of spatial and temporal measurements, and the scales at which experiments are built. Spatial measurements are on the order of 10 μm while temporal measurements are on the order of 10 ps which correspords to 3 mm. Given these resolutions and usual experiment dimensions, the correlations between spatial and time measurements are negligible and therefore not have an impact on the fit. This can be seen in the correlation matrix of the bound track parameters at the interaction point with single muons in the Open Data Detector. Using the default time resolution per pixel layer of 83 ps, the correlation matrix using the bound representation $\mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^T$ for one selected track is:
+
+% loc0:    -0.00983 +- 0.03735      1.000
+% loc1:       75.92 +- 0.04912      0.016  1.000
+% phi:       0.9803 +- 0.001071    -0.958 -0.006  1.000
+% theta:     0.7538 +- 0.0006802    0.003  0.971  0.001  1.000
+% q/p:      -0.4414 +- 0.00521     -0.148 -0.002  0.218 -0.001  1.000
+% time:       145.7 +- 10.2         0.000  0.003  0.000  0.003  0.000  1.000
+
+\begin{equation*}
+    \mathbf{\rho}^\text{83 ps}_\text{track} =
+    \begin{bmatrix*}[r]
+        1.00 & & & & & \\
+        0.02 & 1.00 & & & & \\
+        -0.96 & -0.01 & 1.00 & & & \\
+        0.00 & 0.97 & 0.00 & 1.00 & & \\
+        -0.15 & -0.00 & 0.22 & -0.00 & 1.00 & \\
+        0.00 & 0.00 & 0.00 & 0.00 & 0.00 & 1.00 \\
+    \end{bmatrix*}
+\end{equation*}
+
+If the time resolution is reduced to 1 ps, the correlation matrix for the same track is:
+
+% loc0:   -0.009853 +- 0.03735      1.000
+% loc1:       75.92 +- 0.04912      0.016  1.000
+% phi:       0.9803 +- 0.001071    -0.958 -0.006  1.000
+% theta:     0.7538 +- 0.0006801    0.003  0.971  0.001  1.000
+% q/p:      -0.4415 +- 0.005212    -0.149 -0.002  0.219 -0.001  1.000
+% time:       142.1 +- 0.1276       0.001  0.277  0.006  0.273  0.036  1.000
+
+\begin{equation*}
+    \mathbf{\rho}^\text{1 ps}_\text{track} =
+    \begin{bmatrix*}[r]
+        1.00 & & & & & \\
+        0.02 & 1.00 & & & & \\
+        -0.96 & -0.01 & 1.00 & & & \\
+        0.00 & 0.97 & 0.00 & 1.00 & & \\
+        -0.15 & -0.00 & 0.22 & -0.00 & 1.00 & \\
+        0.00 & 0.28 & 0.01 & 0.27 & 0.04 & 1.00 \\
+    \end{bmatrix*}
+\end{equation*}
+
+The correlation with the time parameter is negligible for 83 ps but significant for 1 ps. $l_0$ and $\phi$ show less correlation which is believed to be due to the perpendicular approach of the muons to the modules. The correlation with the $q/p$ parameter is small due to $\beta \approx 0.999$ for this track. For better time resolution or smaller $\beta$ values, the correlation with the $q/p$ parameter will increase.
 
 \section{Spacepoints with time}
 
