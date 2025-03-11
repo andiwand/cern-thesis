@@ -22,20 +22,20 @@ This chapter describes the developments in ACTS to further support and improve 4
 
 \section{4D tracking in ACTS}
 
-\begin{itemize}
-    \color{red}
-    \item time is unconditionally part of the track parameterization
-    \item tracks will always have a time parameter, the user needs to decide if it is meaningful
-    \item clustering with time is not implemented yet; could allow splitting clusters based on time information; time measurement resolution might be improved by combining individual segments
-    \item show correlations for ODD? covariance matrix? jacobian?
-    \item correlations are small given the different resolution scales for spatial and time measurements
-\end{itemize}
-
 4D tracking is a long standing capability in ACTS. Time quantities can be stored in almost all EDMs, including measurements, spacepoints, track parameters, track states, and tracks themselves. For cluster cells and seeds it has been explored to some degree but is not fully implemented yet. As such all the algorithms connected to these EDMs can make use of time information, but not all of them are adapted to do so.
 
 If measurements carry time information, it can be accessed in the same way as other measurement dimensions. Time is also automatically transported in the propagation and can therefore be picked up by algorithms that rely on it. Examples are the track finding and fitting algorithms which depend on predicted track parameters to compare them with measurements and compute an update. For these kinds of algorithms the use of time information comes practically for free. If $\chi^2$ cuts are used, the user only needs to be aware that the threshold might need to be adjusted to keep the p-value similar to the case without time information.
 
 While some algorithms do not need special treatment to utilize time information, others need to be adapted and configured correctly to make use of it. At the moment, the track EDM does not make a difference if parameters are fitted or not. For this reason, tracks with and without time information can only be distinguished by looking into the measurement content or taking a decision based on the variance of the time parameter. The variance will be either on the order of the resolution of the time measurements or the initial variance of the time parameter. This is a limitation of the current implementation which has to be addressed in the future.
+
+ACTS does not support clustering with time information yet. This could be a useful feature to split clusters based on time information and the time resolution might be improved by combining individual segments. This is currently under investigation and will be implemented in the future.
+
+Generally it is not expected that time information will have an impact on the spatial resolution of tracks and vertices during the fit. This is due to the different resolution scales of spatial and temporal measurements, and the scales at which experiments are built. The correlations between spatial and time measurements are expected to be small and therefore not have a significant impact on the fit.
+
+\begin{itemize}
+    \color{red}
+    \item show correlations for ODD? covariance matrix? jacobian?
+\end{itemize}
 
 \section{Spacepoints with time}
 
