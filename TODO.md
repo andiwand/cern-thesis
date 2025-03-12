@@ -7,27 +7,20 @@
 
 ## plan
 
-- get developments part done for a first reviewable draft
-- get acts intro chapter done for a first reviewable draft
-- get reconstruction intro chapter done for a first reviewable draft
-
 ## current
 
-- [x] track finding chapter
-- [ ] tracking with time dev chapter?
 - [ ] general developments chapter
 - [ ] develoment summary chapter
   - get a list of future work
-- [ ] noemi's feedback for chapter 8
-- [ ] noemi's feedback for chapter 5
-- [ ] noemi's feedback for chapter 6
 - [ ] get a sensible todo list
-- [ ] put time estimates on chapters including prework
 - [ ] define ITk performance outline
   - rename / focus on track finding using CKF
 - [ ] line break after hyphen?
 - [ ] class/function name formatting
 - [ ] ToC for chapters?
+- [ ] appendix?
+  - pull distribution
+  - fitting the core of a gaussian-like distribution
 
 ## plots
 
@@ -37,7 +30,6 @@
 - [ ] ITk
   - [ ] schematic plot
   - [ ] expected measurements over eta/phi
-- [ ] illustrate CKF / TF algorithm
 
 ## scripts
 
@@ -108,51 +100,51 @@
     - [ ] ✔️ 4.7. Implementation of a Particle Hypothesis
     - [ ] ✔️ 4.8. Redesign for Boundary Tolerance
     - [ ] ✔️ 4.9. Implementation of the mBF Smoother
-  - [ ] ✔️✔️✔️ 5. Stepper developments
+  - [x] 5. Stepper developments
+    - [x] Into text
+    - [x] 5.1. Reworking the ConstrainedStep
+    - [x] 5.2. Implementation of an adaptive step size
+    - [x] 5.3. Improvements to the EigenStepper
+    - [x] 5.4. Implementation of the SympyStepper
+    - [x] 5.5. The cost of the time parameter
+  - [x] 6. Navigator developments
+    - [x] Into text
+    - [x] 6.1. Navigation subtleties and edge cases
+    - [x] 6.2. A streamlined Navigation Model for ACTS
+    - [x] 6.3. Robust Intersection Handling for Cylinders
+    - [x] 6.4. Remove path limit and overstep limit
+    - [x] 6.5. Decoupling from the stepper
+    - [x] 6.6. Direct navigator
+    - [x] 6.7. Try-all navigators
+    - [x] 6.8. Conceptualized solution for surface ambiguity
+  - [ ] ✔️✔️✔️ 7. Track finding developments
     - [ ] ✔️✔️✔️ Into text
-    - [ ] ✔️✔️✔️ 5.1. Reworking the ConstrainedStep
-    - [ ] ✔️✔️✔️ 5.2. Implementation of an adaptive step size
-    - [ ] ✔️✔️✔️ 5.3. Improvements to the EigenStepper
-    - [ ] ✔️✔️✔️ 5.4. Implementation of the SympyStepper
-    - [ ] ✔️✔️✔️ 5.5. The cost of the time parameter
-  - [ ] ✔️✔️✔️ 6. Navigator developments
-    - [ ] ✔️✔️✔️ Into text
-    - [ ] ✔️✔️✔️ 6.1. Navigation subtleties and edge cases
-    - [ ] ✔️✔️✔️ 6.2. A streamlined Navigation Model for ACTS
-    - [ ] ✔️✔️✔️ 6.3. Robust Intersection Handling for Cylinders
-    - [ ] ✔️✔️✔️ 6.4. Remove path limit and overstep limit
-    - [ ] ✔️✔️✔️ 6.5. Decoupling from the stepper
-    - [ ] ✔️✔️✔️ 6.6. Direct navigator
-    - [ ] ✔️✔️✔️ 6.7. Try-all navigators
-    - [ ] ✔️✔️✔️ 6.8. Conceptualized solution for surface ambiguity
-  - [ ] 7. Track finding developments
-    - [ ] Into text
-    - [ ] 7.1. Vector track container backend
-    - [ ] 7.2. Two way track finding
-    - [ ] 7.3. CKF as a component
-    - [ ] 7.4. Extrapolation
-    - [ ] 7.5. Measurement selector
-    - [ ] 7.6. Branch stopper
-    - [ ] 7.7. Track container for branches
-    - [ ] 7.8. Branch finalization
-    - [ ] 7.9. Initial covariance
-  - [ ] ✔️✔️✔️ 8. Tracking with dense material
-    - [ ] ✔️✔️✔️ Intro text
-    - [ ] ✔️✔️✔️ 8.1. Motivation
-    - [ ] ✔️✔️✔️ 8.2. Covariance transport through thick scatterers
-    - [ ] ✔️✔️✔️ 8.3. Toy Model
-    - [ ] ✔️✔️✔️ 8.4. Baseline with Geant4
-    - [ ] ✔️✔️✔️ 8.5. First attempts with EigenStepper
-    - [ ] ✔️✔️✔️ 8.6. SympyStepper
-    - [ ] ✔️✔️✔️ 8.7. Performance
-  - [ ] ✔️ 9. Tracking with time information
-    - [ ] ✔️ Intro text
-    - [ ] ✔️ 9.1. Tracking with time information in ACTS
-    - [ ] ✔️ 9.2. Spacepoints with time
-    - [ ] ✔️ 9.3. Seeding with time
-    - [ ] ✔️ 9.4. Track finding and fitting with time
-    - [ ] 9.5. Vertex finding with time
-    - [ ] 9.6. Vertex fitting with time
+    - [ ] ✔️✔️✔️ 7.1. Vector track container backend
+    - [ ] ✔️✔️✔️ 7.2. Two way track finding
+    - [ ] ✔️✔️✔️ 7.3. CKF as a component
+    - [ ] ✔️✔️✔️ 7.4. Extrapolation
+    - [ ] ✔️✔️✔️ 7.5. Measurement selector
+    - [ ] ✔️✔️✔️ 7.6. Branch stopper
+    - [ ] ✔️✔️✔️ 7.7. Track container for branches
+    - [ ] ✔️✔️✔️ 7.8. Branch finalization
+    - [ ] ✔️✔️✔️ 7.9. Initial covariance
+  - [x] 8. Tracking with dense material
+    - [x] Intro text
+    - [x] 8.1. Motivation
+    - [x] 8.2. Covariance transport through thick scatterers
+    - [x] 8.3. Toy Model
+    - [x] 8.4. Baseline with Geant4
+    - [x] 8.5. First attempts with EigenStepper
+    - [x] 8.6. SympyStepper
+    - [x] 8.7. Performance
+  - [ ] ✔️✔️ 9. Tracking with time information
+    - [ ] ✔️✔️ Intro text
+    - [ ] ✔️✔️ 9.1. Tracking with time information in ACTS
+    - [ ] ✔️✔️ 9.2. Spacepoints with time
+    - [ ] ✔️✔️ 9.3. Seeding with time
+    - [ ] ✔️✔️ 9.4. Track finding and fitting with time
+    - [ ] ✔️✔️ 9.5. Vertex finding with time
+    - [ ] ✔️✔️ 9.6. Vertex fitting with time
   - [ ] 10. Summary of developments
     - [ ] Into text
     - [ ] 10.1. Discussion about virtual interfaces
