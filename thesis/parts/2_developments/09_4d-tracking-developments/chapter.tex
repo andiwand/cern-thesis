@@ -1,8 +1,3 @@
-\begin{itemize}
-    \color{red}
-    \item cite pile-up numbers
-\end{itemize}
-
 Tracking sensors with picosecond timing resolution are a relatively recent development for detectors in high energy physics. The ATLAS detector will have a partial coverage of timing information with the next ugparde \cite{hgtd-tdr} , while the CMS detector will have a full coverage \cite{cms-mtd-tdr} . This is an important development to tackle the increasing number of simultaneous proton-proton interactions from an average of 54 in Run-3 to 140 and later 200 in Run-4 (HL-LHC pile-up challenge). During reconstruction, this new measurement dimension can be used for pile-up rejection, particle identification and flavor tagging to improve the physics performance. At the same time it can help to reduce the combinatorial complexity of the event and therefore reduce the computational cost to reconstruct it.
 
 The additional measurement dimension needs to be processed not only in hardward but also software. This is a challenge for existing tracking software, as algorithms need to be re-evaluated if time information can be used and how. Additional quantities need to be stored in the EDM and processed by reconstruction algorithms.
@@ -106,7 +101,14 @@ Table \ref{tab:dev/4d-tracking/track-finding} shows the track finding performanc
 
 \section{Vertex finding with time}
 
-Vertex finding is the process of grouping tracks into vertices. This is generally a combinatorial problem but in practice a seeding step is used to identify vertex candidates and tracks are assigned to them based on their compatibility. In case of primary vertex finding, the search can be constrained to the beam line. Since only a single dimemsion is left, tracks that originate from close-by interactions can not be distinguished and will be merged into a single vertex. Time information provides another dimension to group tracks to vertices and to distinguish vertices close in space but separated in time. This can reduce merging and fake vertices and improve the physics performance. The performance of vertex finding with time information using ACTS is currently under investigation.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/2_developments/09_4d-tracking-developments/figures/ttbar-pu200-grid-density.pdf}
+    \caption{Track density of a simulated \ttbar event with 200 pile-up interactions with only $z_0$ on the top and with $z_0$ and $t_0$ below. The red dots represent the simulated primary vertices. The color scale shows the reconstructed track density which is used to seed the vertices.}
+    \label{fig:dev/4d-tracking/grid-density}
+\end{figure}
+
+Vertex finding is the process of grouping tracks into vertices. This is generally a combinatorial problem but in practice a seeding step is used to identify vertex candidates and tracks are assigned to them based on their compatibility. In case of primary vertex finding, the search can be constrained to the beam line. Since only a single dimemsion is left, tracks that originate from close-by interactions can not be distinguished and will be merged into a single vertex. Time information provides another dimension to group tracks to vertices and to distinguish vertices close in space but separated in time. This can reduce merging and fake vertices and improve the physics performance. The performance of vertex finding with time information using ACTS is currently under investigation and parts of the work will be presented in Chapter \ref{ch:perf/odd}.
 
 Current vertex seeders in ACTS use a gaussian track density to estimate vertex candidates. It is implemented in two flavors: using an analytical representation to find the maximum of the density, and using a discrete numerical evaluated grid. During the work on this thesis, in collaboration with another student, the grid based seeder has been adapted to make use of time information. Effectively, the 1D grid was extended to 2D, to include time information, and then optimized for sparsity to reduce the compute time and memory consumption. The analytical seeder is not adapted for time yet.
 
@@ -114,27 +116,20 @@ Additionally to the adapted grid seeder, a truth seeder has been implemented to 
 
 Since the track EDM does not distinguish between tracks with and without time information, the vertex seeders and finders have a switch to use time information or not. The implementation is then specialized in different places using this switch. For vertex finders this affects the compatibility checks of tracks with vertices and the track assignment to vertices. In case of some tracks having time information and some not, the time covariance should be used to reflect this. Similar to the track finding, the $\chi^2$ thresholds have to be adjusted to keep the p-value similar to the case without time information.
 
-\begin{itemize}
-    \color{red}
-    \item plot with gaussian grid density w/ and w/o time
-\end{itemize}
+Figure \ref{fig:dev/4d-tracking/grid-density} shows the track density of a simulated \ttbar event with 200 pile-up interactions. The separation of vertices is clearly visible adding $t_0$.
 
 \section{Vertex fitting with time}
 
-\begin{itemize}
-    \color{red}
-    \item vertex fitting has beed adapted to include time information; not by me!
-    \item required changes in the linearization and the fit itself
-    \item bias in the fits have been observed due to incorrect particle hypothesis
-    \item CMS has studied estimating the particle hypothesis from the time information during the fit
-    \item ACTS might follow a similiar approach in the future
-\end{itemize}
+Vertex fitting is the process of estimating the vertex position and its covariance from the assigned tracks. At the same time track parameters and their covariances can be refined. ACTS implements a Billoir \cite{billoir} and Kalman vertex fitter \cite{fruehwrith} which have been adapted to include time information. This was done by another student while a supporting role was provided during the work on this thesis. A detailed description is expected to be published in the near future. Adding support for time information required changes in the track linearization which is used by the fitters to update vertex and track parameters. Similar to the vertex seeders and finders, the vertex fitters have a switch to use time information or not.
+
+During the validation of the vertex fitters, a bias in the fitter's time estimates have been observed. This is believed to be due to incorrect particle hypothesis being used during the fit. The particle hypothesis was set to pions, which is a reasonable assumption for hadron colliders, but not valid for all produced particles. Using a truth based particle hypothesis removed the bias which confirms this assumption. CMS has studied estimating the particle hypothesis from the time information during the fit \cite{cms-time-vertexing} . ACTS might follow a similiar approach in the future.
+
+The performance of vertex fitting with time information using ACTS is currently under investigation and parts of the work will be presented in Chapter \ref{ch:perf/odd}.
 
 \section{Outlook}
 
-\begin{itemize}
-    \color{red}
-    \item clustering with time information
-    \item seeding with time information
-    \item particle hypothesis estimation from time information
-\end{itemize}
+4D tracking in ACTS has matured over the course of this thesis. Time information can be passed around via almost all EDMs. It is automatically picked up by track finding and fitting algorithms. Vertex finders and fitters have been adapted to include time information. The performance of the algorithms have been studied to some degree and the results are promising.
+
+Nevertheless, there are still some areas that need further development. Clustering with time information is not supported yet. This could be a useful feature to split clusters based on time information and the time resolution might be improved by combining individual segments. Seeding with time information has been explored but not integrated into ACTS and fully optimized. Estimating the particle hypothesis during vertex fitting with time information is a promising approach for particle identifications and removing biases. This is currently not supported in ACTS but might be added in the future.
+
+4D tracking is a powerful tool to improve the physics performance of detectors in high energy physics. It is a challenging task to develop and optimize the algorithms to make use of this new dimension. ACTS is a versatile software framework that can be used to study the impact of time information on tracking and physics performance. The work done during this thesis was one step further in this direction and will be continued in the future.
