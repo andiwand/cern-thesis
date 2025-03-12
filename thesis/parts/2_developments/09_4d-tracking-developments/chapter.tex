@@ -12,11 +12,11 @@ To study the impact of the additional time measurements on tracking and physics 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\textwidth]{parts/2_developments/09_4d-tracking-developments/figures/ttbar-pu200-event-display.pdf}
-    \caption{Event display of a simulated $t\bar{t}$ event with 200 pile-up interactions from a Z-R view. Tracks are represented as lines, vertices as dots. The hard scatter vertex is highlighted with an additional circle. The top row show the event without time information, the bottom row with time information. The left column shows the full interaction region, the right column is zoomed in to the primary vertex.}
+    \caption{Event display of a simulated \ttbar event with 200 pile-up interactions from a Z-R view. Tracks are represented as lines, vertices as dots. The hard scatter vertex is highlighted with an additional circle. The top row show the event without time information, the bottom row with time information. The left column shows the full interaction region, the right column is zoomed in to the primary vertex.}
     \label{fig:dev/4d-tracking/event-display}
 \end{figure}
 
-Figure \ref{fig:dev/4d-tracking/event-display} shows an event display of a simulated $t\bar{t}$ event with 200 pile-up interactions. Given time information, the event visually separates into different vertices. Similarly, algorithms can use this information to group tracks into vertices and distinguish tracks and vertices close in space but separated in time.
+Figure \ref{fig:dev/4d-tracking/event-display} shows an event display of a simulated \ttbar event with 200 pile-up interactions. Given time information, the event visually separates into different vertices. Similarly, algorithms can use this information to group tracks into vertices and distinguish tracks and vertices close in space but separated in time.
 
 This chapter describes the developments in ACTS to further support and improve 4D tracking. It is a summary of the work done during this thesis and the current state of the software. The chapter is structured as follows: First, existing 4D tracking capabilities in ACTS are presented. Then, changes to the individual components of the tracking pipeline are described. This includes the propagation of time information from clusters to spacepoints, seeding with time information, track finding and fitting with time information, and vertex finding and fitting with time information. The chapter concludes with a summary of the current state and an outlook on future developments.
 
@@ -78,57 +78,45 @@ The correlation with the time parameter is negligible for 83 ps but significant 
 
 \section{Spacepoints with time}
 
-\begin{itemize}
-    \color{red}
-    \item spacepoints can inherit time information from clusters
-    \item modeled as optional for now
-    \item might have implications on memory density
-\end{itemize}
+After clusters and measurements with time information have been formed, the information can be further propagated into spacepoints. Spacepoints are a basic building block for pattern recognition algortihms. Additional information on spacepoints can be used to cut combinatorics in the seeding stage.
 
-After clusters and measurements with time information are created, the information can be further propagated into spacepoints. Spacepoints are a basic building block for pattern recognition algortihms and can be used to cut combinatorics in the seeding stage.
-
-During the work on this thesis, spacepoints were extended to carry optional time information. This was a necessary step to further propagate this information to the seed track parameter estimation. Afterwards it is automatically picked up by the track finding.
+During the work on this thesis, spacepoints were extended to carry time information if available. This was a necessary step to further propagate this information to the track parameter estimation for seeds. The track finding will then automatically pick up this initial time estimate.
 
 \section{Seeding with time}
 
-\begin{itemize}
-    \color{red}
-    \item cite the study on seeding with time information \cite{bos_2023_h2cbz-as705}
-\end{itemize}
+Seeding is the first step in the track finding process. It is responsible for creating track candidates from spacepoints. This is a combinatorial problem and cuts are used to reduce the number of candidates. Time information can be used to cut the combinatorics further down, therefore reducing the computational cost. This requires having at least two spacepoints with time information, or just one and an estimate of the collision time to cut spacepoints produced by previous events.
 
-Seeding is the first step in the track finding process. It is responsible for creating track candidates from spacepoints. This is a combinatorial problem and cuts are used to reduce the number of candidates. Time information can be used to cut the combinatorics even further, therefore reducing the computational cost, but this requires having at least two spacepoints with time information.
-
-The current implementation of the triplet seeding in ACTS will not make use of time information. There has been an early study to estimate the potential of time information in seeding. The results are promising and show a significant reduction in the number of fakes and in reduction of the computational cost.
+The current implementation of the triplet seeding in ACTS will not make use of time information. There has been an early study to estimate the potential of time information in seeding \cite{bos_2023_h2cbz-as705} . The results are promising and show a significant reduction in the number of fakes and computational cost.
 
 During the work on this thesis time information has been included in the parameter estimation of triplet seeds. This is a necessary step to further propagate this information to the track finding. It is a very simple implementation for now which just picks up the time information from the bottom spacepoint if it is available. This could be further improved by taking the time information from any spacepoint, extrapolate it to the bottom spacepoint and average it to use it for the parameters.
 
 \section{Track finding and fitting with time}
 
-\begin{itemize}
-    \color{red}
-    \item ODD track finding performance with and without time measurements, remember to adapt the chi2
-\end{itemize}
-
 Track finding and fitting algorithms in ACTS automatically use time information if it is provided by the measurements. This comes practically for free as both rely heavily on the propagation which transports time unconditionally.
 
-The track finding will automatically select and cut on the additional parameter based on the predicition of the track parameters on the measurement surface. The standard cutting mechanism in ACTS is a $\chi^2$ cut which extends automatically to the time parameter. Users only need to be aware that the $\chi^2$ cut parameter might need to be adjusted to keep the p-value similar to the case without time information.
+The track finding will automatically select and cut on the additional parameter based on the predicition of the track parameters on the sensor. The standard cutting mechanism in ACTS is a $\chi^2$ cut which extends automatically to the time parameter. Users only need to be aware that the $\chi^2$ cut parameter might need to be adjusted to keep the p-value similar to the case without time information.
 
 The same is true for the track fitting. Fitting algorithms in ACTS are generic and do not need adaptation to make them work with time information. The time information is automatically picked up from the measurements and used for the fit.
 
 In both cases the initial parameters play a crucial role in the performance of the algorithms. The variance of the time parameter needs to be properly inflated to reflect our initial uncertainty and to avoid biasing the fit.
 
+\input{parts/2_developments/09_4d-tracking-developments/tables/track_finding.tex}
+
+Table \ref{tab:dev/4d-tracking/track-finding} shows the track finding performance with and without time measurements. The results were obtained with the Open Data Detector, \ttbar events at 14 TeV, pile-up 200, using fast simulation and a standard reconstruction workflow. The efficiency is practically the same with and without time measurements. Using time information reduces the computational cost by 28\% as fake seeds can be discarded early on given the $\chi^2$ requirement. The $\chi^2$ thresholds have been adjusted to keep the p-value similar to the case without time information in the pixel system.
+
 \section{Vertex finding with time}
+
+Vertex finding is the process of grouping tracks into vertices. This is generally a combinatorial problem but in practice a seeding step is used to identify vertex candidates and tracks are assigned to them based on their compatibility. In case of primary vertex finding, the search can be constrained to the beam line. Since only a single dimemsion is left, tracks that originate from close-by interactions can not be distinguished and will be merged into a single vertex. Time information provides another dimension to group tracks to vertices and to distinguish vertices close in space but separated in time. This can reduce merging and fake vertices and improve the physics performance. The performance of vertex finding with time information using ACTS is currently under investigation.
+
+Current vertex seeders in ACTS use a gaussian track density to estimate vertex candidates. It is implemented in two flavors: using an analytical representation to find the maximum of the density, and using a discrete numerical evaluated grid. During the work on this thesis, in collaboration with another student, the grid based seeder has been adapted to make use of time information. Effectively, the 1D grid was extended to 2D, to include time information, and then optimized for sparsity to reduce the compute time and memory consumption. The analytical seeder is not adapted for time yet.
+
+Additionally to the adapted grid seeder, a truth seeder has been implemented to study the vertexing performance with optimal seeding performance. The truth seeder uses true vertex position, and optionally time, to create seeds for the finder. This is a useful tool to study the impact of the seeder on the vertex finding performance. During validation it was observed that the order of the seeds has an impact on the finder performance. For this reason, truth vertices are sorted by the number of tracks before they are passed to the seeder to express their priority.
+
+Since the track EDM does not distinguish between tracks with and without time information, the vertex seeders and finders have a switch to use time information or not. The implementation is then specialized in different places using this switch. For vertex finders this affects the compatibility checks of tracks with vertices and the track assignment to vertices. In case of some tracks having time information and some not, the time covariance should be used to reflect this. Similar to the track finding, the $\chi^2$ thresholds have to be adjusted to keep the p-value similar to the case without time information.
 
 \begin{itemize}
     \color{red}
-    \item provides another dimension to group tracks to vertices
-    \item vertices close in space can be distinguished by time
-    \item reduces merging and fake vertices
-    \item first step in finding is seeding a vertex candidates
-    \item grid based seeder has beed adapted to use time information
-    \item analytical seeder is not adapted for time yet
-    \item truth seeder has been implemented to study the vertexing performance with optimal seeding performance
-    \item vertex finders will automatically use time information of tracks and vertex seeds
+    \item plot with gaussian grid density w/ and w/o time
 \end{itemize}
 
 \section{Vertex fitting with time}

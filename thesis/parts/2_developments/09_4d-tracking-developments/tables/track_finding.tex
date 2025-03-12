@@ -1,0 +1,35 @@
+% w/ time
+%
+% 10:06:30    TrackFinderP   INFO      Efficiency with tracks (nMatchedTracks/ nAllTracks) = 0.972257
+% 10:06:30    TrackFinderP   INFO      Fake rate with tracks (nFakeTracks/nAllTracks) = 0.00431363
+% 10:06:30    TrackFinderP   INFO      Duplicate rate with tracks (nDuplicateTracks/nAllTracks) = 0.285038
+% 10:06:30    TrackFinderP   INFO      Efficiency with particles (nMatchedParticles/nTrueParticles) = 0.953426
+% 10:06:30    TrackFinderP   INFO      Fake rate with particles (nFakeParticles/nTrueParticles) = 0.00434068
+% 10:06:30    TrackFinderP   INFO      Duplicate rate with particles (nDuplicateParticles/nTrueParticles) = 0.212342
+% 
+% Algorithm:TrackFindingAlgorithm,8.84289,0.884289
+
+% w/o time
+%
+% 10:12:23    TrackFinderP   INFO      Efficiency with tracks (nMatchedTracks/ nAllTracks) = 0.973611
+% 10:12:23    TrackFinderP   INFO      Fake rate with tracks (nFakeTracks/nAllTracks) = 0.0036579
+% 10:12:23    TrackFinderP   INFO      Duplicate rate with tracks (nDuplicateTracks/nAllTracks) = 0.265982
+% 10:12:23    TrackFinderP   INFO      Efficiency with particles (nMatchedParticles/nTrueParticles) = 0.95366
+% 10:12:23    TrackFinderP   INFO      Fake rate with particles (nFakeParticles/nTrueParticles) = 0.00351947
+% 10:12:23    TrackFinderP   INFO      Duplicate rate with particles (nDuplicateParticles/nTrueParticles) = 0.20847
+%
+% Algorithm:TrackFindingAlgorithm,12.1928,1.21928
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{ccc}
+        \hline
+        \textbf{Configuration} & \textbf{Track eff.} & \textbf{Rel. time} \\
+        \hline
+        w/ time & 0.95 & 1.00 \\
+        w/o time & 0.95 & 1.38 \\
+        \hline
+    \end{tabular}
+    \caption{Comparison of the track finding performance with and without time measurements.}
+    \label{tab:dev/4d-tracking/track-finding}
+\end{table}
