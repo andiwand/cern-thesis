@@ -137,14 +137,16 @@
     - [x] 8.5. First attempts with EigenStepper
     - [x] 8.6. SympyStepper
     - [x] 8.7. Performance
-  - [ ] ✔️✔️ 9. Tracking with time information
-    - [ ] ✔️✔️ Intro text
-    - [ ] ✔️✔️ 9.1. Tracking with time information in ACTS
-    - [ ] ✔️✔️ 9.2. Spacepoints with time
-    - [ ] ✔️✔️ 9.3. Seeding with time
-    - [ ] ✔️✔️ 9.4. Track finding and fitting with time
-    - [ ] ✔️✔️ 9.5. Vertex finding with time
-    - [ ] ✔️✔️ 9.6. Vertex fitting with time
+  - [ ] ✔️✔️✔️ 9. Tracking with time information
+    - [ ] ✔️✔️✔️ Intro text
+    - [ ] ✔️✔️✔️ 9.1. 4D tracking in ACTS
+    - [ ] ✔️✔️✔️ 9.2. Correlations with the time parameter
+    - [ ] ✔️✔️✔️ 9.3. Spacepoints with time
+    - [ ] ✔️✔️✔️ 9.4. Seeding with time
+    - [ ] ✔️✔️✔️ 9.5. Track finding and fitting with time
+    - [ ] ✔️✔️✔️ 9.6. Vertex finding with time
+    - [ ] ✔️✔️✔️ 9.7. Vertex fitting with time
+    - [ ] ✔️✔️✔️ 9.8. Summary and outlook
   - [ ] 10. Summary of developments
     - [ ] Into text
     - [ ] 10.1. Discussion about virtual interfaces
