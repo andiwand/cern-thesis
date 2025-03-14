@@ -58,7 +58,7 @@ Since stepper and navigator do not have a virtual interface and are accessed via
 
 The input to the navigation was trimmed down to the current position and direction of the propagation. The navigation will then return the next surface the track will intersect with. The stepper will follow the trajectory until the surface is reached and the navigation will be called again.
 
-\section{Developments on the DirectNavigator}
+\section{Developments on the \texttt{DirectNavigator}}
 
 Direct navigation is a technique to side step the surface candidate resolution from the tracking geometry and directly target a pre-defined sequence of surfaces. This is useful in cases where the surface candidates are known before the propagation, and CPU time and navigation stability are a concern. The \texttt{DirectNavigator} is a long-standing feature in ACTS and can be used for refitting purposes. It evolved during the work on this thesis and was improved to be more flexible and easier to use. As such, it now supports reverse navigation and automatically detects if the start surface is part of the surface sequence.
 

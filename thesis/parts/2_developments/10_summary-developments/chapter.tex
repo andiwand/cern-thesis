@@ -1,24 +1,17 @@
 \begin{itemize}
     \color{red}
-    \item summarize
+    \item N prs merged during the course of this thesis
+    \item summarize: what was done, what was achieved, what is the impact
+    \begin{itemize}
+        \item particle hypothesis
+        \item hardening navigation robustness
+        \item improved stepper performance
+        \item improved and modularization of the track finding
+    \end{itemize}
+    \item focus was on track finding, which then included propagation, stepping and navigation
 \end{itemize}
 
-\section{Discussion about virtual interfaces}
-
-\begin{itemize}
-    \color{red}
-    \item geometry and magnetic field are fully virtual propagator and track EDM is not but why?
-\end{itemize}
-
-\section{Proposal for future developments}
-
-\subsection{Explicit propagation loop and separation of concern}
-
-\subsection{Caller/callee inversion for propagation dependent Algorithms}
-
-\subsection{A detector agnostic geometry identifier and hierarchy map}
-
-\section{Shortcomings and Future Work}
+\section{Shortcomings}
 
 \begin{itemize}
     \color{red}
@@ -28,4 +21,21 @@
         \item units and constants are fixed
     \end{itemize}
     \item time is not switchable
+\end{itemize}
+
+\section{Proposals for future developments}
+
+\begin{itemize}
+    \color{red}
+    \item to overcome shortcomings and to reduce technical dept
+    \item Caller/callee inversion for propagation dependent algorithms
+    \item \begin{itemize}
+        \item as mentioned in chapter 4
+    \end{itemize}
+    \item A detector agnostic geometry identifier and hierarchy map
+    \item Re-evaluation of virtual interfaces
+    \begin{itemize}
+        \item geometry and magnetic field are fully virtual propagator and track EDM is not but why?
+    \end{itemize}
+    \item Free vs bound parameters for propagation
 \end{itemize}

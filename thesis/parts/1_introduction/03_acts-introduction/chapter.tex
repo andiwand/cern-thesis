@@ -25,13 +25,13 @@ Around these components there are a few more definitions and concepts which do n
 
 \section{Units and Constants}
 
-To make sense of physical quantities, ACTS uses a defined set of units for all relevant quantities. They can be found in \texttt{Acts/Definitions/Units.hpp}.
+To make sense of physical quantities, ACTS uses a defined set of relevant units. They can be found in \texttt{Acts/Definitions/Units.hpp}.
 
 Most importantly, lengths are measured in millimeters and energies in GeV. The speed of light is set to $1$ which means the time unit is implicitly set to millimeters. Time in seconds can be obtained by dividing the value with pre-defined constants which are related to the SI units.
 
-One should note that units are ultimately a choice but one which is taken by ACTS and it cannot be changed by the user. Having a consistent, pre-defined set of units allows for easier to read and consistent code. The type of scalars and vectors in the code do not have to reflect the units, since the units are implicit for the dimension. Some decisions taken for the units and constants reach much further than \texttt{Units.hpp} in the ACTS codebase. For example $c = 1$ is built into many equations and cannot be changed easily.
+One should note that units are ultimately a choice but one which is taken by ACTS and it cannot be changed by the user. Having a consistent, pre-defined set of units allows for easier to read and consistent code. The type of scalars and vectors in the code do not have to reflect the units, since the units are implicit for the dimension. Some decisions taken for units and constants reach further into the ACTS codebase than just \texttt{Units.hpp}. For example $c = 1$ is built into many equations and cannot be changed easily.
 
-The choice of measuring lengths in millimeters has direct consequences for the time units. For example $1 ns = 299.79 mm$ (the distance light travels in one nanosecond in vacuum) which is a big value compared to the typical spatial resolution of micrometers in tracking detectors. This can potentially lead to numerical instabilities.
+The choice of measuring lengths in millimeters has direct consequences for the time units. For example $1 ns = 299.79 mm$ (the distance light travels in one nanosecond in vacuum) which is a big value compared to the typical spatial resolution of micrometers in tracking detectors. This can potentially lead to numerical instabilities and is under investigation.
 
 \section{Track Parameterization}
 \label{sec:intro/acts/track-parameterization}
@@ -64,6 +64,13 @@ Note that the ACTS bound track parameters are sort of standard for collider expe
 The track parametrization is ultimately a choice, there is not single best parametrization. Since ACTS aims to be experiment independent a more general solution would be preferable but was not reached yet. The parametrization is deeply baked into ACTS which makes it hard to change. At the same time an abstraction for the track parameters might bring a compute performance penalty.
 
 Track parameters should be unique and "well-behaved" in the sense that they should not have singularities or discontinuities. This is not always the case with the ACTS track parameters. Additionally, for numerical stability, they should live on a similar scale which also depends on the units and geometry.
+
+\section{Event data model}
+
+\begin{itemize}
+    \color{red}
+    \item track edm
+\end{itemize}
 
 \section{Fatras}
 
@@ -110,9 +117,9 @@ The Examples consist of various detectors, such as a generic telescope detector 
     \item evolution of the track ML detector
     \item what is its purpose
     \item full silicon detector
+    \item layout and geometry, subsystems, eta coverage, support structures?
     \item digitization and resolution
-    \item support structures
-    \item layout and geometry, subsystems, eta coverage
+    \item possible extensions with calorimiter and muon system
     \item material scans
     \item expected hits over eta/phi
     \item expected resolution

@@ -4,9 +4,10 @@
     \begin{itemize}
         \item aims to be general purpose and scalable
         \item previously people had to rewrite their own tracking software or extract it from experiments
-        \item new challenges: telescope detectors, low momentum tracking, high pileup
+        \item new challenges: telescope detectors, low momentum tracking, high pileup, time measurements
     \end{itemize}
-    \item timline
+    \item quickly walk through the chapters in this part, flash what was done during the work on this thesis
+    \item quickly walk through this chapter
 \end{itemize}
 
 While ACTS is a mature software, there are still areas where improvements can be made. It started out with ambitious goals, for instance being experiment independence and written in modern C++, and they keep creating new challenges. The C++ standard constantly evolves and new features are added which can be utilized to improve ACTS. There is always a next new experiment and their requirements on the tracking software will continue to demand new features and improvements to ACTS.
@@ -17,10 +18,20 @@ This chapter will discuss the general developments that were made during the cou
 
 \begin{itemize}
     \color{red}
-    \item point to stepper and navigator chapter
+    \item quickly recap on propagation
+    \item what was done during the work on this thesis?
+    \begin{itemize}
+        \item reworked options
+        \item initialization
+        \item reworked propagation loop and separated concerns
+        \item merging actor aborter
+        \item propagation state to distinquish init, step, and finalize
+        \item alternative steering mechanism
+    \end{itemize}
+    \item quickly flash stepper and navigator developments and point to the chapters
 \end{itemize}
 
-The stepper and navigator developments are discussed in detail in chapter \ref{ch:dev/stepper} and \ref{ch:dev/navigator} respectively.
+The stepper and navigator developments are discussed in detail in Chapter \ref{ch:dev/stepper} and \ref{ch:dev/navigator} respectively.
 
 Apart from the conceptual idea of steering the propagation from the algorithm, the individual components were decoupled to increase separation of concerns.
 
@@ -32,20 +43,13 @@ Apart from the conceptual idea of steering the propagation from the algorithm, t
     \item an inversion of this would increase readability and maintainability and decouple the algorithms from the propagation
 \end{itemize}
 
-Algorithms which depend on the propagation are currently implemented as \texttt{Actor}s which are called by the propagation after each step. This has the disadvantage that the algorithms are tightly coupled to the propagation and the propagation is stearing the control flow of the algorithm. Instead of the algorithm asking the propagation to reach for the next sensitive surface, the propagation is instructed to traverse the geometry and call the algorithm at each step.
+Algorithms which depend on the propagation are currently implemented as \texttt{Actor}s which are called by the propagation after each step. While this mechanism is sufficient to support all the current algorithms, it has the disadvantage that the algorithms are tightly coupled to the propagation and that the propagation end up stearing the control flow of the algorithm. Instead of the algorithm asking the propagation to reach for the next sensitive surface, the propagation is instructed to traverse the geometry and call the algorithm at each step.
 
 Trying to understand what an algorithm is doing also requires to understand what the propagation is doing. This can become a major issue and very time consuming. During the work on this thesis numerous improvements and fixes were made to the propagation, the stepping, and the navigation. This required a deep understanding of these concepts and the implementation. At the same time this was not the main goal of the thesis. The main goal was to study the track finding performance and to improve it. During this work it became clear that this can only be achieved by also improving the propagation.
 
 As a result of this experience a new steering mechanism for the propagation was conceptualized. The idea is to invert the control flow and let the algorithm steer the propagation. This would decouple the algorithm from the propagation and increase readability and maintainability. The algorithm would be able to decide when to stop the propagation and when to continue. The propagation would only be responsible for the geometry traversal and the algorithm would be responsible for the track finding for instance.
 
 The \texttt{Propagator} was modified to allow for the creation of a propagation state object by the user which can then be used to start and continue the propagation while an aborter can be used to stop the propagation at any time. An algorithm can use this mechanism to propagate from one surface to another and deal with the reached surfaces from outside the propagation. A next step would be to implement an algorithm like the Kalman track fitter using this mechanism and compare the performance and readability to the current implementation. This was not part of this thesis but is a promising direction for future work.
-
-\section{Track EDM}
-
-\begin{itemize}
-    \color{red}
-    \item this should contain an extensive description of the track EDM
-\end{itemize}
 
 \section{A new measurement projection mechanism}
 
@@ -60,6 +64,8 @@ The \texttt{Propagator} was modified to allow for the creation of a propagation 
 
 \begin{itemize}
     \color{red}
+    \item what is the purpose of developing the examples framework
+    \item high level overview of the examples framework developments
     \item Aliasing mechanism
     \item Geant4 integration
     \item Event and detector simulation with ACTS
@@ -73,6 +79,7 @@ The \texttt{Propagator} was modified to allow for the creation of a propagation 
     \color{red}
     \item what is ambiguity resolution
     \item what is greedy ambiguity resolution
+    \item show a simple table for a ttbar pu 200 event with efficiency, fake, and duplicate rates
 \end{itemize}
 
 After track finding we are left with track candidates which might contain duplicate and fake tracks. These ambiguities have to be resolved to get a clean track collection that represents the event as good as possible. The ambiguity resolution is a crucial step in the tracking workflow and can be done in different ways. The greedy ambiguity resolution is a simple and fast method to resolve ambiguities. It is based on the idea that the best track candidate is the one with the most hits and least shared hits. If two track candidates share hits, the one with the best $\chi^2$ is chosen. This process is repeated until no ambiguities are left.
@@ -100,7 +107,8 @@ The goal of this implementation was to be lightweight and flexible to align with
 
 \begin{itemize}
     \color{red}
-    \item show how the different boundary tolerances look like
+    \item plot/show an example with euclidean boundary tolerance
+    \item mention absolute bound/cartesian but remove them from the implementation. why are they not useful?
 \end{itemize}
 
 The boundary tolerance is a powerful concept in ACTS which is not utilized to its full extend yet. Each \texttt{Surface} holds \texttt{SurfaceBounds} which define the boundary of the surface. During propagation we approximate the trajectory of a particle by a straight line. This approximation is only correct if no forces act on the particle. In reality the trajectory will be bent by the magnetic field or the particle undergoes scattering. To account for these effects during propagation one can enlargen the surface boundary using a tolerance.
@@ -112,21 +120,22 @@ The parameterization of the boundary tolerance in ACTS can take different forms:
 \begin{description}
     \item[None] The boundary tolerance is disabled and the surface boundary is used as is.
     \item[Infinite] The boundary tolerance is infinite and the surface boundary is ignored.
-    \item[Absolute Bound] The boundary tolerance is a vector in bound coordinates. Given a point to check, the closest point on the boundary is computed and the difference in bound coordinates is checked against the tolerance vector. Only if both coordinates are within the tolerance, the boundary check is considered as passed.
-    \item[Absolute Cartesian] The boundary tolerance is a vector in cartesian coordinates in native length units. Given a point to check, the closest point on the boundary is computed and the difference in cartesian coordinates is checked against the tolerance vector. Only if both coordinates are within the tolerance, the boundary check is considered as passed. This relies on the Jacobian of the coordinate transformation and is only appropriate for small distances.
-    \item[Absolute Euclidean] The boundary tolerance is a scalar value in native length units. Given a point to check, the closest point on the boundary is computed and the euclidean distance is checked against the tolerance. Only if the distance is within the tolerance, the boundary check is considered as passed. This relies on the Jacobian of the coordinate transformation and is only appropriate for small distances.
-    \item[$\chi^2$ Bound] The boundary tolerance consists of a $\chi^2$ cut value and a weight matrix in bound coordinates. Given a point to check, the closest point on the boundary is computed and the difference in bound coordinates is used to calculate a $\chi^2$ value using the weight matrix. Only if the $\chi^2$ value is below the cut value, the boundary check is considered as passed.
+    \item[Absolute bound] The boundary tolerance is a vector in bound coordinates. Given a point to check, the closest point on the boundary is computed and the difference in bound coordinates is checked against the tolerance vector. Only if both coordinates are within the tolerance, the boundary check is considered as passed.
+    \item[Absolute cartesian] The boundary tolerance is a vector in cartesian coordinates in native length units. Given a point to check, the closest point on the boundary is computed and the difference in cartesian coordinates is checked against the tolerance vector. Only if both coordinates are within the tolerance, the boundary check is considered as passed. This relies on the Jacobian of the coordinate transformation and is only appropriate for small distances.
+    \item[Absolute euclidean] The boundary tolerance is a scalar value in native length units. Given a point to check, the closest point on the boundary is computed and the euclidean distance is checked against the tolerance. Only if the distance is within the tolerance, the boundary check is considered as passed. This relies on the Jacobian of the coordinate transformation and is only appropriate for small distances.
+    \item[$\chi^2$ bound] The boundary tolerance consists of a $\chi^2$ cut value and a weight matrix in bound coordinates. Given a point to check, the closest point on the boundary is computed and the difference in bound coordinates is used to calculate a $\chi^2$ value using the weight matrix. Only if the $\chi^2$ value is below the cut value, the boundary check is considered as passed.
 \end{description}
 
 The implementation of the boundary check using the tolerance has to be provided by an implementation of the \texttt{SurfaceBounds} and is used by the \texttt{Surface} for intersection checks and global to local conversions. Since the boundary check using a tolerance can be tedious to implement, two general purpose default implementations are provided by ACTS: a rectangle bounds check and a convex polygon bounds check. Almost all surface bounds can be represented with these two cases in bound coordinates.
 
-\section{Implementation of the mBF Smoother}
+\section{Implementation of the mBF smoother}
 
 \begin{itemize}
     \color{red}
     \item what is the mBF smoother
     \item why is it important
     \item how is it implemented
+    \item show simple table with performance comparison
 \end{itemize}
 
 The modified Bryson-Frazier (mBF) smoother is an alternative to the Rauch-Tung-Striebel (RTS) smoother with potential advantages in terms of numerical stability and performance. The mBF smoother does not rely on the inversion of the covariance matrix in parameter space and can reuse information from the forward filter to improve compute performance further.
