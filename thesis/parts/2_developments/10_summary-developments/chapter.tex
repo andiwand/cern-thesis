@@ -1,17 +1,26 @@
-\begin{itemize}
-    \color{red}
-    \item N prs merged during the course of this thesis
-    \item summarize: what was done, what was achieved, what is the impact
-    \begin{itemize}
-        \item particle hypothesis
-        \item hardening navigation robustness
-        \item improved stepper performance
-        \item improved and modularization of the track finding
-    \end{itemize}
-    \item focus was on track finding, which then included propagation, stepping and navigation
-\end{itemize}
+A lot of developments were done during the course of this thesis. The previous chapters framed the big topics of these developments. This included developments on the propagation, the support for dense material during propagation, the improvements to the track finding, and developments on 4D tracking. A total of 574 pull requests were merged to ACTS \texttt{main} during the course of this thesis. Some of them were small bug fixes, others large scale refactors, and some were new features. All of them contributed to the overall goal of improving ACTS and making it more experiment independent, adaptable, maintainable, and efficient. Software is not a stationary object as its environment is usually not and requires continuous maintainance and improvements.
+
+One of the central features conceptualized and implemented during this thesis was the introduction of the particle hypothesis. It is a crucial part of reconstruction and unavoidable for an experiment independent track reconstruction toolkit.
+
+The navigation was hardened and made more robust. This has direct implications to track finding and fitting, which relies on the navigation to find the relevant sensors. In physics terms this can make a difference for the efficiency, purity, and fake rate.
+
+The stepping performance was improved substantially with the implementation of the \texttt{SympyStepper}. The performance improvements are crucial for the track finding and fitting, as the stepping is a central part of the track propagation. The approach of using symbolic mathematics to generate code might have further applications in the future.
+
+The track finding has been effectively redesigned and modularized. The new design provides the building blocks for a track finding solution and puts the user in control of the finding procedure. This allows for more aggressive optimizations and experiment specific solutions.
+
+Not all ideas have been followed up and implemented which is summarized in the following sections. This includes shortcoming during the work on this thesis and proposals for future developments.
 
 \section{Shortcomings}
+
+\begin{itemize}
+    \color{red}
+    \item navigation: external surfaces, target surface approach
+    \item track finding: edge holes, multi surface, track state creator, ...
+    \item dense material: multiple scattering vs geant4
+    \item 4d tracking: analytical gaussian seeder
+\end{itemize}
+
+\section{Proposals for future developments}
 
 \begin{itemize}
     \color{red}
@@ -22,8 +31,6 @@
     \end{itemize}
     \item time is not switchable
 \end{itemize}
-
-\section{Proposals for future developments}
 
 \begin{itemize}
     \color{red}

@@ -9,9 +9,7 @@
 
 ## current
 
-- [ ] general developments chapter
 - [ ] develoment summary chapter
-  - get a list of future work
 - [ ] get a sensible todo list
 - [ ] define ITk performance outline
   - rename / focus on track finding using CKF
@@ -88,18 +86,16 @@
     - [ ] 3.7. The Open Data Detector
     - [ ] 3.8. Tracking on Accelerators with traccc and detray
 - [ ] II. Developments
-  - [ ] ✔️ 4. General deveopments of ACTS
-    - [ ] ✔️ Into text
-    - [ ] 4.1. Timeline
-    - [ ] ✔️ 4.2. Propagator Developments
-      - [ ] ✔️ 4.2.1. An alternative steering mechanism
-    - [ ] 4.3. Track EDM
-    - [ ] 4.4. A new measurement projection mechanism
-    - [ ] 4.5. Examples Framework
-    - [ ] ✔️ 4.6. Implementation of a greedy Ambiguity Resolution
-    - [ ] ✔️ 4.7. Implementation of a Particle Hypothesis
-    - [ ] ✔️ 4.8. Redesign for Boundary Tolerance
-    - [ ] ✔️ 4.9. Implementation of the mBF Smoother
+  - [ ] ✔️✔️ 4. General deveopments of ACTS
+    - [ ] ✔️✔️ Into text
+    - [ ] ✔️✔️ 4.1. Propagator Developments
+      - [ ] ✔️✔️ 4.1.1. An alternative steering mechanism
+    - [ ] ✔️✔️ 4.2. A new measurement projection mechanism
+    - [ ] ✔️✔️ 4.3. Developments on the Examples framework
+    - [ ] ✔️✔️ 4.4. Implementation of GreedyAmbiguityResolution
+    - [ ] ✔️✔️ 4.5. Implementation of ParticleHypothesis
+    - [ ] ✔️✔️ 4.6. Redesign of BoundaryTolerance
+    - [ ] ✔️✔️ 4.7. Implementation of MbfSmoother
   - [x] 5. Stepper developments
     - [x] Into text
     - [x] 5.1. Reworking the ConstrainedStep
@@ -149,12 +145,8 @@
     - [ ] ✔️✔️✔️ 9.8. Summary and outlook
   - [ ] 10. Summary of developments
     - [ ] Into text
-    - [ ] 10.1. Discussion about virtual interfaces
-    - [ ] 10.2. Proposal for future developments
-      - [ ] 10.2.1. Explicit propagation loop and separation of concern
-      - [ ] 10.2.2. Caller/callee inversion for propagation dependent Algorithms
-      - [ ] 10.2.3. A detector agnostic geometry identifier and hierarchy map
-    - [ ] 10.3. Shortcomings and Future Work
+    - [ ] 10.1. Shortcomings
+    - [ ] 10.2. Proposals for future developments
 - [ ] III. Performance
   - [ ] 11. Open Data Detector tracking performance with ACTS
     - [ ] Intro text
@@ -164,11 +156,6 @@
     - [ ] 11.2. Ambiguity resolution
     - [ ] 11.3. Track fitting
     - [ ] 11.4. Vertexing
-    - [ ] 11.5. 4D tracking performance with ACTS
-      - [ ] 11.5.1. 4D track finding performance
-      - [ ] 11.5.2. 4D track fitting performance
-      - [ ] 11.5.3. 4D vertex finding performance
-      - [ ] 11.5.4. 4D vertex fitting performance
   - [ ] 12. ITk tracking performance with ACTS
     - [ ] Intro text
 - [ ] IV. Conclusion and Outlook
