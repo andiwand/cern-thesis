@@ -21,19 +21,13 @@ During the work on this thesis several improvements were made to the \texttt{Pro
 \subsection{An alternative steering mechanism}
 \label{subsec:dev/general/alternative-steering}
 
-\begin{itemize}
-    \color{red}
-    \item currently our algorithms run inside the propagation
-    \item an inversion of this would increase readability and maintainability and decouple the algorithms from the propagation
-\end{itemize}
+Reconstruction algorithms which depend on the propagation are currently implemented as \texttt{Actor}s. They are part of the propagation loop and called after each step. While this mechanism is sufficient to host all current algorithms, it has the disadvantage of tight coupling to the propagation. With this design, the propagation ends up stearing the control flow of reconstruction algorithms. Instead of the algorithm asking the propagation to reach for the next sensitive surface, the propagation is instructed to traverse the geometry and call the algorithm's \texttt{Actor} after each step.
 
-Algorithms which depend on the propagation are currently implemented as \texttt{Actor}s which are called by the propagation after each step. While this mechanism is sufficient to support all the current algorithms, it has the disadvantage that the algorithms are tightly coupled to the propagation and that the propagation end up stearing the control flow of the algorithm. Instead of the algorithm asking the propagation to reach for the next sensitive surface, the propagation is instructed to traverse the geometry and call the algorithm at each step.
+Under these circumstances, trying to understand what an algorithm is doing also requires to understand what the propagation is doing. During the work on this thesis numerous improvements and fixes were made to the propagation, the stepping, and the navigation. This required a deep understanding of these concepts and the implementation. At the same time this was not the main goal of the thesis. The main goal was to study the track finding performance and to improve it, but it became clear that this can only be achieved by also improving the propagation.
 
-Trying to understand what an algorithm is doing also requires to understand what the propagation is doing. This can become a major issue and very time consuming. During the work on this thesis numerous improvements and fixes were made to the propagation, the stepping, and the navigation. This required a deep understanding of these concepts and the implementation. At the same time this was not the main goal of the thesis. The main goal was to study the track finding performance and to improve it. During this work it became clear that this can only be achieved by also improving the propagation.
+As a result of this experience a new steering mechanism for the propagation was conceptualized. The idea is to invert the control flow and let the algorithm steer the propagation. This would decouple the algorithm from the propagation loop and increase readability and maintainability. The algorithm would instruct the propagation when to stop beforehand and when to continue. The propagation would only be responsible for the geometry traversal and the algorithm would be responsible for the track finding for instance.
 
-As a result of this experience a new steering mechanism for the propagation was conceptualized. The idea is to invert the control flow and let the algorithm steer the propagation. This would decouple the algorithm from the propagation and increase readability and maintainability. The algorithm would be able to decide when to stop the propagation and when to continue. The propagation would only be responsible for the geometry traversal and the algorithm would be responsible for the track finding for instance.
-
-The \texttt{Propagator} was modified to allow for the creation of a propagation state object by the user which can then be used to start and continue the propagation while an aborter can be used to stop the propagation at any time. An algorithm can use this mechanism to propagate from one surface to another and deal with the reached surfaces from outside the propagation. A next step would be to implement an algorithm like the Kalman track fitter using this mechanism and compare the performance and readability to the current implementation. This was not part of this thesis but is a promising direction for future work.
+The \texttt{Propagator} was modified to allow for the creation of a \texttt{PropagatorState} object by the user which can then be used to start and continue the propagation while an aborter can be used to stop the propagation at any time. An algorithm can use this mechanism to propagate from one surface to another and deal with the reached surfaces outside the propagation loop. A next step would be to implement an algorithm like the Kalman track fitter using this mechanism and compare the performance and readability to the current implementation. This was not done as part of this thesis but is an interesting direction for future work.
 
 \section{A new measurement projection mechanism}
 
@@ -58,7 +52,7 @@ To validate and improve the track finding in ACTS Core, the Examples framework w
     \item[Vertexing developments] Studying the vertexing performance required to effectively rewrite the \texttt{VertexNTupleWriter}, which is responsible for writing the reconstructed and truth matched vertices to an output file. The output now also includes metrics like vertex density, track contamination, split rates, and merge rates. Additionally, the \texttt{TruthVertexSeeder} was implemented to allow measuring the finding performance independent from the seeder performance.
 \end{description}
 
-\section{Implementation of a greedy ambiguity resolution}
+\section{Implementation of \texttt{GreedyAmbiguityResolution}}
 
 \begin{itemize}
     \color{red}
@@ -73,22 +67,15 @@ Such a greedy ambiguity resolution algorithm was implemented in ACTS as part of 
 
 The user can provide a custom track selector to define the quality of a track and a custom track comparator to define the order of tracks. The track selector is used to filter out tracks that are not considered for the ambiguity resolution. The track comparator is used to compare two tracks and decide which one is better. The user can provide a custom track selector and track comparator to implement their own ambiguity resolution strategy.
 
-\section{Implementation of a particle hypothesis}
+\section{Implementation of \texttt{ParticleHypothesis}}
 
-\begin{itemize}
-    \color{red}
-    \item what is a particle hypothesis
-    \item why is it important
-    \item how is it implemented
-\end{itemize}
+The particle hypothesis is an important concept in reconstruction. Usually we do not know the particle type which generated a track, but in order to reconstruct the track, we have to make an assumption to predict the trajectory of the unknown particle. These assumptions can be summarized as a \texttt{ParticleHypothesis} and provided by the user. This information is stored along the track to record these assumptions.
 
-The particle hypothesis is an important concept in reconstruction. Usually we do not know the particle type which generated a track but in order to reconstruct the track we have to make an assumption to predict the trajectory of the unknown particle. These assumptions can be summarized as a particle hypothesis and provided by the user. At the same time we want to store this information along with the track to keep track of these assumptions.
+Before this implementation, ACTS was missing a central definition of a particle hypothesis. Parameters like mass and charge were input to different modules and algorithms, but there was no consistent way to set it in a single place by the user. During the work on this thesis, \texttt{ParticleHypothesis} was conceptualized and implemented in ACTS.
 
-ACTS was missing a central definition of a particle hypothesis. Parameters like mass and charge were put in different places and were not consistently accessible by the user. During the work on this thesis a particle hypothesis was conceptualized and implemented in ACTS.
+The goal of this implementation was to be lightweight and flexible to align with the experiment independent design of ACTS. The material interaction model of ACTS only requires the mass, charge, and particle type. To avoid maintaining a full list of particles it was preferred to keep these parameters generic and only have a few common particles predefined. The user can define their own particles by providing the mass, charge, and particle type. The particle type is modeled as an integer holding the absolute PDG code of the particle. The sign of the PDG code encodes the sign of the charge. Since the material interactions in ACTS are symmetric with respect to the charge sign, this information can be omitted. The mass and charge are stored as \texttt{float}s.
 
-The goal of this implementation was to be lightweight and flexible to align with the experiment independent design of ACTS. The material interaction model of ACTS only requires the mass, charge, and particle type. To avoid maintaining a full list of particles it was preferred to keep these parameters generic and have a few common particles predefined. The user can then define their own particles by providing the mass, charge, and particle type. The particle type is modeled as an integer holding the absolute PDG code of the particle. The sign of the PDG code encodes the sign of the charge and since the ACTS material interaction model is symmetric with respect to the charge sign this information can be omitted. The mass and charge are stored as \texttt{float}s.
-
-\section{Redesign of boundary tolerance}
+\section{Redesign of \texttt{BoundaryTolerance}}
 
 \begin{itemize}
     \color{red}
@@ -96,9 +83,9 @@ The goal of this implementation was to be lightweight and flexible to align with
     \item mention absolute bound/cartesian but remove them from the implementation. why are they not useful?
 \end{itemize}
 
-The boundary tolerance is a powerful concept in ACTS which is not utilized to its full extend yet. Each \texttt{Surface} holds \texttt{SurfaceBounds} which define the boundary of the surface. During propagation we approximate the trajectory of a particle by a straight line. This approximation is only correct if no forces act on the particle. In reality the trajectory will be bent by the magnetic field or the particle undergoes scattering. To account for these effects during propagation one can enlargen the surface boundary using a tolerance.
+The boundary tolerance is a powerful concept in ACTS which is not utilized to its full extend yet. Each \texttt{Surface} holds \texttt{SurfaceBounds} which define the boundary of the surface. During propagation, the trajectory of a particle is approximated by a straight line. This approximation is only correct if no forces act on the particle. In reality, the trajectory will be bent by the magnetic field or redirected via scattering. To account for these effects during propagation, one can enlargen the surface boundary using a tolerance.
 
-The concept and implementation of the boundary tolerance has been reworked as part of this thesis. There are two parts of the implementation: the parameterization of the boundary tolerance and the implementation of the boundary check using the tolerance.
+The concept and implementation of the boundary tolerance has been reworked as during the work on this thesis. There are two parts of the implementation: the parameterization of the boundary tolerance and the implementation of the boundary check using the tolerance.
 
 The parameterization of the boundary tolerance in ACTS can take different forms: none, infinite, absolute bound, absolute cartesian, absolute euclidean, and $\chi^2$ bound.
 
@@ -111,20 +98,18 @@ The parameterization of the boundary tolerance in ACTS can take different forms:
     \item[$\chi^2$ bound] The boundary tolerance consists of a $\chi^2$ cut value and a weight matrix in bound coordinates. Given a point to check, the closest point on the boundary is computed and the difference in bound coordinates is used to calculate a $\chi^2$ value using the weight matrix. Only if the $\chi^2$ value is below the cut value, the boundary check is considered as passed.
 \end{description}
 
-The implementation of the boundary check using the tolerance has to be provided by an implementation of the \texttt{SurfaceBounds} and is used by the \texttt{Surface} for intersection checks and global to local conversions. Since the boundary check using a tolerance can be tedious to implement, two general purpose default implementations are provided by ACTS: a rectangle bounds check and a convex polygon bounds check. Almost all surface bounds can be represented with these two cases in bound coordinates.
+A boundary check with tolerance has to be provided by an implementation of \texttt{SurfaceBounds} and is used by the \texttt{Surface} for intersection checks and global to local conversions. Since the boundary check using a tolerance can be tedious to implement, two general purpose default implementations are provided by ACTS: a rectangle bounds check and a convex polygon bounds check. Almost all surface bounds can be represented with these two cases in local coordinates.
 
-\section{Implementation of the mBF smoother}
+\section{Implementation of \texttt{MbfSmoother}}
 
 \begin{itemize}
     \color{red}
-    \item what is the mBF smoother
-    \item why is it important
-    \item how is it implemented
+    \item formalism?
     \item show simple table with performance comparison
 \end{itemize}
 
-The modified Bryson-Frazier (mBF) smoother is an alternative to the Rauch-Tung-Striebel (RTS) smoother with potential advantages in terms of numerical stability and performance. The mBF smoother does not rely on the inversion of the covariance matrix in parameter space and can reuse information from the forward filter to improve compute performance further.
+The modified Bryson-Frazier (mBF) smoother is an alternative to the Rauch-Tung-Striebel (RTS) smoother with potential advantages in terms of numerical stability and performance. The mBF smoother does not rely on the inversion of the covariance matrix in parameter space and can reuse information from the forward filter to improve the computational performance further.
 
-The RTS smoother is a long standing feature of ACTS and is called \texttt{GainMatrixSmoother}. The mBF smoother was implemented as part of this thesis, is called \texttt{MbfSmoother} and is a drop-in replacement for the RTS smoother. The user can choose between the two smoothers in the relevant algorithms like the Kalman track fitter. The implementation of the mBF smoother does not resuse information from the forward filter yet as this requires additional information on the track state and error handling.
+The RTS smoother is a long standing feature of ACTS and is called \texttt{GainMatrixSmoother}. The mBF smoother was implemented during the work on this thesis. It is called \texttt{MbfSmoother} and is a drop-in replacement for the RTS smoother. The user can choose between the two smoothers in the relevant tools or algorithms, for instance the Kalman track fitter. The implementation of the mBF smoother does not resuse information from the forward filter yet. This requires additional information on the track state and error handling and is planned for future work.
 
 Even without the reuse of information the mBF smoother was measured to be about 2 times faster than the RTS smoother in a standard track finding and fitting workflow with the Open Data Detector. The performance gain can be attributed to the simpler matrix inversion and the accelerated handling of material states. While the RTS smoother has to perform a covariance matrix inversion for each material state, the mBF smoother does not perform any matrix inversion in this case.
