@@ -12,37 +12,26 @@ Not all ideas have been followed up and implemented which is summarized in the f
 
 \section{Shortcomings}
 
-\begin{itemize}
-    \color{red}
-    \item navigation: external surfaces, target surface approach
-    \item track finding: edge holes, multi surface, track state creator, ...
-    \item dense material: multiple scattering vs geant4
-    \item 4d tracking: analytical gaussian seeder
-\end{itemize}
+The computational performance of the \texttt{SympyStepper} is still not on par with the \texttt{AtlasStepper}. Stepping plays a central role in tracking and its performance directly affects the performance of the track finding and fitting. Closing this gap could reduce the CPU time during track finding by a few percent.
+
+The navigation could be generalized further by combining and integrating the target surface approach with the external surfaces. Currently, the target approach is handled by an propagation \texttt{Actor} which acts like a second navigator. This is necessary because the target surface is usually not part of the geometry. The same is true for external surfaces. The navigation could be further improved by providing a more general approach to handle these cases.
+
+Surface ambiguity arises when multiple surfaces are close to each other. The navigation has to decide which one to target even though both might be compatible with the current track hypothesis. This effect can lead to inefficiencies during track finding.
+
+The track finding has been reworked. However, there are still some shortcomings. Edge holes are not handled properly and can lead to inefficiencies during track finding. Handling multiple compatible surfaces is not implemented which can also result in inefficiencies if relevant. ACTS could provide a modular implementation of the track state creator which generalized to different experiments and allows for customizations.
+
+A solution to stepping in dense material has beed proposed and implemented. In comparison to Geant4, not all material effects seem to be taken into account or are not taken into account the same way. This can lead to discrepancies between simulation and reconstruction which can affect the physics performance of the track finding and fitting.
+
+4D tracking in ACTS has made a big step forward. But there is only a single vertex seeder implementation that supports time information. To validate its performance, the truth based seeder can be used for now. Adaptation of the analytical gaussian track density seeder to support time information is not yet implemented.
 
 \section{Proposals for future developments}
 
-\begin{itemize}
-    \color{red}
-    \item some parts are not experiment independent
-    \begin{itemize}
-        \item track parameterization is fixed
-        \item units and constants are fixed
-    \end{itemize}
-    \item time is not switchable
-\end{itemize}
+Experiment independence is a key feature of ACTS. To further improve this, the track parameterization should be customizable. This includes the potential unused time parameters. Similarly, the units and constants should be customizable to give experiments more control over the numerical precision. This is a fairly long term goal and potentially requires large scale refactors. But keeping it in mind might open up new possibilities for the future.
 
-\begin{itemize}
-    \color{red}
-    \item to overcome shortcomings and to reduce technical dept
-    \item Caller/callee inversion for propagation dependent algorithms
-    \item \begin{itemize}
-        \item as mentioned in chapter 4
-    \end{itemize}
-    \item A detector agnostic geometry identifier and hierarchy map
-    \item Re-evaluation of virtual interfaces
-    \begin{itemize}
-        \item geometry and magnetic field are fully virtual propagator and track EDM is not but why?
-    \end{itemize}
-    \item Free vs bound parameters for propagation
-\end{itemize}
+The caller and callee inversion for propagation dependent algorithms has the potential to make ACTS more readable and maintainable. This will most likely not impact performance but can make the code more accessible to new developers. Additionally, debugging and profiling can be easier with this approach. This can be pioneered with the \texttt{KalmanFitter} and later discussed with the community.
+
+The geometry identification is ad-hoc and not flexible. As such, experiments have to adapt to the ACTS geometry identification or create a mapping from their own scheme. The main use case for this identification is to map the hierarchical structure of the detector which then allows to identify important subdetectors, like pixel or strip detectors. A flexible approach could allow experiments to define their own hierarchy and identification scheme.
+
+The usage of virtual interfaces is not consistent throughout ACTS. While the geometry and magnetic field are fully virtual, the propagator and track EDM use template based interfaces instead. The main argument to choose the template based approach was performance. However, the performance impact of virtual interfaces is usually negligible. The virtual interfaces can make the code more readable and maintainable. This should be re-evaluated and potentially changed.
+
+Currently, the propagation can only be started from bound parameters and if final parameters are requested, it will return bound parameters. Using free track parameters for either one, start or end, would be an equally valid choice. The main reason for this is that algorithms like the \texttt{KalmanFitter} require bound parameters to handle bound measurements. Changing this would require a flexible handling of the transport Jacobian and covariance matrix. Free parameters might be preferable during vertexing and for measurements that are not bound to a surface.
