@@ -5,7 +5,12 @@
 - [ ] ✔️✔️✔️ self read and corrected
 - [x] other read and corrected
 
-## plan
+## potential
+
+- mBF smoother formalism vs gain matrix formalism
+- flow diagram of the greedy ambiguity solver
+- add stuff to the developments summary
+  - other shortcomings: 3D surface tolerance, track EDM dynamic columns for vectors and matrices
 
 ## current
 
@@ -20,7 +25,7 @@
   - pull distribution
   - fitting the core of a gaussian-like distribution
 
-## plots
+### plots
 
 - [ ] ODD
   - [ ] schematic plot
@@ -29,7 +34,7 @@
   - [ ] schematic plot
   - [ ] expected measurements over eta/phi
 
-## scripts
+### scripts
 
 - [ ] ODD+ACTS performance scripts
   - [ ] track finding
@@ -143,10 +148,10 @@
     - [ ] ✔️✔️✔️ 9.6. Vertex finding with time
     - [ ] ✔️✔️✔️ 9.7. Vertex fitting with time
     - [ ] ✔️✔️✔️ 9.8. Summary and outlook
-  - [ ] 10. Summary of developments
-    - [ ] Into text
-    - [ ] 10.1. Shortcomings
-    - [ ] 10.2. Proposals for future developments
+  - [ ] ✔️✔️✔️ 10. Summary of developments
+    - [ ] ✔️✔️✔️ Into text
+    - [ ] ✔️✔️✔️ 10.1. Shortcomings
+    - [ ] ✔️✔️✔️ 10.2. Proposals for future developments
 - [ ] III. Performance
   - [ ] 11. Open Data Detector tracking performance with ACTS
     - [ ] Intro text
