@@ -16,6 +16,7 @@ from acts.examples.simulation import (
     ParticleSelectorConfig,
     addSimParticleSelection,
 )
+import acts.examples.geant4
 
 from mycommon.events import get_event_details
 
@@ -241,14 +242,10 @@ def add_my_material_scan(
         )
         output_files.append({"file": "material_tracks.root"})
     elif sim_label == "geant4":
-        detectorConstructionFactory = (
-            acts.examples.geant4.dd4hep.DDG4DetectorConstructionFactory(detector)
-        )
-
         sequencer.addAlgorithm(
             acts.examples.geant4.Geant4MaterialRecording(
                 level=logLevel,
-                detectorConstructionFactory=detectorConstructionFactory,
+                detector=detector,
                 randomNumbers=rnd,
                 inputParticles=input_particles,
                 outputMaterialTracks="material_tracks",

@@ -1,6 +1,7 @@
 from mycommon.events import (
     list_event_sim_labels,
     split_event_sim_label,
+    get_event_details,
     get_number_of_events as get_number_of_events_,
     get_events_per_slice as get_events_per_slice_,
     get_skip_events as get_skip_events_,
@@ -12,6 +13,19 @@ def get_scan_threads(wildcards):
 
 def get_sim_threads(wildcards):
     return 1
+
+def get_sim_mem_mb(wildcards):
+    event_sim_label = wildcards["event_sim_label"]
+    event, sim = split_event_sim_label(event_sim_label)
+    event_type, _ = get_event_details(event)
+    if sim == "fatras":
+        return 100
+    if sim == "geant4":
+        if event_type == "single_particles":
+            return 1000
+        if event_type == "ttbar":
+            return 10000
+    raise ValueError(f"Unknown event sim label: {event_sim_label}")
 
 def get_number_of_events(wildcards):
     event_sim_label = wildcards["event_sim_label"]

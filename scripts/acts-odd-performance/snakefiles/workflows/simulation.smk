@@ -33,6 +33,8 @@ rule simulation_slice:
         stdout = "data/acts-odd-performance/sim/{event_sim_label}/slices/{skip}_{events}/stdout.txt",
         stderr = "data/acts-odd-performance/sim/{event_sim_label}/slices/{skip}_{events}/stderr.txt",
     threads: get_sim_threads
+    resources:
+        mem_mb = get_sim_mem_mb
     shell:
         """
         scripts/activate_and_run.sh python {input.script} \
