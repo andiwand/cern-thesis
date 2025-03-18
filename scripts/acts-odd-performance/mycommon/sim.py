@@ -5,16 +5,17 @@ import acts
 from acts.examples.simulation import (
     addParticleGun,
     addPythia8,
+    addGenParticleSelection,
     MomentumConfig,
     EtaConfig,
     PhiConfig,
     ParticleConfig,
     addFatras,
     addGeant4,
+    addSimWriters,
     ParticleSelectorConfig,
+    addSimParticleSelection,
 )
-import acts.examples.geant4
-import acts.examples.geant4.dd4hep
 
 from mycommon.events import get_event_details
 
@@ -22,7 +23,7 @@ from mycommon.events import get_event_details
 u = acts.UnitConstants
 
 
-def addMyEventGen(
+def add_my_event_gen(
     output_files: list[dict[str, str]],
     sequencer: acts.examples.Sequencer,
     event_label: str,
@@ -85,10 +86,8 @@ def addMyEventGen(
             vtxGen=hllhcVtxGen,
             outputDirRoot=outputDirRoot,
         )
-        output_files.append(
-            {"file": "pythia8_particles.root", "move": "particles.root"}
-        )
-        output_files.append({"file": "pythia8_vertices.root", "move": "vertices.root"})
+        output_files.append({"file": "particles.root"})
+        output_files.append({"file": "vertices.root"})
 
         return
 
@@ -116,13 +115,14 @@ def addMyEventGen(
             outputDirRoot=outputDirRoot,
         )
         output_files.append({"file": "particles.root"})
+        output_files.append({"file": "vertices.root"})
 
         return
 
     raise ValueError(f"unknown event type: {event_type}")
 
 
-def addMySimulation(
+def add_my_simulation(
     output_files: list[dict[str, str]],
     sequencer: acts.examples.Sequencer,
     sim_label: str,
@@ -130,11 +130,9 @@ def addMySimulation(
     field: acts.MagneticFieldProvider,
     rnd: acts.examples.RandomNumbers,
     detector: Optional[Any] = None,
-    inputParticles: str = "particles_input",
+    input_particles: str = "particles_generated_selected",
     outputDirCsv: Optional[Union[Path, str]] = None,
     outputDirRoot: Optional[Union[Path, str]] = None,
-    preSelectParticles: Optional[ParticleSelectorConfig] = ParticleSelectorConfig(),
-    postSelectParticles: Optional[ParticleSelectorConfig] = None,
     logLevel: Optional[acts.logging.Level] = None,
 ) -> None:
     if sim_label == "fatras":
@@ -144,14 +142,9 @@ def addMySimulation(
             field=field,
             rnd=rnd,
             enableInteractions=True,
-            preSelectParticles=preSelectParticles,
-            postSelectParticles=postSelectParticles,
-            inputParticles=inputParticles,
-            outputDirCsv=outputDirCsv,
-            outputDirRoot=outputDirRoot,
+            inputParticles=input_particles,
             logLevel=logLevel,
         )
-        output_files.append({"file": "hits.root"})
     elif sim_label == "geant4":
         addGeant4(
             s=sequencer,
@@ -159,43 +152,54 @@ def addMySimulation(
             trackingGeometry=tracking_geometry,
             field=field,
             rnd=rnd,
-            inputParticles=inputParticles,
-            preSelectParticles=preSelectParticles,
-            postSelectParticles=postSelectParticles,
+            inputParticles=input_particles,
             killVolume=tracking_geometry.highestTrackingVolume,
             killAfterTime=25 * u.ns,
-            outputDirCsv=outputDirCsv,
-            outputDirRoot=outputDirRoot,
+            #killMinEnergy=100 * u.MeV,
+            #killMinMomentum=100 * u.MeV,
             logLevel=logLevel,
         )
-        output_files.append({"file": "hits.root"})
     else:
         raise ValueError(f"unknown simulation label: {sim_label}")
 
+    addSimParticleSelection(
+        s=sequencer,
+        config=ParticleSelectorConfig(
+            pt=(0.1 * u.GeV, None),
+            removeNeutral=True,
+        ),
+        logLevel=logLevel,
+    )
 
-def addMyDetectorScan(
+    addSimWriters(
+        s=sequencer,
+        simHits="simhits",
+        particlesSimulated="particles_simulated_selected",
+        outputDirCsv=outputDirCsv,
+        outputDirRoot=outputDirRoot,
+        logLevel=logLevel,
+    )
+    output_files.append({"file": "particles_simulation.root"})
+    output_files.append({"file": "hits.root"})
+
+
+def add_my_material_scan(
     output_files: list[dict[str, str]],
     sequencer: acts.examples.Sequencer,
     sim_label: str,
     tracking_geometry: acts.TrackingGeometry,
     detector: Optional[Any],
     rnd: acts.examples.RandomNumbers,
-    inputParticles: str = "particles_input",
+    input_particles: str = "particles_generated_selected",
     outputDirRoot: Optional[Union[Path, str]] = None,
     logLevel: acts.logging.Level = acts.logging.INFO,
 ):
     if sim_label == "fatras":
         sequencer.addAlgorithm(
-            acts.examples.ParticleSmearing(
+            acts.examples.ParticleTrackParamExtractor(
                 level=logLevel,
-                inputParticles="particles_input",
+                inputParticles=input_particles,
                 outputTrackParameters="start_parameters",
-                randomNumbers=rnd,
-                sigmaD0=0.0,
-                sigmaZ0=0.0,
-                sigmaPhi=0.0,
-                sigmaTheta=0.0,
-                sigmaPtRel=0.0,
             )
         )
 
@@ -246,7 +250,7 @@ def addMyDetectorScan(
                 level=logLevel,
                 detectorConstructionFactory=detectorConstructionFactory,
                 randomNumbers=rnd,
-                inputParticles=inputParticles,
+                inputParticles=input_particles,
                 outputMaterialTracks="material_tracks",
             )
         )
@@ -274,7 +278,7 @@ def add_my_simulation_chain(
     rnd: acts.examples.RandomNumbers,
     tp: Path,
 ):
-    addMyEventGen(
+    add_my_event_gen(
         output_files=output_files,
         sequencer=sequencer,
         event_label=event_label,
@@ -282,7 +286,16 @@ def add_my_simulation_chain(
         outputDirRoot=tp,
     )
 
-    addMySimulation(
+    addGenParticleSelection(
+        sequencer,
+        ParticleSelectorConfig(
+            # these cuts are necessary because of pythia
+            rho=(0.0, 24 * u.mm),
+            absZ=(0.0, 1.0 * u.m),
+        ),
+    )
+
+    add_my_simulation(
         output_files=output_files,
         sequencer=sequencer,
         sim_label=sim_label,
@@ -290,18 +303,6 @@ def add_my_simulation_chain(
         field=field,
         rnd=rnd,
         detector=detector,
-        preSelectParticles=ParticleSelectorConfig(
-            # these cuts are necessary because of pythia
-            rho=(0.0, 24 * u.mm),
-            absZ=(0.0, 1.0 * u.m),
-        ),
-        postSelectParticles=ParticleSelectorConfig(
-            # these cuts should not be necessary for sim
-            eta=(-3.0, 3.0),
-            # using something close to 1 to include for sure
-            pt=(0.9 * u.GeV, None),
-            removeNeutral=True,
-        ),
         outputDirRoot=tp,
     )
 
@@ -316,7 +317,7 @@ def add_my_material_scan_chain(
     rnd: acts.examples.RandomNumbers,
     tp: Path,
 ):
-    addMyEventGen(
+    add_my_event_gen(
         output_files=output_files,
         sequencer=sequencer,
         event_label=event_label,
@@ -324,7 +325,7 @@ def add_my_material_scan_chain(
         outputDirRoot=tp,
     )
 
-    addMyDetectorScan(
+    add_my_material_scan(
         output_files=output_files,
         sequencer=sequencer,
         sim_label=sim_label,

@@ -21,9 +21,9 @@ def get_odd():
     material_deco = acts.IMaterialDecorator.fromFile(material_map)
 
     # ODD
-    detector, tracking_geometry, decorators = getOpenDataDetector(
-        mdecorator=material_deco, odd_dir=geo_dir
-    )
+    detector = getOpenDataDetector(odd_dir=geo_dir, mdecorator=material_deco)
+    tracking_geometry = detector.trackingGeometry()
+    decorators = detector.contextDecorators()
     field = acts.ConstantBField(acts.Vector3(0.0, 0.0, 2.0 * u.T))
 
     _odd_cache = (

@@ -5,25 +5,24 @@
         \item physics impact
     \end{itemize}
     \item what are the main performance metrics?
+    \item mention+cite CTD contribution, what is the difference to today?
     \item how do we measure the performance
     \begin{itemize}
-        \item simulation and params
-        \item reconstruction chain and params
+        \item simulation, params, cuts
+        \item reconstruction chain, params, cuts
         \item aggregation of the performance metrics
     \end{itemize}
-\end{itemize}
-
-\begin{itemize}
-    \color{red}
     \item what are the limitations of performance studies with ACTS Examples?
+    \item pre conditions
     \begin{itemize}
-        \item simplified digitization
+        \item material mapping
+        \item magnetic field
+        \item alignment
+        \item fast digitization - for digital we do not need any plots, for geometric it would be good
     \end{itemize}
 \end{itemize}
 
-\section{Track finding}
-
-\subsection{Seeding}
+\section{Seeding}
 
 \begin{itemize}
     \color{red}
@@ -33,7 +32,7 @@
         \item efficiency
         \item fake rate
         \item purity
-        \item initial parameter residuals
+        \item initial parameter residuals?
     \end{itemize}
     \item above metrics as a function of
     \begin{itemize}
@@ -42,7 +41,7 @@
     \end{itemize}
 \end{itemize}
 
-\subsection{Combinatorial Kalman Filter}
+\section{Combinatorial Kalman Filter}
 
 \begin{itemize}
     \color{red}
@@ -63,16 +62,27 @@
 
 \section{Ambiguity resolution}
 
+\begin{itemize}
+    \color{red}
+    \item explain the ambiguity resolution algorithm
+    \item show the performance of the ambiguity resolution compared to the CKF
+\end{itemize}
+
 \section{Track fitting}
 
 \begin{itemize}
     \color{red}
-    \item IP resolution
+    \item explain the track fitting algorithm
+    \item why refit after finding?
+    \item IP resolution vs CKF
 \end{itemize}
 
 \section{Vertexing}
 
 \begin{itemize}
     \color{red}
+    \item explain the vertexing algorithm
+    \item resolutions and pulls for hard scatter
+    \item efficiency, split rate, merge rate vs pileup
     \item 3D vs 4D
 \end{itemize}

@@ -8,24 +8,38 @@ rule all_simulation:
 
 rule simulation:
     input:
+        expand(
+            "data/acts-odd-performance/sim/{{event_sim_label}}/slices/{skip}_{events}/{{sim_output}}",
+            skip=get_skip_events,
+            events=get_events_per_slice,
+        )
+    output:
+        "data/acts-odd-performance/sim/{event_sim_label}/{sim_output}",
+    shell:
+        """
+        scripts/activate_and_run.sh hadd -f {output} {input}
+        rm -f {input}
+        """
+
+
+rule simulation_slice:
+    input:
         script = "scripts/acts-odd-performance/simulation.py",
     output:
-        expand("data/acts-odd-performance/sim/{{event_sim_label}}/{sim_output}", sim_output=SIM_OUTPUTS),
+        expand("data/acts-odd-performance/sim/{{event_sim_label}}/slices/{{skip}}_{{events}}/{sim_output}", sim_output=SIM_OUTPUTS),
     params:
-        outdir = "data/acts-odd-performance/sim/{event_sim_label}",
-        skip = 0,
-        events = get_number_of_events,
+        outdir = "data/acts-odd-performance/sim/{event_sim_label}/slices/{skip}_{events}",
     log:
-        stdout = "data/acts-odd-performance/sim/{event_sim_label}/stdout.txt",
-        stderr = "data/acts-odd-performance/sim/{event_sim_label}/stderr.txt",
+        stdout = "data/acts-odd-performance/sim/{event_sim_label}/slices/{skip}_{events}/stdout.txt",
+        stderr = "data/acts-odd-performance/sim/{event_sim_label}/slices/{skip}_{events}/stderr.txt",
     threads: get_sim_threads
     shell:
         """
         scripts/activate_and_run.sh python {input.script} \
           {wildcards.event_sim_label} \
           {params.outdir} \
-          --skip {params.skip} \
-          --events {params.events} \
+          --skip {wildcards.skip} \
+          --events {wildcards.events} \
           --threads {threads} \
           > {log.stdout} \
           2> {log.stderr}

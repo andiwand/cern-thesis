@@ -11,19 +11,19 @@ def list_event_labels(config):
             )
         ]
         + [f"1{particle}-pt1-100GeV" for particle in ["mu", "pi", "e"]]
-        + [f"ttbar-pu{pu}" for pu in config["events"]["others"]["pileups"]]
+        + [f"ttbar-pu{config["events"]["ttbar"]["pileup"]}"]
     )
 
 
 def list_sim_labels(config):
-    return config["simulations"]
+    return config["simulation"]["algorithms"]
 
 
 def list_event_sim_labels(config):
     return [
         create_event_sim_label(event, simulation)
         for event, simulation in itertools.product(
-            list_event_labels(config), config["simulations"]
+            list_event_labels(config), list_sim_labels(config)
         )
     ]
 
@@ -40,17 +40,23 @@ def split_event_sim_label(event_sim_label):
 
 
 def get_number_of_events(config, event_sim_label):
-    return config["number_of_events"]
+    event, _ = split_event_sim_label(event_sim_label)
+    if event.startswith("ttbar"):
+        return config["events"]["ttbar"]["number_of_events"]
+    return config["events"]["single_particles"]["number_of_events"]
 
 
 def get_events_per_slice(config, event_sim_label):
-    return config["events_per_slice"]
+    event, _ = split_event_sim_label(event_sim_label)
+    if event.startswith("ttbar"):
+        return config["events"]["ttbar"]["events_per_slice"]
+    return config["events"]["single_particles"]["events_per_slice"]
 
 
 def get_skip_events(config, event_sim_label):
     total = get_number_of_events(config, event_sim_label)
     step = get_events_per_slice(config, event_sim_label)
-    return range(0, total, step), step
+    return range(0, total, step)
 
 
 def get_event_details(event_label):

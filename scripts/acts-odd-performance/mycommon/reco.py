@@ -5,7 +5,7 @@ from collections import namedtuple
 import acts
 from acts.examples.simulation import (
     addDigitization,
-    addParticleSelection,
+    addDigiParticleSelection,
     ParticleSelectorConfig,
 )
 from acts.examples.reconstruction import (
@@ -93,7 +93,7 @@ def get_reco_config(event, seeding) -> RecoConfig:
     )
 
 
-def addMySeeding(
+def add_my_seeding(
     sequencer: acts.examples.Sequencer,
     seeding_label: str,
     trackingGeometry: acts.TrackingGeometry,
@@ -208,7 +208,7 @@ def add_my_reconstruction_chain(
         # outputDirRoot=tp,
     )
 
-    addParticleSelection(
+    addDigiParticleSelection(
         sequencer,
         ParticleSelectorConfig(
             rho=(0.0, 24 * u.mm),
@@ -226,7 +226,7 @@ def add_my_reconstruction_chain(
     sequencer.addWhiteboardAlias("particles", "particles_input")
     sequencer.addWhiteboardAlias("particles_selected", "my_particles_selected")
 
-    addMySeeding(
+    add_my_seeding(
         sequencer,
         seeding_label,
         tracking_geometry,
