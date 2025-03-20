@@ -150,6 +150,7 @@ def add_my_simulation(
             logLevel=logLevel,
         )
     elif sim_label == "geant4":
+        # kill secondaries in case of single particles as this overflows the barcode
         kill_secondaries = event_type =="single_particles"
 
         addGeant4(

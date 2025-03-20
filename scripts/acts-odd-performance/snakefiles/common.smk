@@ -24,7 +24,7 @@ def get_sim_mem_mb(wildcards):
         if event_type == "single_particles":
             return 1000
         if event_type == "ttbar":
-            return 10000
+            return 15000
     raise ValueError(f"Unknown event sim label: {event_sim_label}")
 
 def get_number_of_events(wildcards):
