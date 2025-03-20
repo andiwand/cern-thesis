@@ -126,6 +126,7 @@ def add_my_event_gen(
 def add_my_simulation(
     output_files: list[dict[str, str]],
     sequencer: acts.examples.Sequencer,
+    event_label: str,
     sim_label: str,
     tracking_geometry: acts.TrackingGeometry,
     field: acts.MagneticFieldProvider,
@@ -136,6 +137,8 @@ def add_my_simulation(
     outputDirRoot: Optional[Union[Path, str]] = None,
     logLevel: Optional[acts.logging.Level] = None,
 ) -> None:
+    event_type, event_details = get_event_details(event_label)
+
     if sim_label == "fatras":
         addFatras(
             s=sequencer,
@@ -147,6 +150,8 @@ def add_my_simulation(
             logLevel=logLevel,
         )
     elif sim_label == "geant4":
+        kill_secondaries = event_type =="single_particles"
+
         addGeant4(
             s=sequencer,
             detector=detector,
@@ -158,6 +163,7 @@ def add_my_simulation(
             killAfterTime=25 * u.ns,
             #killMinEnergy=100 * u.MeV,
             #killMinMomentum=100 * u.MeV,
+            killSecondaries=kill_secondaries,
             logLevel=logLevel,
         )
     else:
@@ -295,6 +301,7 @@ def add_my_simulation_chain(
     add_my_simulation(
         output_files=output_files,
         sequencer=sequencer,
+        event_label=event_label,
         sim_label=sim_label,
         tracking_geometry=tracking_geometry,
         field=field,
