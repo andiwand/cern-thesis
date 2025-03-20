@@ -6,7 +6,7 @@ def list_event_labels(config):
     return (
         [
             f"1{particle}-pt{pt}GeV"
-            for particle, pt in zip(
+            for particle, pt in itertools.product(
                 ["mu", "pi", "e"], config["events"]["single_particles"]["pts"]
             )
         ]
@@ -28,8 +28,16 @@ def list_event_sim_labels(config):
     ]
 
 
+def list_reco_labels(config):
+    return [create_reco_label(seeding) for seeding in config["reconstruction"]["seeding"]]
+
+
 def create_event_sim_label(event_label, sim_label):
     return f"{event_label}_{sim_label}"
+
+
+def create_reco_label(seeding):
+    return f"{seeding}"
 
 
 def split_event_sim_label(event_sim_label):
@@ -37,6 +45,10 @@ def split_event_sim_label(event_sim_label):
     if m:
         return m.group(1), m.group(2)
     raise ValueError(f"unknown event label {event_sim_label}")
+
+
+def split_reco_label(reco_label):
+    return reco_label
 
 
 def get_number_of_events(config, event_sim_label):

@@ -9,8 +9,7 @@ from acts.examples.simulation import (
     ParticleSelectorConfig,
 )
 from acts.examples.reconstruction import (
-    TruthSeedRanges,
-    ParticleSmearingSigmas,
+    TrackSmearingSigmas,
     SeedingAlgorithm,
     SeedFinderConfigArg,
     addSeeding,
@@ -23,6 +22,7 @@ from acts.examples.reconstruction import (
     VertexFinder,
     addVertexFitting,
 )
+from mycommon.config import split_reco_label
 
 
 u = acts.UnitConstants
@@ -35,35 +35,31 @@ RecoConfig = namedtuple(
 )
 
 
-def list_reco_labels(config):
-    return [create_reco_label(seeding) for seeding in config["seedings"]]
+def get_reco_config(event_sim_label, reco_label) -> RecoConfig:
+    def make_geoid(vol=None, lay=None):
+        geoid = acts.GeometryIdentifier()
+        if vol is not None:
+            geoid.volume = vol
+        if lay is not None:
+            geoid.layer = lay
+        return geoid
 
-
-def create_reco_label(seeding):
-    return f"{seeding}"
-
-
-def split_reco_label(reco_label):
-    return reco_label
-
-
-def get_reco_config(event, seeding) -> RecoConfig:
     measurementCounter = acts.TrackSelector.MeasurementCounter()
     # At least 1 hit on the first pixel layers
     measurementCounter.addCounter(
         [
-            acts.GeometryIdentifier().setVolume(16).setLayer(16),
-            acts.GeometryIdentifier().setVolume(17).setLayer(2),
-            acts.GeometryIdentifier().setVolume(18).setLayer(2),
+            make_geoid(16, 16),
+            make_geoid(17, 2),
+            make_geoid(18, 2),
         ],
         1,
     )
     # At least 3 hits in the pixels
     measurementCounter.addCounter(
         [
-            acts.GeometryIdentifier().setVolume(16),
-            acts.GeometryIdentifier().setVolume(17),
-            acts.GeometryIdentifier().setVolume(18),
+            make_geoid(16),
+            make_geoid(17),
+            make_geoid(18),
         ],
         3,
     )
@@ -113,7 +109,7 @@ def add_my_seeding(
     initialSigmaPtRel = 0.1
     initialVarInflation = [1e0, 1e0, 1e0, 1e0, 1e0, 1e0]
 
-    particleSmearingSigmas = None
+    trackSmearingSigmas = None
     seedFinderConfigArg = None
 
     particleHypothesis = acts.ParticleHypothesis.pion
@@ -125,14 +121,14 @@ def add_my_seeding(
         initialSimgaQoverPCoefficients = None
         initialVarInflation = [1e1, 1e1, 1e1, 1e1, 1e1, 1e1]
 
-        particleSmearingSigmas = ParticleSmearingSigmas(
-            d0=20 * u.um,
-            d0PtA=30 * u.um,
-            d0PtB=0.3 / u.GeV,
-            z0=20 * u.um,
-            z0PtA=30 * u.um,
-            z0PtB=0.3 / u.GeV,
-            t0=25 * u.mm,
+        trackSmearingSigmas = TrackSmearingSigmas(
+            loc0=20 * u.um,
+            loc0PtA=30 * u.um,
+            loc0PtB=0.3 / u.GeV,
+            loc1=20 * u.um,
+            loc1PtA=30 * u.um,
+            loc1PtB=0.3 / u.GeV,
+            time=25 * u.mm,
             phi=0.1 * u.degree,
             theta=0.1 * u.degree,
             ptRel=0.01,
@@ -170,14 +166,8 @@ def add_my_seeding(
         field,
         rnd=rnd,
         seedingAlgorithm=seedingAlgorithm,
-        truthSeedRanges=TruthSeedRanges(
-            # using something close to 1 to include for sure
-            pt=(0.999 * u.GeV, None),
-            eta=(-3.0, 3.0),
-            nHits=(3, None),
-        ),
+        trackSmearingSigmas=trackSmearingSigmas,
         particleHypothesis=particleHypothesis,
-        particleSmearingSigmas=particleSmearingSigmas,
         seedFinderConfigArg=seedFinderConfigArg,
         initialSigmas=initialSigmas,
         initialSigmaPtRel=initialSigmaPtRel,
@@ -190,7 +180,7 @@ def add_my_seeding(
 def add_my_reconstruction_chain(
     output_files: list[dict[str, str]],
     sequencer: acts.examples.Sequencer,
-    seeding_label: str,
+    reco_label: str,
     tracking_geometry: acts.TrackingGeometry,
     digi_config: str,
     seeding_sel: str,
@@ -199,6 +189,8 @@ def add_my_reconstruction_chain(
     rnd: acts.examples.RandomNumbers,
     tp: Path,
 ):
+    seeding_label = split_reco_label(reco_label)
+
     addDigitization(
         sequencer,
         tracking_geometry,
@@ -219,12 +211,7 @@ def add_my_reconstruction_chain(
             measurements=(7, None),
             removeNeutral=True,
         ),
-        inputParticles="particles_input",
-        outputParticles="my_particles_selected",
-        inputMeasurementParticlesMap="measurement_particles_map",
     )
-    sequencer.addWhiteboardAlias("particles", "particles_input")
-    sequencer.addWhiteboardAlias("particles_selected", "my_particles_selected")
 
     add_my_seeding(
         sequencer,
@@ -233,8 +220,10 @@ def add_my_reconstruction_chain(
         field,
         rnd=rnd,
         geoSelectionConfigFile=seeding_sel,
-        # outputDirRoot=tp,
+        outputDirRoot=tp,
     )
+    if seeding_label != "truth_smeared":
+        output_files.append({"file": "performance_seeding.root"})
 
     addCKFTracks(
         sequencer,
@@ -244,8 +233,8 @@ def add_my_reconstruction_chain(
         ckfConfig=reco_config.ckf_config,
         outputDirRoot=tp,
     )
-    output_files.append({"file": "tracksummary_ckf.root"})
-    output_files.append({"file": "performance_ckf.root"})
+    output_files.append({"file": "performance_finding_ckf.root"})
+    output_files.append({"file": "performance_fitting_ckf.root"})
 
     addAmbiguityResolution(
         sequencer,
@@ -257,12 +246,13 @@ def add_my_reconstruction_chain(
         name="ambi",
         tracks="tracks",
         outputDirRoot=tp,
+        writeSummary=False,
         writeStates=False,
-        writeSummary=True,
-        writeCKFperformance=True,
+        writeFitterPerformance=True,
+        writeFinderPerformance=True,
+        writeCovMat=False,
     )
-    output_files.append({"file": "tracksummary_ambi.root"})
-    output_files.append({"file": "performance_ambi.root"})
+    output_files.append({"file": "performance_finding_ambi.root"})
 
     sequencer.addAlgorithm(
         acts.examples.TracksToParameters(

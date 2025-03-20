@@ -1,5 +1,6 @@
-from mycommon.events import (
+from mycommon.config import (
     list_event_sim_labels,
+    list_reco_labels,
     split_event_sim_label,
     get_event_details,
     get_number_of_events as get_number_of_events_,
@@ -14,6 +15,9 @@ def get_scan_threads(wildcards):
 def get_sim_threads(wildcards):
     return 1
 
+def get_reco_threads(wildcards):
+    return 1
+
 def get_sim_mem_mb(wildcards):
     event_sim_label = wildcards["event_sim_label"]
     event, sim = split_event_sim_label(event_sim_label)
@@ -26,6 +30,9 @@ def get_sim_mem_mb(wildcards):
         if event_type == "ttbar":
             return 15000
     raise ValueError(f"Unknown event sim label: {event_sim_label}")
+
+def get_reco_mem_mb(wildcards):
+    return 500
 
 def get_number_of_events(wildcards):
     event_sim_label = wildcards["event_sim_label"]
@@ -43,12 +50,16 @@ def get_skip_events(wildcards):
 configfile: "scripts/acts-odd-performance/config.yaml"
 
 
-SIM_OUTPUTS = ["particles.root", "vertices.root", "particles_simulation.root", "hits.root"]
 EVENT_SIM_LABELS = list_event_sim_labels(config)
+RECO_LABELS = list_reco_labels(config)
+SIM_OUTPUTS = ["particles.root", "vertices.root", "particles_simulation.root", "hits.root"]
+RECO_OUTPUTS = ["performance_finding_ckf.root", "performance_fitting_ckf.root"]
 
 
 wildcard_constraints:
     skip="[0-9]+",
     events="[0-9]+",
+    event_sim_label="|".join(EVENT_SIM_LABELS),
+    reco_label="|".join(RECO_LABELS),
     sim_output="|".join(SIM_OUTPUTS),
-    event_sim_label="|".join(EVENT_SIM_LABELS)
+    reco_output="|".join(RECO_OUTPUTS)

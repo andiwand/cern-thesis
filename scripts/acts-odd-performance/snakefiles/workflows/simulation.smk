@@ -12,7 +12,7 @@ rule simulation:
             "data/acts-odd-performance/sim/{{event_sim_label}}/slices/{skip}_{events}/{{sim_output}}",
             skip=get_skip_events,
             events=get_events_per_slice,
-        )
+        ),
     output:
         "data/acts-odd-performance/sim/{event_sim_label}/{sim_output}",
     shell:

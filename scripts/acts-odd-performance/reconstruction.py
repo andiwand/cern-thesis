@@ -8,12 +8,12 @@ from typing import Optional
 
 import acts
 
-from mycommon.events import split_event_sim_label
+from mycommon.config import split_event_sim_label
 from mycommon.detector import get_odd
 from mycommon.rng import get_rng
 from mycommon.sequencer import get_sequencer
 from mycommon.sim import add_my_simulation_chain
-from mycommon.reco import split_reco_label, get_reco_config, add_my_reconstruction_chain
+from mycommon.reco import get_reco_config, add_my_reconstruction_chain
 
 
 def main():
@@ -28,9 +28,6 @@ def main():
     parser.add_argument("--use-event-seed", action="store_true", help="Use event seed")
     args = parser.parse_args()
 
-    event_label, simulation_label = split_event_sim_label(args.event_sim_label)
-    seeding_label = split_reco_label(args.reco_label)
-
     simdir = None if args.simdir is None else Path(args.simdir)
     outdir = Path(args.outdir)
     skip = args.skip
@@ -41,9 +38,8 @@ def main():
             threads=args.threads,
             use_event_seed=args.use_event_seed,
             tp=Path(temp),
-            event_label=event_label,
-            simulation_label=simulation_label,
-            seeding_label=seeding_label,
+            event_sim_label=args.event_sim_label,
+            reco_label=args.reco_label,
             simdir=simdir,
             outdir=outdir,
             skip=skip,
@@ -55,9 +51,8 @@ def run_reconstruction(
     threads: int,
     use_event_seed: bool,
     tp: Path,
-    event_label: str,
-    simulation_label: str,
-    seeding_label: str,
+    event_sim_label: str,
+    reco_label: str,
     simdir: Optional[Path],
     outdir: Path,
     skip: int,
@@ -65,7 +60,8 @@ def run_reconstruction(
 ):
     detector, tracking_geometry, decorators, field, digi_config, seeding_sel = get_odd()
 
-    reco_config = get_reco_config(event_label, seeding_label)
+    event_label, sim_label = split_event_sim_label(event_sim_label)
+    reco_config = get_reco_config(event_sim_label, reco_label)
 
     output_files = []
 
@@ -84,15 +80,22 @@ def run_reconstruction(
         sequencer.addReader(
             acts.examples.RootParticleReader(
                 level=acts.logging.WARNING,
-                outputParticles="particles_input",
+                outputParticles="particles_generated_selected",
                 filePath=simdir / "particles.root",
             )
         )
         sequencer.addReader(
             acts.examples.RootVertexReader(
                 level=acts.logging.WARNING,
-                outputVertices="vertices_input",
+                outputVertices="vertices_truth",
                 filePath=simdir / "vertices.root",
+            )
+        )
+        sequencer.addReader(
+            acts.examples.RootParticleReader(
+                level=acts.logging.WARNING,
+                outputParticles="particles_simulated",
+                filePath=simdir / "particles_simulation.root",
             )
         )
         sequencer.addReader(
@@ -103,12 +106,16 @@ def run_reconstruction(
                 filePath=simdir / "hits.root",
             )
         )
+
+        # TODO define reco cuts here
+        sequencer.addWhiteboardAlias("particles", "particles_simulated")
+        sequencer.addWhiteboardAlias("particles_simulated_selected", "particles_simulated")
     else:
         add_my_simulation_chain(
             output_files=[],  # not outputting the simulation files
             sequencer=sequencer,
             event_label=event_label,
-            simulation_label=simulation_label,
+            sim_label=sim_label,
             tracking_geometry=tracking_geometry,
             detector=detector,
             field=field,
@@ -119,7 +126,7 @@ def run_reconstruction(
     add_my_reconstruction_chain(
         output_files=output_files,
         sequencer=sequencer,
-        seeding_label=seeding_label,
+        reco_label=reco_label,
         tracking_geometry=tracking_geometry,
         digi_config=digi_config,
         seeding_sel=seeding_sel,

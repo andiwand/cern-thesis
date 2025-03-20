@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 import shutil
 
-from mycommon.events import split_event_sim_label
+from mycommon.config import split_event_sim_label
 from mycommon.detector import get_odd
 from mycommon.rng import get_rng
 from mycommon.sequencer import get_sequencer
