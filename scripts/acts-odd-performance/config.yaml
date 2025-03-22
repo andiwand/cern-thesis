@@ -16,7 +16,7 @@ simulation:
     algorithms: ["fatras", "geant4"]
 
 reconstruction:
-    seeding: ["truth_smeared", "truth_estimated", "default"]
+    seeding: ["truth-smeared", "truth-estimated", "triplet"]
 
     ttbar:
         pileups: [0, 30, 60, 90, 120, 150, 200]

@@ -22,7 +22,7 @@ from acts.examples.reconstruction import (
     VertexFinder,
     addVertexFitting,
 )
-from mycommon.config import split_reco_label
+from mycommon.config import split_reco_label, split_event_sim_label, get_event_details
 
 
 u = acts.UnitConstants
@@ -35,7 +35,9 @@ RecoConfig = namedtuple(
 )
 
 
-def get_reco_config(event_sim_label, reco_label) -> RecoConfig:
+def get_reco_config(event_label, sim_label, reco_label) -> RecoConfig:
+    seeding = split_reco_label(reco_label)
+
     def make_geoid(vol=None, lay=None):
         geoid = acts.GeometryIdentifier()
         if vol is not None:
@@ -66,25 +68,23 @@ def get_reco_config(event_sim_label, reco_label) -> RecoConfig:
 
     return RecoConfig(
         track_selector_config=TrackSelectorConfig(
-            pt=(0.9 * u.GeV, None),
+            pt=(0.7 * u.GeV, None),
             absEta=(None, 3.5),
-            loc0=(-4.0 * u.mm, 4.0 * u.mm),
-            nMeasurementsMin=7,
-            nMeasurementsGroupMin=measurementCounter,
+            nMeasurementsMin=6,
+            #nMeasurementsGroupMin=measurementCounter,
             maxHolesAndOutliers=3,
         ),
         ckf_config=CkfConfig(
             chi2CutOffMeasurement=15.0,
             chi2CutOffOutlier=25.0,
-            numMeasurementsCutOff=3,
-            # TODO for non truth smeared seeding
-            # seedDeduplication=True,
-            # stayOnSeed=True,
+            numMeasurementsCutOff=1,
+            seedDeduplication=seeding != "truth-smeared",
+            stayOnSeed=seeding != "truth-smeared",
         ),
         ambi_config=AmbiguityResolutionConfig(
             maximumSharedHits=3,
-            maximumIterations=100000000,
-            nMeasurementsMin=7,
+            maximumIterations=100000,
+            nMeasurementsMin=6,
         ),
     )
 
@@ -103,7 +103,7 @@ def add_my_seeding(
         1 * u.mm,
         1 * u.degree,
         1 * u.degree,
-        0 / u.GeV,
+        0.1 / u.GeV,
         1 * u.ns,
     ]
     initialSigmaPtRel = 0.1
@@ -114,11 +114,10 @@ def add_my_seeding(
 
     particleHypothesis = acts.ParticleHypothesis.pion
 
-    if seeding_label == "truth_smeared":
+    if seeding_label == "truth-smeared":
         seedingAlgorithm = SeedingAlgorithm.TruthSmeared
 
         initialSigmas = None
-        initialSimgaQoverPCoefficients = None
         initialVarInflation = [1e1, 1e1, 1e1, 1e1, 1e1, 1e1]
 
         trackSmearingSigmas = TrackSmearingSigmas(
@@ -136,17 +135,18 @@ def add_my_seeding(
 
         # note that this will use the true hypothesis
         particleHypothesis = None
-    elif seeding_label == "truth_estimated":
+    elif seeding_label == "truth-estimated":
         seedingAlgorithm = SeedingAlgorithm.TruthEstimated
 
         # note that this will use the true hypothesis
         particleHypothesis = None
-    elif seeding_label == "default":
+    elif seeding_label == "triplet":
         seedingAlgorithm = SeedingAlgorithm.Default
 
         seedFinderConfigArg = SeedFinderConfigArg(
             r=(33 * u.mm, 200 * u.mm),
-            deltaR=(1 * u.mm, 60 * u.mm),
+            # kills efficiency at |eta|~2
+            #deltaR=(1 * u.mm, 60 * u.mm),
             collisionRegion=(-250 * u.mm, 250 * u.mm),
             z=(-2000 * u.mm, 2000 * u.mm),
             maxSeedsPerSpM=1,
@@ -181,6 +181,7 @@ def add_my_reconstruction_chain(
     output_files: list[dict[str, str]],
     sequencer: acts.examples.Sequencer,
     reco_label: str,
+    event_label: str,
     tracking_geometry: acts.TrackingGeometry,
     digi_config: str,
     seeding_sel: str,
@@ -190,6 +191,7 @@ def add_my_reconstruction_chain(
     tp: Path,
 ):
     seeding_label = split_reco_label(reco_label)
+    event_type, _ = get_event_details(event_label)
 
     addDigitization(
         sequencer,
@@ -222,7 +224,7 @@ def add_my_reconstruction_chain(
         geoSelectionConfigFile=seeding_sel,
         outputDirRoot=tp,
     )
-    if seeding_label != "truth_smeared":
+    if seeding_label != "truth-smeared":
         output_files.append({"file": "performance_seeding.root"})
 
     addCKFTracks(
@@ -231,119 +233,121 @@ def add_my_reconstruction_chain(
         field,
         trackSelectorConfig=reco_config.track_selector_config,
         ckfConfig=reco_config.ckf_config,
+        twoWay=True,
         outputDirRoot=tp,
     )
     output_files.append({"file": "performance_finding_ckf.root"})
     output_files.append({"file": "performance_fitting_ckf.root"})
 
-    addAmbiguityResolution(
-        sequencer,
-        config=reco_config.ambi_config,
-        # outputDirRoot=tp,
-    )
-    addTrackWriters(
-        sequencer,
-        name="ambi",
-        tracks="tracks",
-        outputDirRoot=tp,
-        writeSummary=False,
-        writeStates=False,
-        writeFitterPerformance=True,
-        writeFinderPerformance=True,
-        writeCovMat=False,
-    )
-    output_files.append({"file": "performance_finding_ambi.root"})
-
-    sequencer.addAlgorithm(
-        acts.examples.TracksToParameters(
-            level=acts.logging.INFO,
-            inputTracks="tracks",
-            outputTrackParameters="track_parameters",
+    if event_type == "ttbar":
+        addAmbiguityResolution(
+            sequencer,
+            config=reco_config.ambi_config,
+            # outputDirRoot=tp,
         )
-    )
+        addTrackWriters(
+            sequencer,
+            name="ambi",
+            tracks="tracks",
+            outputDirRoot=tp,
+            writeSummary=False,
+            writeStates=False,
+            writeFitterPerformance=True,
+            writeFinderPerformance=True,
+            writeCovMat=False,
+        )
+        output_files.append({"file": "performance_finding_ambi.root"})
 
-    addVertexFitting(
-        sequencer,
-        field,
-        trackParameters="track_parameters",
-        outputProtoVertices="tvf_protovertices",
-        outputVertices="tvf_fittedVertices",
-        vertexFinder=VertexFinder.Truth,
-        outputDirRoot=tp / "tvf",
-    )
-    output_files.append(
-        {
-            "file": "tvf/performance_vertexing.root",
-            "move": "performance_tvf.root",
-        }
-    )
+        sequencer.addAlgorithm(
+            acts.examples.TracksToParameters(
+                level=acts.logging.INFO,
+                inputTracks="tracks",
+                outputTrackParameters="track_parameters",
+            )
+        )
 
-    addVertexFitting(
-        sequencer,
-        field,
-        trackParameters="track_parameters",
-        outputProtoVertices="ivf_protovertices",
-        outputVertices="ivf_fittedVertices",
-        vertexFinder=VertexFinder.Iterative,
-        outputDirRoot=tp / "ivf",
-    )
-    output_files.append(
-        {
-            "file": "ivf/performance_vertexing.root",
-            "move": "performance_ivf.root",
-        }
-    )
+        addVertexFitting(
+            sequencer,
+            field,
+            trackParameters="track_parameters",
+            outputProtoVertices="tvf_protovertices",
+            outputVertices="tvf_fittedVertices",
+            vertexFinder=VertexFinder.Truth,
+            outputDirRoot=tp / "tvf",
+        )
+        output_files.append(
+            {
+                "file": "tvf/performance_vertexing.root",
+                "move": "performance_tvf.root",
+            }
+        )
 
-    addVertexFitting(
-        sequencer,
-        field,
-        trackParameters="track_parameters",
-        outputProtoVertices="amvf_gauss_protovertices",
-        outputVertices="amvf_gauss_fittedVertices",
-        seeder=acts.VertexSeedFinder.GaussianSeeder,
-        useTime=False,
-        vertexFinder=VertexFinder.AMVF,
-        outputDirRoot=tp / "amvf_gauss",
-    )
-    output_files.append(
-        {
-            "file": "amvf_gauss/performance_vertexing.root",
-            "move": "performance_amvf_gauss.root",
-        }
-    )
+        addVertexFitting(
+            sequencer,
+            field,
+            trackParameters="track_parameters",
+            outputProtoVertices="ivf_protovertices",
+            outputVertices="ivf_fittedVertices",
+            vertexFinder=VertexFinder.Iterative,
+            outputDirRoot=tp / "ivf",
+        )
+        output_files.append(
+            {
+                "file": "ivf/performance_vertexing.root",
+                "move": "performance_ivf.root",
+            }
+        )
 
-    addVertexFitting(
-        sequencer,
-        field,
-        trackParameters="track_parameters",
-        outputProtoVertices="amvf_truth_notime_protovertices",
-        outputVertices="amvf_truth_notime_fittedVertices",
-        seeder=acts.VertexSeedFinder.TruthSeeder,
-        useTime=False,
-        vertexFinder=VertexFinder.AMVF,
-        outputDirRoot=tp / "amvf_truth_notime",
-    )
-    output_files.append(
-        {
-            "file": "amvf_truth_notime/performance_vertexing.root",
-            "move": "performance_amvf_truth_notime.root",
-        }
-    )
+        addVertexFitting(
+            sequencer,
+            field,
+            trackParameters="track_parameters",
+            outputProtoVertices="amvf_gauss_protovertices",
+            outputVertices="amvf_gauss_fittedVertices",
+            seeder=acts.VertexSeedFinder.GaussianSeeder,
+            useTime=False,
+            vertexFinder=VertexFinder.AMVF,
+            outputDirRoot=tp / "amvf_gauss",
+        )
+        output_files.append(
+            {
+                "file": "amvf_gauss/performance_vertexing.root",
+                "move": "performance_amvf_gauss.root",
+            }
+        )
 
-    addVertexFitting(
-        sequencer,
-        field,
-        trackParameters="track_parameters",
-        outputProtoVertices="amvf_truth_time_protovertices",
-        outputVertices="amvf_truth_time_fittedVertices",
-        seeder=acts.VertexSeedFinder.TruthSeeder,
-        useTime=True,
-        vertexFinder=VertexFinder.AMVF,
-        outputDirRoot=tp / "amvf_truth_time",
-    )
-    output_files.append(
-        {
-            "file": "amvf_truth_time/performance_vertexing.root",
-            "move": "performance_amvf_truth_time.root",
-        }
-    )
+        addVertexFitting(
+            sequencer,
+            field,
+            trackParameters="track_parameters",
+            outputProtoVertices="amvf_truth_notime_protovertices",
+            outputVertices="amvf_truth_notime_fittedVertices",
+            seeder=acts.VertexSeedFinder.TruthSeeder,
+            useTime=False,
+            vertexFinder=VertexFinder.AMVF,
+            outputDirRoot=tp / "amvf_truth_notime",
+        )
+        output_files.append(
+            {
+                "file": "amvf_truth_notime/performance_vertexing.root",
+                "move": "performance_amvf_truth_notime.root",
+            }
+        )
+
+        addVertexFitting(
+            sequencer,
+            field,
+            trackParameters="track_parameters",
+            outputProtoVertices="amvf_truth_time_protovertices",
+            outputVertices="amvf_truth_time_fittedVertices",
+            seeder=acts.VertexSeedFinder.TruthSeeder,
+            useTime=True,
+            vertexFinder=VertexFinder.AMVF,
+            outputDirRoot=tp / "amvf_truth_time",
+        )
+        output_files.append(
+            {
+                "file": "amvf_truth_time/performance_vertexing.root",
+                "move": "performance_amvf_truth_time.root",
+            }
+        )

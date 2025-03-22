@@ -8,7 +8,7 @@ from typing import Optional
 
 import acts
 
-from mycommon.config import split_event_sim_label
+from mycommon.config import split_event_sim_reco_label
 from mycommon.detector import get_odd
 from mycommon.rng import get_rng
 from mycommon.sequencer import get_sequencer
@@ -18,8 +18,7 @@ from mycommon.reco import get_reco_config, add_my_reconstruction_chain
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("event_sim_label")
-    parser.add_argument("reco_label")
+    parser.add_argument("event_sim_reco_label")
     parser.add_argument("outdir")
     parser.add_argument("--simdir", type=str, help="Simulation input directory")
     parser.add_argument("--skip", type=int, required=True, help="Skip number of events")
@@ -38,8 +37,7 @@ def main():
             threads=args.threads,
             use_event_seed=args.use_event_seed,
             tp=Path(temp),
-            event_sim_label=args.event_sim_label,
-            reco_label=args.reco_label,
+            event_sim_reco_label=args.event_sim_reco_label,
             simdir=simdir,
             outdir=outdir,
             skip=skip,
@@ -51,8 +49,7 @@ def run_reconstruction(
     threads: int,
     use_event_seed: bool,
     tp: Path,
-    event_sim_label: str,
-    reco_label: str,
+    event_sim_reco_label: str,
     simdir: Optional[Path],
     outdir: Path,
     skip: int,
@@ -60,8 +57,8 @@ def run_reconstruction(
 ):
     detector, tracking_geometry, decorators, field, digi_config, seeding_sel = get_odd()
 
-    event_label, sim_label = split_event_sim_label(event_sim_label)
-    reco_config = get_reco_config(event_sim_label, reco_label)
+    event_label, sim_label, reco_label = split_event_sim_reco_label(event_sim_reco_label)
+    reco_config = get_reco_config(event_label, sim_label, reco_label)
 
     output_files = []
 
@@ -127,6 +124,7 @@ def run_reconstruction(
         output_files=output_files,
         sequencer=sequencer,
         reco_label=reco_label,
+        event_label=event_label,
         tracking_geometry=tracking_geometry,
         digi_config=digi_config,
         seeding_sel=seeding_sel,

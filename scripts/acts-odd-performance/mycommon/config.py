@@ -32,12 +32,25 @@ def list_reco_labels(config):
     return [create_reco_label(seeding) for seeding in config["reconstruction"]["seeding"]]
 
 
+def list_event_sim_reco_labels(config):
+    return [
+        create_event_sim_reco_label(event, simulation, reco)
+        for event, simulation, reco in itertools.product(
+            list_event_labels(config), list_sim_labels(config), list_reco_labels(config)
+        )
+    ]
+
+
 def create_event_sim_label(event_label, sim_label):
     return f"{event_label}_{sim_label}"
 
 
 def create_reco_label(seeding):
     return f"{seeding}"
+
+
+def create_event_sim_reco_label(event_label, sim_label, reco_label):
+    return f"{event_label}_{sim_label}_{reco_label}"
 
 
 def split_event_sim_label(event_sim_label):
@@ -49,6 +62,13 @@ def split_event_sim_label(event_sim_label):
 
 def split_reco_label(reco_label):
     return reco_label
+
+
+def split_event_sim_reco_label(event_sim_reco_label):
+    m = re.match(r"^(.+)_(.+?)_(.+?)$", event_sim_reco_label)
+    if m:
+        return m.group(1), m.group(2), m.group(3)
+    raise ValueError(f"unknown event label {event_sim_reco_label}")
 
 
 def get_number_of_events(config, event_sim_label):
