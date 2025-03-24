@@ -14,8 +14,13 @@
 
 ## current
 
-- [ ] develoment summary chapter
-- [ ] get a sensible todo list
+- [ ] ODD performance
+  - convert performance plots to pyplot
+  - truth matching: double matching, seed 3/3
+  - PU selection for reco
+  - make number of bins configureable in performance plots
+  - particle selection during sim
+  - reduce vertexing ntuple size by disabling track/particle info
 - [ ] define ITk performance outline
   - rename / focus on track finding using CKF
 - [ ] line break after hyphen?

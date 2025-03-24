@@ -22,7 +22,7 @@ from acts.examples.reconstruction import (
     VertexFinder,
     addVertexFitting,
 )
-from mycommon.config import split_reco_label, split_event_sim_label, get_event_details
+from mycommon.config import split_reco_label, get_event_details
 
 
 u = acts.UnitConstants
