@@ -15,12 +15,20 @@
 ## current
 
 - [ ] ODD performance
-  - convert performance plots to pyplot
+  - seeding
+    - efficiency, duplication, fakes
+  - track finding
+    - various single particle efficiency
+    - various ttbar PU efficiency
+  - ambi
+    - comparison duplication, fakes over eta and pT
+  - track fitting
+    - various single particle resolutions over eta and pT
+    - single muon pulls over eta
   - truth matching: double matching, seed 3/3
   - PU selection for reco
-  - make number of bins configureable in performance plots
-  - particle selection during sim
-  - reduce vertexing ntuple size by disabling track/particle info
+  - pT log performance plots
+  - make number of bins configureable in performance plots?
 - [ ] define ITk performance outline
   - rename / focus on track finding using CKF
 - [ ] line break after hyphen?
