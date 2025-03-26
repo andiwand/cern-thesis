@@ -10,6 +10,7 @@ from acts.examples.simulation import (
 )
 from acts.examples.reconstruction import (
     TrackSmearingSigmas,
+    TruthEstimatedSeedingAlgorithmConfigArg,
     SeedingAlgorithm,
     SeedFinderConfigArg,
     addSeeding,
@@ -110,6 +111,7 @@ def add_my_seeding(
     initialVarInflation = [1e0, 1e0, 1e0, 1e0, 1e0, 1e0]
 
     trackSmearingSigmas = None
+    truthEstimatedSeedingAlgorithmConfigArg = None
     seedFinderConfigArg = None
 
     particleHypothesis = acts.ParticleHypothesis.pion
@@ -138,6 +140,10 @@ def add_my_seeding(
     elif seeding_label == "truth-estimated":
         seedingAlgorithm = SeedingAlgorithm.TruthEstimated
 
+        truthEstimatedSeedingAlgorithmConfigArg = TruthEstimatedSeedingAlgorithmConfigArg(
+            deltaR=(1 * u.mm, 300 * u.mm),
+        )
+
         # note that this will use the true hypothesis
         particleHypothesis = None
     elif seeding_label == "triplet":
@@ -146,7 +152,7 @@ def add_my_seeding(
         seedFinderConfigArg = SeedFinderConfigArg(
             r=(33 * u.mm, 200 * u.mm),
             # kills efficiency at |eta|~2
-            #deltaR=(1 * u.mm, 60 * u.mm),
+            deltaR=(1 * u.mm, 300 * u.mm),
             collisionRegion=(-250 * u.mm, 250 * u.mm),
             z=(-2000 * u.mm, 2000 * u.mm),
             maxSeedsPerSpM=1,
@@ -169,6 +175,7 @@ def add_my_seeding(
         trackSmearingSigmas=trackSmearingSigmas,
         particleHypothesis=particleHypothesis,
         seedFinderConfigArg=seedFinderConfigArg,
+        truthEstimatedSeedingAlgorithmConfigArg=truthEstimatedSeedingAlgorithmConfigArg,
         initialSigmas=initialSigmas,
         initialSigmaPtRel=initialSigmaPtRel,
         initialVarInflation=initialVarInflation,
@@ -212,6 +219,7 @@ def add_my_reconstruction_chain(
             pt=(0.999 * u.GeV, None),
             measurements=(7, None),
             removeNeutral=True,
+            removeSecondaries=event_type == "single_particles",
         ),
     )
 
