@@ -84,7 +84,7 @@ def run_reconstruction(
         sequencer.addReader(
             acts.examples.RootVertexReader(
                 level=acts.logging.WARNING,
-                outputVertices="vertices_truth",
+                outputVertices="vertices_generated",
                 filePath=simdir / "vertices.root",
             )
         )
@@ -104,7 +104,6 @@ def run_reconstruction(
             )
         )
 
-        # TODO define reco cuts here
         sequencer.addWhiteboardAlias("particles", "particles_simulated")
         sequencer.addWhiteboardAlias("particles_simulated_selected", "particles_simulated")
     else:

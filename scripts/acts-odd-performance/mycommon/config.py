@@ -28,16 +28,22 @@ def list_event_sim_labels(config):
     ]
 
 
-def list_reco_labels(config):
-    return [create_reco_label(seeding) for seeding in config["reconstruction"]["seeding"]]
+def list_seeding_labels(config):
+    return config["reconstruction"]["seeding"]
+
+
+def list_reco_labels(config, event_label):
+    if event_label.startswith("ttbar"):
+        reco_pileups = config["reconstruction"]["ttbar"]["pileups"]
+        return [create_reco_label(reco_pileup, seeding) for reco_pileup, seeding in itertools.product(reco_pileups, list_seeding_labels(config))]
+    return [create_reco_label(0, seeding) for seeding in list_seeding_labels(config)]
 
 
 def list_event_sim_reco_labels(config):
     return [
         create_event_sim_reco_label(event, simulation, reco)
-        for event, simulation, reco in itertools.product(
-            list_event_labels(config), list_sim_labels(config), list_reco_labels(config)
-        )
+        for event, simulation in itertools.product(list_event_labels(config), list_sim_labels(config))
+        for reco in list_reco_labels(config, event)
     ]
 
 
@@ -45,8 +51,10 @@ def create_event_sim_label(event_label, sim_label):
     return f"{event_label}_{sim_label}"
 
 
-def create_reco_label(seeding):
-    return f"{seeding}"
+def create_reco_label(pileup, seeding):
+    if pileup is None:
+        return f"{seeding}"
+    return f"pu{pileup}-{seeding}"
 
 
 def create_event_sim_reco_label(event_label, sim_label, reco_label):
@@ -61,7 +69,10 @@ def split_event_sim_label(event_sim_label):
 
 
 def split_reco_label(reco_label):
-    return reco_label
+    m = re.match(r"^(?:pu(\d+)-)?(.+)$", reco_label)
+    if m:
+        return int(m.group(1)) if m.group(1) is not None else 0, m.group(2)
+    raise ValueError(f"unknown reco label {reco_label}")
 
 
 def split_event_sim_reco_label(event_sim_reco_label):

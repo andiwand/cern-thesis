@@ -4,6 +4,7 @@ from collections import namedtuple
 
 import acts
 from acts.examples.simulation import (
+    addSimParticleSelection,
     addDigitization,
     addDigiParticleSelection,
     ParticleSelectorConfig,
@@ -36,16 +37,17 @@ RecoConfig = namedtuple(
 )
 
 
-def get_reco_config(event_label, sim_label, reco_label) -> RecoConfig:
-    seeding = split_reco_label(reco_label)
-
-    def make_geoid(vol=None, lay=None):
+def make_geoid(vol=None, lay=None):
         geoid = acts.GeometryIdentifier()
         if vol is not None:
             geoid.volume = vol
         if lay is not None:
             geoid.layer = lay
         return geoid
+
+
+def get_reco_config(event_label, sim_label, reco_label) -> RecoConfig:
+    pileup, seeding = split_reco_label(reco_label)
 
     measurementCounter = acts.TrackSelector.MeasurementCounter()
     # At least 1 hit on the first pixel layers
@@ -119,20 +121,17 @@ def add_my_seeding(
     if seeding_label == "truth-smeared":
         seedingAlgorithm = SeedingAlgorithm.TruthSmeared
 
-        initialSigmas = None
-        initialVarInflation = [1e1, 1e1, 1e1, 1e1, 1e1, 1e1]
-
         trackSmearingSigmas = TrackSmearingSigmas(
-            loc0=20 * u.um,
-            loc0PtA=30 * u.um,
-            loc0PtB=0.3 / u.GeV,
-            loc1=20 * u.um,
-            loc1PtA=30 * u.um,
-            loc1PtB=0.3 / u.GeV,
-            time=25 * u.mm,
-            phi=0.1 * u.degree,
-            theta=0.1 * u.degree,
-            ptRel=0.01,
+            loc0=0 * u.um,
+            loc0PtA=0 * u.um,
+            loc0PtB=0 / u.GeV,
+            loc1=0 * u.um,
+            loc1PtA=0 * u.um,
+            loc1PtB=0 / u.GeV,
+            time=0 * u.mm,
+            phi=0 * u.degree,
+            theta=0 * u.degree,
+            ptRel=0,
         )
 
         # note that this will use the true hypothesis
@@ -197,8 +196,33 @@ def add_my_reconstruction_chain(
     rnd: acts.examples.RandomNumbers,
     tp: Path,
 ):
-    seeding_label = split_reco_label(reco_label)
+    pileup, seeding_label = split_reco_label(reco_label)
     event_type, _ = get_event_details(event_label)
+
+    addSimParticleSelection(
+        sequencer,
+        ParticleSelectorConfig(
+            primaryVertexId=(1, 2 + pileup),
+        ),
+        logLevel=acts.logging.INFO,
+    )
+    sequencer.addAlgorithm(
+        acts.examples.VertexSelector(
+            level=acts.logging.INFO,
+            inputVertices="vertices_generated",
+            outputVertices="vertices_selected",
+            minPrimaryVertexId=1,
+            maxPrimaryVertexId=2 + pileup,
+        )
+    )
+    sequencer.addAlgorithm(
+        acts.examples.HitSelector(
+            level=acts.logging.INFO,
+            inputHits="simhits",
+            inputParticlesSelected="particles_simulated_selected",
+            outputHits="simhits_selected",
+        ),
+    )
 
     addDigitization(
         sequencer,
@@ -209,6 +233,17 @@ def add_my_reconstruction_chain(
         # outputDirRoot=tp,
     )
 
+    measurementCounter = acts.examples.ParticleSelector.MeasurementCounter()
+    # At least 3 hits in the pixels
+    measurementCounter.addCounter(
+        [
+            make_geoid(16),
+            make_geoid(17),
+            make_geoid(18),
+        ],
+        3,
+    )
+
     addDigiParticleSelection(
         sequencer,
         ParticleSelectorConfig(
@@ -217,9 +252,10 @@ def add_my_reconstruction_chain(
             eta=(-3.0, 3.0),
             # using something close to 1 to include for sure
             pt=(0.999 * u.GeV, None),
-            measurements=(7, None),
+            measurements=(6, None),
             removeNeutral=True,
             removeSecondaries=event_type == "single_particles",
+            nMeasurementsGroupMin=measurementCounter,
         ),
     )
 
@@ -243,6 +279,7 @@ def add_my_reconstruction_chain(
         ckfConfig=reco_config.ckf_config,
         twoWay=True,
         outputDirRoot=tp,
+        #logLevel=acts.logging.VERBOSE,
     )
     output_files.append({"file": "performance_finding_ckf.root"})
     output_files.append({"file": "performance_fitting_ckf.root"})
