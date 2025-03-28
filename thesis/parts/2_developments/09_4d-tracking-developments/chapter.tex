@@ -101,22 +101,20 @@ Table \ref{tab:dev/4d-tracking/track-finding} shows the track finding performanc
 
 \section{Primary vertex finding with time}
 
-Vertex finding is the process of grouping tracks into vertices. This is generally a combinatorial problem but in practice a seeding step is used to identify vertex candidates and tracks are assigned to them based on their compatibility. In case of primary vertex finding, the search can be constrained to the beam line. Since only a single dimension is left, tracks that originate from close-by interactions can not be distinguished and will be merged into a single vertex. Time information provides an additional dimension to group tracks to vertices and to distinguish vertices close in space but separated in time. This can reduce undesired effects, e.g. vertex merging and splitting, and improve physics performance. The performance of vertex finding with time information using ACTS is currently under investigation and parts of the work will be presented in Chapter \ref{ch:perf/odd}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/2_developments/09_4d-tracking-developments/figures/ttbar-pu200-grid-density.pdf}
+    \caption{Track density of a simulated \ttbar event at $\langle \mu \rangle = 200$ with only the space dimension on the top and with space and time dimension below. The red dots represent the simulated primary vertices. The color scale shows the reconstructed track density which is used to seed the vertices.}
+    \label{fig:dev/4d-tracking/grid-density}
+\end{figure}
+
+Vertex finding is the process of grouping tracks into vertices. This is generally a combinatorial problem but in practice a seeding step is used to identify vertex candidates and tracks are assigned to them based on their compatibility. In case of primary vertex finding, the search can be constrained to the beam line. Since only a single dimension is left, tracks that originate from close-by interactions cannot be distinguished and will be merged into a single vertex. Time information provides an additional dimension to group tracks to vertices and to discriminate vertices close in space but separated in time. This can reduce undesired effects, e.g. vertex merging and splitting, and improve physics performance. Figure \ref{fig:dev/4d-tracking/grid-density} shows the track density of a simulated \ttbar event at $\langle \mu \rangle = 200$. The separation of vertices is clearly visible with the additional time dimension. The performance of vertex finding with time information using ACTS is currently under investigation and parts of the work will be presented in Chapter \ref{ch:perf/odd}.
 
 Current vertex seeders in ACTS use a gaussian track density to estimate vertex candidates. It is implemented in two flavors: using an analytical representation to find the maximum of the density, and using a discrete numerical evaluated grid. During the work on this thesis, in collaboration with another student, the grid based seeder has been adapted to make use of time information. Effectively, the 1D grid was extended to 2D, to include time information, and then optimized for sparsity to reduce the compute time and memory consumption. The analytical seeder is not adapted for time yet.
 
 Additionally to the adapted grid seeder, a truth seeder has been implemented to study the vertexing performance in presence of optimal seeding. The truth seeder uses the true vertex position, and optionally time, to create seeds for the finder. This is a useful tool to study the impact of the seeder on the vertex finding performance. During validation it was observed that the order of the seeds has an impact on the finder performance. For this reason, truth vertices are sorted by the number of tracks before they are passed to the seeder to express their priority.
 
 Since the track EDM does not distinguish between tracks with and without time information, the vertex seeders and finders have a switch to use time information or not. The implementation is then specialized in different places using this switch. For vertex finders this affects the compatibility checks of tracks with vertices and the track assignment to vertices. In case of some tracks having time information and some not, the time covariance should be used to reflect this. Similar to the track finding, the $\chi^2$ thresholds have to be adjusted to keep the p-value similar to the case without time information.
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=1.0\textwidth]{parts/2_developments/09_4d-tracking-developments/figures/ttbar-pu200-grid-density.pdf}
-    \caption{Track density of a simulated \ttbar event at $\langle \mu \rangle = 200$ with only $z_0$ on the top and with $z_0$ and $t_0$ below. The red dots represent the simulated primary vertices. The color scale shows the reconstructed track density which is used to seed the vertices.}
-    \label{fig:dev/4d-tracking/grid-density}
-\end{figure}
-
-Figure \ref{fig:dev/4d-tracking/grid-density} shows the track density of a simulated \ttbar event at $\langle \mu \rangle = 200$. The separation of vertices is clearly visible with the addition of $t_0$.
 
 \section{Vertex fitting with time}
 

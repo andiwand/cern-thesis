@@ -73,7 +73,7 @@ axs[0].hist2d(
 )
 axs[0].scatter(vertices["vz"], np.zeros(len(vertices)), s=1, c="red", label="truth")
 axs[0].set_aspect("auto")
-axs[0].set_title("Track density with $z_0$")
+# axs[0].set_title("Track density with $z_0$")
 axs[0].get_yaxis().set_visible(False)
 # axs[0].set_xlabel("z [mm]")
 
@@ -87,7 +87,7 @@ counts, xedges, yedges, im = axs[1].hist2d(
 )
 axs[1].scatter(vertices["vz"], vertices["vt"], s=1, c="red", label="Truth vertices")
 axs[1].set_aspect("auto")
-axs[1].set_title("Track density with $z_0$ and $t_0$")
+# axs[1].set_title("Track density with $z_0$ and $t_0$")
 axs[1].set_xlabel("z [mm]")
 axs[1].set_ylabel("t [mm]")
 axs[1].legend(loc="upper right", labelcolor='white', edgecolor='white', fancybox=True, framealpha=0.5)
