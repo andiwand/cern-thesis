@@ -108,7 +108,7 @@ def add_my_event_gen(
                 mass=0,
             ),
             momentumConfig=MomentumConfig(1 * u.GeV, 1 * u.GeV, transverse=False),
-            etaConfig=EtaConfig(-3.0, 3.0, uniform=True),
+            etaConfig=EtaConfig(-4.0, 4.0, uniform=True),
             phiConfig=PhiConfig(0.0 * u.degree, 360.0 * u.degree),
             vtxGen=vtxGen,
             multiplicity=1,
