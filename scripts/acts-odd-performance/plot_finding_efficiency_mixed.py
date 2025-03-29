@@ -3,7 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
 
-from mycommon.root import TEfficiency
+from mycommon.root import TH1
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -37,11 +37,11 @@ ax.set_ylabel("Efficiency")
 ax.hlines(1, -3, 3, linestyles="--", color="gray")
 
 for i, ptype, fperf, sperf in zip(range(3), ptypes, finding_perf, seeding_perf):
-    eff_vs_eta = TEfficiency(fperf.Get("trackeff_vs_eta"))
+    eff_vs_eta = TH1(fperf.Get("trackeff_vs_eta"))
     eff_vs_eta.errorbar(ax, fmt="o", label=f"{ptype}")
 
     if sperf is not None:
-        eff_vs_eta = TEfficiency(sperf.Get("trackeff_vs_eta"))
+        eff_vs_eta = TH1(sperf.Get("trackeff_vs_eta"))
         eff_vs_eta.errorbar(ax, fmt="o", label=f"{ptype} (seeding)", color=f"C{i}", alpha=0.5)
 
 ax.legend()

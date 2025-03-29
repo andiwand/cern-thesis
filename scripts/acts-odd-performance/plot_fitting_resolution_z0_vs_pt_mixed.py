@@ -9,9 +9,9 @@ from mycommon.root import TH1
 base_dir = Path(__file__).parent.parent.parent
 
 parser = argparse.ArgumentParser()
-parser.add_argument("mu_seeding_perf", type=Path)
-parser.add_argument("pi_seeding_perf", type=Path)
-parser.add_argument("e_seeding_perf", type=Path)
+parser.add_argument("mu_fitting_perf", type=Path)
+parser.add_argument("pi_fitting_perf", type=Path)
+parser.add_argument("e_fitting_perf", type=Path)
 parser.add_argument(
     "--output",
     type=Path,
@@ -21,18 +21,16 @@ parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 ptypes = ["mu", "pi", "e"]
-seeding_perf = [args.mu_seeding_perf, args.pi_seeding_perf, args.e_seeding_perf]
-seeding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in seeding_perf]
+fitting_perf = [args.mu_fitting_perf, args.pi_fitting_perf, args.e_fitting_perf]
+fitting_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in fitting_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"$\eta$")
-ax.set_ylabel("Efficiency")
+ax.set_xlabel(r"$p_T$ [GeV]")
+ax.set_ylabel(r"$\sigma_{z_0}$ [mm]")
 
-ax.hlines(1, -3, 3, linestyles="--", color="gray")
-
-for ptype, perf in zip(ptypes, seeding_perf):
-    eff_vs_eta = TH1(perf.Get("trackeff_vs_eta"))
+for i, ptype, perf in zip(range(3), ptypes, fitting_perf):
+    eff_vs_eta = TH1(perf.Get("reswidth_z0_vs_pT"))
     eff_vs_eta.errorbar(ax, fmt="o", label=f"{ptype}")
 
 ax.legend()

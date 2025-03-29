@@ -3,7 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
 
-from mycommon.root import TEfficiency
+from mycommon.root import TH1
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -25,7 +25,7 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"$\eta$")
 ax.set_ylabel("Duplicates")
 
-dupl_vs_eta = TEfficiency(seeding_perf.Get("nDuplicated_vs_eta"))
+dupl_vs_eta = TH1(seeding_perf.Get("nDuplicated_vs_eta"))
 dupl_vs_eta.errorbar(ax, fmt="o")
 
 if args.output is not None:

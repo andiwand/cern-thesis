@@ -1,32 +1,35 @@
 import numpy as np
 
 
-class TEfficiency:
-    def __init__(self, tefficency):
+class TH1:
+    def __init__(self, th1, xrange=None):
         try:
-            th1 = tefficency.GetTotalHistogram()
+            th1 = th1.GetTotalHistogram()
         except:
-            th1 = tefficency
+            th1 = th1
 
-        bins = [i for i in range(th1.GetNbinsX()) if th1.GetBinContent(i) > 0.0]
+        bins = [i for i in range(th1.GetNbinsX())]
         bins = bins[1:]
 
-        self.x = [th1.GetBinCenter(i) for i in bins]
+        if xrange is not None:
+            bins = [i for i in bins if th1.GetBinCenter(i) >= xrange[0] and th1.GetBinCenter(i) <= xrange[1]]
 
-        self.x_lo = [th1.GetBinLowEdge(i) for i in bins]
-        self.x_width = [th1.GetBinWidth(i) for i in bins]
+        self.x = np.array([th1.GetBinCenter(i) for i in bins])
+
+        self.x_lo = np.array([th1.GetBinLowEdge(i) for i in bins])
+        self.x_width = np.array([th1.GetBinWidth(i) for i in bins])
         self.x_hi = np.add(self.x_lo, self.x_width)
         self.x_err_lo = np.subtract(self.x, self.x_lo)
         self.x_err_hi = np.subtract(self.x_hi, self.x)
 
         try:
-            self.y = [tefficency.GetEfficiency(i) for i in bins]
-            self.y_err_lo = [tefficency.GetEfficiencyErrorLow(i) for i in bins]
-            self.y_err_hi = [tefficency.GetEfficiencyErrorUp(i) for i in bins]
+            self.y = np.array([th1.GetEfficiency(i) for i in bins])
+            self.y_err_lo = np.array([th1.GetEfficiencyErrorLow(i) for i in bins])
+            self.y_err_hi = np.array([th1.GetEfficiencyErrorUp(i) for i in bins])
         except:
-            self.y = [tefficency.GetBinContent(i) for i in bins]
-            self.y_err_lo = [tefficency.GetBinError(i) for i in bins]
-            self.y_err_hi = [tefficency.GetBinError(i) for i in bins]
+            self.y = np.array([th1.GetBinContent(i) for i in bins])
+            self.y_err_lo = np.array([th1.GetBinError(i) for i in bins])
+            self.y_err_hi = np.array([th1.GetBinError(i) for i in bins])
 
     def errorbar(self, ax, **errorbar_kwargs):
         ax.errorbar(

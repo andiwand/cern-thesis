@@ -3,7 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
 
-from mycommon.root import TEfficiency
+from mycommon.root import TH1
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -31,7 +31,7 @@ ax.set_xlabel(r"$\eta$")
 ax.set_ylabel("Fake ratio")
 
 for pu, perf in zip(pus, seeding_perf):
-    eff_vs_eta = TEfficiency(perf.Get("fakerate_vs_eta"))
+    eff_vs_eta = TH1(perf.Get("fakerate_vs_eta"))
     eff_vs_eta.errorbar(ax, fmt="o", label=f"PU {pu}")
 
 ax.legend()

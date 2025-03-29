@@ -1,6 +1,5 @@
 include: "../common.smk"
 
-
 rule all_plots:
     input:
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_duplication.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
@@ -9,10 +8,12 @@ rule all_plots:
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_fake_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
 
-        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/finding_duplication.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
-        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/finding_efficiency_mu.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
-        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/finding_efficiency_mixed.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/finding_duplication.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/finding_efficiency_mu.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/finding_efficiency_mixed.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
 
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/plot_fitting_resolution_d0_vs_eta_mu.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/plot_fitting_resolution_z0_vs_pt_mixed.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
 
 rule plot_seeding_duplication:
     input:
@@ -25,7 +26,6 @@ rule plot_seeding_duplication:
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
-
 rule plot_seeding_efficiency_mu:
     input:
         script = "scripts/acts-odd-performance/plot_seeding_efficiency_mu.py",
@@ -36,7 +36,6 @@ rule plot_seeding_efficiency_mu:
         """
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
-
 
 rule plot_seeding_efficiency_mixed:
     input:
@@ -49,7 +48,6 @@ rule plot_seeding_efficiency_mixed:
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
-
 rule plot_seeding_efficiency_ttbar:
     input:
         script = "scripts/acts-odd-performance/plot_seeding_efficiency_ttbar.py",
@@ -60,7 +58,6 @@ rule plot_seeding_efficiency_ttbar:
         """
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
-
 
 rule plot_seeding_fake_ttbar:
     input:
@@ -73,7 +70,6 @@ rule plot_seeding_fake_ttbar:
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
-
 rule plot_finding_duplication:
     input:
         script = "scripts/acts-odd-performance/plot_finding_duplication.py",
@@ -84,7 +80,6 @@ rule plot_finding_duplication:
         """
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
-
 
 rule plot_finding_efficiency_mu:
     input:
@@ -97,13 +92,34 @@ rule plot_finding_efficiency_mu:
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
-
 rule plot_finding_efficiency_mixed:
     input:
         script = "scripts/acts-odd-performance/plot_finding_efficiency_mixed.py",
         reco = expand("data/acts-odd-performance/reco/1{ptype}-pt10GeV_{{sim_label}}_{{seeding_label}}/performance_finding_ckf.root", ptype=["mu", "pi", "e"]),
     output:
         "plots/acts-odd-performance/{sim_label}_{seeding_label}/finding_efficiency_mixed.pdf",
+    shell:
+        """
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_fitting_resolution_d0_vs_eta_mu:
+    input:
+        script = "scripts/acts-odd-performance/plot_fitting_resolution_d0_vs_eta_mu.py",
+        reco = expand("data/acts-odd-performance/reco/1mu-pt{pt}GeV_{{sim_label}}_{{seeding_label}}/performance_fitting_ckf.root", pt=[1,10,100]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/plot_fitting_resolution_d0_vs_eta_mu.pdf",
+    shell:
+        """
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_fitting_resolution_z0_vs_pt_mixed:
+    input:
+        script = "scripts/acts-odd-performance/plot_fitting_resolution_z0_vs_pt_mixed.py",
+        reco = expand("data/acts-odd-performance/reco/1{ptype}-pt1-100GeV_{{sim_label}}_{{seeding_label}}/performance_fitting_ckf.root", ptype=["mu", "pi", "e"]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/plot_fitting_resolution_z0_vs_pt_mixed.pdf",
     shell:
         """
         scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
