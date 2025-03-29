@@ -20,6 +20,12 @@ def get_odd():
     seeding_sel = geo_dir / "config/odd-seeding-config.json"
     material_deco = acts.IMaterialDecorator.fromFile(material_map)
 
+    # material_deco = acts.JsonMaterialDecorator(
+    #     rConfig=acts.MaterialMapJsonConverter.Config(),
+    #     jFileName="/Users/andreas/cern/source/acts/acts/dev3/odd-geometry/material-map.json",
+    #     level=acts.logging.WARNING,
+    # )
+
     # ODD
     detector = getOpenDataDetector(odd_dir=geo_dir, mdecorator=material_deco)
     tracking_geometry = detector.trackingGeometry()

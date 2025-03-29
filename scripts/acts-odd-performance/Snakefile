@@ -1,10 +1,12 @@
 include: "snakefiles/workflows/detector_scan.smk"
 include: "snakefiles/workflows/simulation.smk"
 include: "snakefiles/workflows/reconstruction.smk"
+include: "snakefiles/workflows/plots.smk"
 
 
 rule all:
     input:
         rules.all_scan.input,
         rules.all_simulation.input,
-        rules.all_reconstruction.input
+        rules.all_reconstruction.input,
+        rules.all_plots.input,

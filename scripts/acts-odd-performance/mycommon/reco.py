@@ -154,7 +154,7 @@ def add_my_seeding(
             deltaR=(1 * u.mm, 300 * u.mm),
             collisionRegion=(-250 * u.mm, 250 * u.mm),
             z=(-2000 * u.mm, 2000 * u.mm),
-            maxSeedsPerSpM=1,
+            maxSeedsPerSpM=3,
             sigmaScattering=5,
             radLengthPerSeed=0.1,
             minPt=0.5 * u.GeV,

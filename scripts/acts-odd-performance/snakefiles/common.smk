@@ -1,6 +1,8 @@
 from mycommon.config import (
+    list_sim_labels,
     list_event_sim_labels,
     list_event_sim_reco_labels,
+    list_seeding_labels,
     create_event_sim_label,
     split_event_sim_label,
     split_event_sim_reco_label,
@@ -64,8 +66,10 @@ def get_event_sim_label(wildcards):
 configfile: "scripts/acts-odd-performance/config.yaml"
 
 
+SIM_LABELS = list_sim_labels(config)
 EVENT_SIM_LABELS = list_event_sim_labels(config)
 EVENT_SIM_RECO_LABELS = list_event_sim_reco_labels(config)
+SEEDING_LABELS = list_seeding_labels(config)
 SIM_OUTPUTS = ["particles.root", "vertices.root", "particles_simulation.root", "hits.root"]
 RECO_OUTPUTS = ["performance_finding_ckf.root", "performance_fitting_ckf.root"]
 

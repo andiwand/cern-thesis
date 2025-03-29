@@ -15,7 +15,6 @@ parser.add_argument("e_seeding_perf", type=Path)
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/acts-odd-performance/seeding_efficiency_mixed_single.pdf",
     help="Path to output file",
 )
 parser.add_argument("--show", action="store_true", help="Show plot")

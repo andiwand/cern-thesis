@@ -36,7 +36,7 @@ def list_reco_labels(config, event_label):
     if event_label.startswith("ttbar"):
         reco_pileups = config["reconstruction"]["ttbar"]["pileups"]
         return [create_reco_label(reco_pileup, seeding) for reco_pileup, seeding in itertools.product(reco_pileups, list_seeding_labels(config))]
-    return [create_reco_label(0, seeding) for seeding in list_seeding_labels(config)]
+    return [create_reco_label(None, seeding) for seeding in list_seeding_labels(config)]
 
 
 def list_event_sim_reco_labels(config):

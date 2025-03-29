@@ -1,13 +1,23 @@
 # reco + plotting
 
-- pre reco
-  - cut primary vertex ids for variable PU
-
-- seeding
-  - ttbar efficiency and fake rate
+- ckf
+  - purity? completeness?
+  - resolution
 
 # writing
 
-- seeding
+- material validation
+  - eta/phi
+  - mention that this does not validate the placement
+- event generation
+- event simulation
+- digitization + clustering
   - explain different clustering in ACTS Examples
+- seeding
   - explain different seeders in ACTS Examples
+  - only seeding in pixels
+  - seeding config not optimized for ODD
+- finding
+- ambi
+- refitting
+- vertexing

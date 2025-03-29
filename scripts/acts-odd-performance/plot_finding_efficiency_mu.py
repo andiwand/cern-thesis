@@ -18,7 +18,6 @@ parser.add_argument("--mu100GeV-seeding-perf", type=Path)
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/acts-odd-performance/finding_efficiency_mu.pdf",
     help="Path to output file",
 )
 parser.add_argument("--show", action="store_true", help="Show plot")
