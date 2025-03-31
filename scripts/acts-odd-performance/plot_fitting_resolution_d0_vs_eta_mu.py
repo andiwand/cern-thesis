@@ -29,8 +29,10 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"$\eta$")
 ax.set_ylabel(r"$\sigma_{d_0}$ [mm]")
 
+ax.set_xlim(-3, 3)
+
 for i, pt, perf in zip(range(3), pts, fitting_perf):
-    eff_vs_eta = TH1(perf.Get("reswidth_d0_vs_eta"))
+    eff_vs_eta = TH1(perf.Get("reswidth_d0_vs_eta"), xrange=(-3, 3))
     eff_vs_eta.errorbar(ax, fmt="o", label=f"{pt} GeV")
 
 ax.legend()

@@ -2,11 +2,11 @@ import numpy as np
 
 
 class TH1:
-    def __init__(self, th1, xrange=None):
+    def __init__(self, th1_tefficiency, xrange=None):
         try:
-            th1 = th1.GetTotalHistogram()
+            th1 = th1_tefficiency.GetTotalHistogram()
         except:
-            th1 = th1
+            th1 = th1_tefficiency
 
         bins = [i for i in range(th1.GetNbinsX())]
         bins = bins[1:]
@@ -23,13 +23,13 @@ class TH1:
         self.x_err_hi = np.subtract(self.x_hi, self.x)
 
         try:
-            self.y = np.array([th1.GetEfficiency(i) for i in bins])
-            self.y_err_lo = np.array([th1.GetEfficiencyErrorLow(i) for i in bins])
-            self.y_err_hi = np.array([th1.GetEfficiencyErrorUp(i) for i in bins])
-        except:
-            self.y = np.array([th1.GetBinContent(i) for i in bins])
-            self.y_err_lo = np.array([th1.GetBinError(i) for i in bins])
-            self.y_err_hi = np.array([th1.GetBinError(i) for i in bins])
+            self.y = np.array([th1_tefficiency.GetEfficiency(i) for i in bins])
+            self.y_err_lo = np.array([th1_tefficiency.GetEfficiencyErrorLow(i) for i in bins])
+            self.y_err_hi = np.array([th1_tefficiency.GetEfficiencyErrorUp(i) for i in bins])
+        except Exception as e:
+            self.y = np.array([th1_tefficiency.GetBinContent(i) for i in bins])
+            self.y_err_lo = np.array([th1_tefficiency.GetBinError(i) for i in bins])
+            self.y_err_hi = np.array([th1_tefficiency.GetBinError(i) for i in bins])
 
     def errorbar(self, ax, **errorbar_kwargs):
         ax.errorbar(

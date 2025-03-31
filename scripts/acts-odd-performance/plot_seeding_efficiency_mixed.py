@@ -29,10 +29,12 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"$\eta$")
 ax.set_ylabel("Efficiency")
 
+ax.set_xlim(-3, 3)
+
 ax.hlines(1, -3, 3, linestyles="--", color="gray")
 
 for ptype, perf in zip(ptypes, seeding_perf):
-    eff_vs_eta = TH1(perf.Get("trackeff_vs_eta"))
+    eff_vs_eta = TH1(perf.Get("trackeff_vs_eta"), xrange=(-3, 3))
     eff_vs_eta.errorbar(ax, fmt="o", label=f"{ptype}")
 
 ax.legend()

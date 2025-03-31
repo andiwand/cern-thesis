@@ -30,8 +30,10 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"$\eta$")
 ax.set_ylabel("Fake ratio")
 
+ax.set_xlim(-3, 3)
+
 for pu, perf in zip(pus, seeding_perf):
-    eff_vs_eta = TH1(perf.Get("fakerate_vs_eta"))
+    eff_vs_eta = TH1(perf.Get("fakerate_vs_eta"), xrange=(-3, 3))
     eff_vs_eta.errorbar(ax, fmt="o", label=f"PU {pu}")
 
 ax.legend()
