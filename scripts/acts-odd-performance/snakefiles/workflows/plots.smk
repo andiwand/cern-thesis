@@ -21,6 +21,18 @@ rule all_plots:
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/fitting_pullmean_vs_eta_mu.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/fitting_pullwidth_vs_eta_mu.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
 
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/ambi_efficiency_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/ambi_duplication_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_resolution_d0_vs_eta_mu.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_resolution_z0_vs_pt_mixed.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_pullmean_vs_eta_mu.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_pullwidth_vs_eta_mu.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_resolution.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_pull.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_efficiency.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+
 rule plot_seeding_duplication:
     input:
         script = "scripts/acts-odd-performance/plot_seeding_duplication.py",
@@ -195,4 +207,106 @@ rule plot_fitting_pullwidth_vs_eta_mu:
     shell:
         """
         python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_ambi_efficiency_ttbar:
+    input:
+        script = "scripts/acts-odd-performance/plot_ambi_efficiency_ttbar.py",
+        ckf = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_finding_ckf.root", pu=[0, 60, 120, 200]),
+        ambi = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_finding_ambi.root", pu=[0, 60, 120, 200]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/ambi_efficiency_ttbar.pdf",
+    shell:
+        """
+        python {input.script} {input.ambi} {input.ckf} --output {output}
+        """
+
+rule plot_ambi_duplication_ttbar:
+    input:
+        script = "scripts/acts-odd-performance/plot_ambi_duplication_ttbar.py",
+        ckf = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_finding_ckf.root", pu=[0, 60, 120, 200]),
+        ambi = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_finding_ambi.root", pu=[0, 60, 120, 200]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/ambi_duplication_ttbar.pdf",
+    shell:
+        """
+        python {input.script} {input.ambi} {input.ckf} --output {output}
+        """
+
+rule plot_refit_resolution_d0_vs_eta_mu:
+    input:
+        script = "scripts/acts-odd-performance/plot_fitting_resolution_d0_vs_eta_mu.py",
+        reco = expand("data/acts-odd-performance/reco/1mu-pt{pt}GeV_{{sim_label}}_{{seeding_label}}/performance_fitting_kfrefit.root", pt=[1,10,100]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_resolution_d0_vs_eta_mu.pdf",
+    shell:
+        """
+        python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_refit_resolution_z0_vs_pt_mixed:
+    input:
+        script = "scripts/acts-odd-performance/plot_fitting_resolution_z0_vs_pt_mixed.py",
+        reco = expand("data/acts-odd-performance/reco/1{ptype}-pt1-100GeV_{{sim_label}}_{{seeding_label}}/performance_fitting_kfrefit.root", ptype=["mu", "pi", "e"]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_resolution_z0_vs_pt_mixed.pdf",
+    shell:
+        """
+        python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_refit_pullmean_vs_eta_mu:
+    input:
+        script = "scripts/acts-odd-performance/plot_fitting_pullmean_vs_eta_mu.py",
+        reco = expand("data/acts-odd-performance/reco/1mu-pt{pt}GeV_{{sim_label}}_{{seeding_label}}/performance_fitting_kfrefit.root", pt=[1,10,100]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_pullmean_vs_eta_mu.pdf",
+    shell:
+        """
+        python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_refit_pullwidth_vs_eta_mu:
+    input:
+        script = "scripts/acts-odd-performance/plot_fitting_pullwidth_vs_eta_mu.py",
+        reco = expand("data/acts-odd-performance/reco/1mu-pt{pt}GeV_{{sim_label}}_{{seeding_label}}/performance_fitting_kfrefit.root", pt=[1,10,100]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/refit_pullwidth_vs_eta_mu.pdf",
+    shell:
+        """
+        python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_vertex_resolution:
+    input:
+        script = "scripts/acts-odd-performance/plot_vertex_resolution.py",
+        reco = "data/acts-odd-performance/reco/ttbar-pu200_{sim_label}_pu0-{seeding_label}/performance_amvf_truth_time.root",
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_resolution.pdf",
+    shell:
+        """
+        python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_vertex_pull:
+    input:
+        script = "scripts/acts-odd-performance/plot_vertex_pull.py",
+        reco = "data/acts-odd-performance/reco/ttbar-pu200_{sim_label}_pu0-{seeding_label}/performance_amvf_truth_time.root",
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_pull.pdf",
+    shell:
+        """
+        python {input.script} {input.reco} --output {output}
+        """
+
+rule plot_vertex_efficiency:
+    input:
+        script = "scripts/acts-odd-performance/plot_vertex_efficiency.py",
+        reco_amvf_wot = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_amvf_truth_notime.root", pu=[0, 30, 60, 90, 120, 150, 200]),
+        reco_amvf_wt = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_amvf_truth_time.root", pu=[0, 30, 60, 90, 120, 150, 200]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_efficiency.pdf",
+    shell:
+        """
+        python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}
         """
