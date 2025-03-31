@@ -284,25 +284,68 @@ def add_my_reconstruction_chain(
     output_files.append({"file": "performance_finding_ckf.root"})
     output_files.append({"file": "performance_fitting_ckf.root"})
 
-    if event_type == "ttbar":
-        addAmbiguityResolution(
-            sequencer,
-            config=reco_config.ambi_config,
-            # outputDirRoot=tp,
+    addAmbiguityResolution(
+        sequencer,
+        config=reco_config.ambi_config,
+        # outputDirRoot=tp,
+    )
+    addTrackWriters(
+        sequencer,
+        name="ambi",
+        tracks="tracks",
+        outputDirRoot=tp,
+        writeSummary=False,
+        writeStates=False,
+        writeFitterPerformance=False,
+        writeFinderPerformance=True,
+        writeCovMat=False,
+    )
+    output_files.append({"file": "performance_finding_ambi.root"})
+
+    if event_type == "single_particles":
+        kalman_options = {
+            "multipleScattering": True,
+            "energyLoss": True,
+            "reverseFilteringMomThreshold": 1 * u.TeV,
+            "freeToBoundCorrection": acts.examples.FreeToBoundCorrection(False),
+            "level": acts.logging.INFO,
+            "chi2Cut": float("inf"),
+        }
+        sequencer.addAlgorithm(
+            acts.examples.RefittingAlgorithm(
+                level=acts.logging.INFO,
+                inputTracks="tracks",
+                outputTracks="kf_refit_tracks",
+                fit=acts.examples.makeKalmanFitterFunction(
+                    tracking_geometry, field, **kalman_options
+                ),
+            )
+        )
+        sequencer.addWhiteboardAlias("tracks", "kf_refit_tracks")
+        sequencer.addAlgorithm(
+            acts.examples.TrackTruthMatcher(
+                level=acts.logging.INFO,
+                inputTracks="kf_refit_tracks",
+                inputParticles="particles_selected",
+                inputMeasurementParticlesMap="measurement_particles_map",
+                outputTrackParticleMatching="refit_track_particle_matching",
+                outputParticleTrackMatching="refit_particle_track_matching",
+            )
         )
         addTrackWriters(
             sequencer,
-            name="ambi",
-            tracks="tracks",
+            name="kfrefit",
+            tracks="kf_refit_tracks",
             outputDirRoot=tp,
             writeSummary=False,
             writeStates=False,
             writeFitterPerformance=True,
-            writeFinderPerformance=True,
+            writeFinderPerformance=False,
             writeCovMat=False,
         )
-        output_files.append({"file": "performance_finding_ambi.root"})
+        output_files.append({"file": "performance_fitting_kfrefit.root"})
 
+    if event_type == "ttbar":
         sequencer.addAlgorithm(
             acts.examples.TracksToParameters(
                 level=acts.logging.INFO,

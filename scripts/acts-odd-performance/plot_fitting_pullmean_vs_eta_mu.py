@@ -27,24 +27,24 @@ fitting_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in fitting_perf]
 params = ["d0", "z0", "phi", "theta", "qop", "t"]
 ylabels = ["$d_0$", "$z_0$", r"$\phi$", r"$\theta$", "$q/p$", "$t$"]
 
-fig, axs = plt.subplots(6, 1, figsize=(8, 6), sharex=True, sharey=True)
+fig, axs = plt.subplots(6, 1, figsize=(8, 6), sharex=True)
 
 for ax, param, ylabel in zip(axs, params, ylabels):
-    ax.hlines([-1, 0, 1], -3, 3, linestyles="--", color="gray")
+    ax.hlines(0, -3, 3, linestyles="--", color="gray")
+
+    ax.set_xlim(-3, 3)
 
     ax.set_xlabel(r"$\eta$")
     ax.set_ylabel(ylabel)
 
     for i, pt, perf in zip(range(3), pts, fitting_perf):
         pull_mean = TH1(perf.Get(f"pullmean_{param}_vs_eta"), xrange=(-3, 3))
-        pull_width = TH1(perf.Get(f"pullwidth_{param}_vs_eta"), xrange=(-3, 3))
 
-        ax.errorbar(
-            pull_mean.x,
-            pull_mean.y,
-            yerr=(pull_width.y, pull_width.y),
-            fmt="o", label=f"{pt} GeV",
-        )
+        pull_mean.errorbar(ax, fmt=".", label=f"{pt} GeV")
+
+    low, high = ax.get_ylim()
+    bound = max(abs(low), abs(high))
+    ax.set_ylim(-bound, bound)
 
 if args.output is not None:
     fig.savefig(args.output, bbox_inches="tight")
