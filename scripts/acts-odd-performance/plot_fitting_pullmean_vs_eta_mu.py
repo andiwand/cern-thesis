@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
+import atlasify
 
 from mycommon.root import TH1
 
@@ -31,15 +32,16 @@ ylabels = ["$d_0$", "$z_0$", r"$\phi$", r"$\theta$", "$q/p$", "$t$"]
 
 fig, axs = plt.subplots(6, 1, figsize=(8, 6), sharex=True)
 
-for ax, param, ylabel in zip(axs, params, ylabels):
+for i, ax, param, ylabel in zip(range(6), axs, params, ylabels):
     ax.hlines(0, -3, 3, linestyles="--", color="gray")
 
     ax.set_xlim(-3, 3)
 
-    ax.set_xlabel(r"$\eta$")
+    if i == 5:
+        ax.set_xlabel(r"$\eta$")
     ax.set_ylabel(ylabel)
 
-    for i, pt, perf in zip(range(3), pts, fitting_perf):
+    for pt, perf in zip(pts, fitting_perf):
         pull_mean = TH1(perf.Get(f"pullmean_{param}_vs_eta"), xrange=(-3, 3))
 
         pull_mean.errorbar(ax, fmt=".", label=f"{pt} GeV")
@@ -48,7 +50,22 @@ for ax, param, ylabel in zip(axs, params, ylabels):
     bound = max(abs(low), abs(high))
     ax.set_ylim(-bound, bound)
 
-fig.tight_layout()
+    if i == 0:
+        ax.legend(bbox_to_anchor=(1.0, 2.4), loc="upper right")
+
+        atlasify.atlasify(
+            axes=ax,
+            outside=True,
+            brand="ODD",
+            atlas="Simulation",
+            subtext="ACTS v40.0.0\nsingle muons, <$\\mu$> = 0",
+            offset=18,
+        )
+    else:
+        atlasify.atlasify(axes=ax, outside=True, atlas=False, offset=0)
+        ax.get_legend().remove()
+
+fig.tight_layout(h_pad=-0.01)
 
 if args.output is not None:
     fig.savefig(args.output)

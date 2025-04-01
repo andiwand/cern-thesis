@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
+import atlasify
 
 from mycommon.root import TH1
 
@@ -31,11 +32,20 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"$p_T$ [GeV]")
 ax.set_ylabel(r"$\sigma_{z_0}$ [mm]")
 
+ax.set_xlim(0, 100)
+
 for i, ptype, perf in zip(range(3), ptypes, fitting_perf):
     eff_vs_eta = TH1(perf.Get("reswidth_z0_vs_pT"))
     eff_vs_eta.errorbar(ax, fmt="o", label=f"{ptype}")
 
 ax.legend()
+
+atlasify.atlasify(
+    axes=ax,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="ACTS v40.0.0\nsingle particles, <$\\mu$> = 0",
+)
 
 fig.tight_layout()
 

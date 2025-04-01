@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
+import atlasify
 
 from mycommon.root import TH1
 
@@ -31,6 +32,13 @@ ax.set_xlim(-3, 3)
 
 dupl_vs_eta = TH1(seeding_perf.Get("nDuplicated_vs_eta"), xrange=(-3, 3))
 dupl_vs_eta.errorbar(ax, fmt="o")
+
+atlasify.atlasify(
+    axes=ax,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="ACTS v40.0.0\nsingle muons, <$\\mu$> = 0",
+)
 
 fig.tight_layout()
 

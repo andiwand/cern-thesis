@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
+import atlasify
 
 from mycommon.root import TH1
 
@@ -38,6 +39,13 @@ for i, pt, perf in zip(range(3), pts, fitting_perf):
     eff_vs_eta.errorbar(ax, fmt="o", label=f"{pt} GeV")
 
 ax.legend()
+
+atlasify.atlasify(
+    axes=ax,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="ACTS v40.0.0\nsingle muons, <$\\mu$> = 0",
+)
 
 fig.tight_layout()
 

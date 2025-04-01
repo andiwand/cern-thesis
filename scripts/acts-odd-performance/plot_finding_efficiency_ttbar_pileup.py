@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
+import atlasify
 
 from mycommon.root import TH1
 
@@ -35,12 +36,24 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"<$\mu$>")
 ax.set_ylabel("Efficiency")
 
+ax.set_xlim(0, 200)
+
+ax.hlines(1, 0, 200, linestyles="--", color="gray")
+
 eff = []
 for pu, perf in zip(pus, finding_perf):
     eff_vs_eta = TH1(perf.Get("trackeff_vs_eta"), xrange=(-3, 3))
     eff.append(eff_vs_eta.y.mean())
 
 ax.errorbar(pus, eff, fmt="o")
+
+atlasify.atlasify(
+    axes=ax,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="ACTS v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV",
+    enlarge=1.4,
+)
 
 fig.tight_layout()
 

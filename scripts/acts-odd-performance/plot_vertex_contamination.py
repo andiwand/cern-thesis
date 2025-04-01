@@ -6,6 +6,7 @@ import uproot
 import pandas as pd
 import awkward as ak
 import matplotlib.pyplot as plt
+import atlasify
 
 columns = [
     "vertex_primary",
@@ -76,8 +77,16 @@ for input_type in inputs.keys():
     )
 
 ax.legend()
+
 ax.set_xlabel(r"<$\mu$>")
 ax.set_ylabel("Vertex contamination")
+
+atlasify.atlasify(
+    axes=ax,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="ACTS v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV",
+)
 
 fig.tight_layout()
 

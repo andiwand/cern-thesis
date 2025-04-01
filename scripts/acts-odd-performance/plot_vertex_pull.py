@@ -7,6 +7,7 @@ import uproot
 import awkward as ak
 import scipy.stats
 import matplotlib.pyplot as plt
+import atlasify
 
 from mycommon.stats import robust_gauss_fit
 
@@ -45,7 +46,7 @@ vertexing = vertexing[
     (vertexing["vertex_primary"] == 1) & (vertexing["vertex_secondary"] == 0)
 ]
 
-fig, axs = plt.subplots(2, 2, figsize=(8, 4))
+fig, axs = plt.subplots(2, 2, figsize=(8, 5))
 axs = [item for sublist in axs for item in sublist]
 
 nbins = 30
@@ -88,7 +89,19 @@ for i, variable, ax, ylabel in zip(
 
     ax.vlines(0, 0, ax.get_ylim()[1], color="grey", linestyle="--")
 
-    ax.legend(loc="lower right")
+    ax.legend(loc="upper right")
+
+    if i == 0:
+        atlasify.atlasify(
+            axes=ax,
+            outside=True,
+            brand="ODD",
+            atlas="Simulation",
+            subtext="ACTS v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV, <$\\mu$> = 0",
+            offset=18,
+        )
+    else:
+        atlasify.atlasify(axes=ax, outside=True, atlas=False, offset=0)
 
 fig.tight_layout()
 

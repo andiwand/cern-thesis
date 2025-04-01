@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
 import ROOT
+import atlasify
 
 from mycommon.root import TH1
 
@@ -50,6 +51,14 @@ for i, pu, aperf, fperf in zip(range(4), pus, ambi_perf, finding_perf):
     finding_eff_vs_eta.errorbar(ax, fmt="o", color=f"C{i}", alpha=0.5)
 
 ax.legend()
+
+atlasify.atlasify(
+    axes=ax,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="ACTS v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV",
+    enlarge=1.4,
+)
 
 fig.tight_layout()
 
