@@ -147,8 +147,10 @@ axs[2].legend()
 axs[2].set_xlabel("PU")
 axs[2].set_ylabel("Split vertices")
 
+fig.tight_layout()
+
 if args.output is not None:
-    fig.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()

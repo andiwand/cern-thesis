@@ -115,8 +115,10 @@ for p_min, p_max in [
     print(f"Geant4 fit: {stat_robust_std(g4_data['dir1'])}")
     print(f"ACTS: 0 ± {np.mean(acts_data['dir_sigma'])}")
 
+fig.tight_layout()
+
 if args.output is not None:
-    fig.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()

@@ -30,8 +30,10 @@ ax.set_ylabel("Duplicates")
 dupl_vs_eta = TH1(finding_perf.Get("nDuplicated_vs_eta"), xrange=(-3, 3))
 dupl_vs_eta.errorbar(ax, fmt="o")
 
+fig.tight_layout()
+
 if args.output is not None:
-    fig.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()

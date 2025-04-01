@@ -160,8 +160,10 @@ for p_min, p_max in [
 
     oax.legend()
 
+fig.tight_layout()
+
 if args.output is not None:
-    fig.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()

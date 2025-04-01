@@ -32,6 +32,7 @@ rule all_plots:
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_resolution.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_pull.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_efficiency.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_contamination.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
 
 rule plot_seeding_duplication:
     input:
@@ -306,6 +307,18 @@ rule plot_vertex_efficiency:
         reco_amvf_wt = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_amvf_truth_time.root", pu=[0, 30, 60, 90, 120, 150, 200]),
     output:
         "plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_efficiency.pdf",
+    shell:
+        """
+        python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}
+        """
+
+rule plot_vertex_contamination:
+    input:
+        script = "scripts/acts-odd-performance/plot_vertex_contamination.py",
+        reco_amvf_wot = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_amvf_truth_notime.root", pu=[0, 30, 60, 90, 120, 150, 200]),
+        reco_amvf_wt = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/performance_amvf_truth_time.root", pu=[0, 30, 60, 90, 120, 150, 200]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_contamination.pdf",
     shell:
         """
         python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}

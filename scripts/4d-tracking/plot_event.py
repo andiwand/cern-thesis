@@ -113,8 +113,10 @@ for i in range(2):
     axs[1, i].set_xlabel("z [mm]")
     axs[i, 0].set_ylabel("R * sign(x) [mm]")
 
+fig.tight_layout()
+
 if args.output is not None:
-    fig.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()

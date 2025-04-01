@@ -146,8 +146,10 @@ for i, file, axs_cols, momentum, x_range, e_range in zip(
 
 fig.colorbar(h2d[3], ax=axs.ravel().tolist(), label="hits")
 
+fig.tight_layout()
+
 if args.output is not None:
-    plt.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()

@@ -90,8 +90,10 @@ for i, variable, ax, ylabel in zip(
 
     ax.legend(loc="lower right")
 
+fig.tight_layout()
+
 if args.output is not None:
-    fig.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()

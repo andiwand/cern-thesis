@@ -51,8 +51,10 @@ for i, pu, aperf, fperf in zip(range(4), pus, ambi_perf, finding_perf):
 
 ax.legend()
 
+fig.tight_layout()
+
 if args.output is not None:
-    fig.savefig(args.output, bbox_inches="tight")
+    fig.savefig(args.output)
 
 if args.output is None or args.show:
     plt.show()
