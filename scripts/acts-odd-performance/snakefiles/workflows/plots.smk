@@ -34,6 +34,9 @@ rule all_plots:
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_efficiency.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/vertex_contamination.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
 
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/cpu_total_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/cpu_alg_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+
 rule plot_seeding_duplication:
     input:
         script = "scripts/acts-odd-performance/plot_seeding_duplication.py",
@@ -322,4 +325,26 @@ rule plot_vertex_contamination:
     shell:
         """
         python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}
+        """
+
+rule plot_cpu_total_ttbar:
+    input:
+        script = "scripts/acts-odd-performance/plot_cpu_total_ttbar.py",
+        times = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/timing.csv", pu=[0, 30, 60, 90, 120, 150, 200]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/cpu_total_ttbar.pdf",
+    shell:
+        """
+        python {input.script} {input.times} --output {output}
+        """
+
+rule plot_cpu_alg_ttbar:
+    input:
+        script = "scripts/acts-odd-performance/plot_cpu_alg_ttbar.py",
+        times = expand("data/acts-odd-performance/reco/ttbar-pu200_{{sim_label}}_pu{pu}-{{seeding_label}}/timing.csv", pu=[0, 30, 60, 90, 120, 150, 200]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/cpu_alg_ttbar.pdf",
+    shell:
+        """
+        python {input.script} {input.times} --output {output}
         """
