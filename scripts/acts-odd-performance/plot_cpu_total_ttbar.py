@@ -46,7 +46,10 @@ for pu, input in zip(pus, args.inputs):
             algorithm_indices[algorithm] += 1
         algorithm_index = algorithm_indices[algorithm]
 
-        if algorithm in selected_algorithms or (algorithm, algorithm_index) in selected_algorithms:
+        if (
+            algorithm in selected_algorithms
+            or (algorithm, algorithm_index) in selected_algorithms
+        ):
             total += time_total_s
     totals.append(total)
 totals_rel = [total / totals[0] for total in totals]
@@ -56,7 +59,14 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"<$\mu$>")
 ax.set_ylabel("Rel. CPU time")
 
-ax.plot(pus, totals_rel, marker=get_marker(0), linestyle="--", color=get_color(0), label="Reconstruction")
+ax.plot(
+    pus,
+    totals_rel,
+    marker=get_marker(0),
+    linestyle="--",
+    color=get_color(0),
+    label="Reconstruction",
+)
 
 if True:
     # dashed line with linear extrapolation point 0 and 30

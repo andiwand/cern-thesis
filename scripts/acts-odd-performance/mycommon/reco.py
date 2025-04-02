@@ -38,12 +38,12 @@ RecoConfig = namedtuple(
 
 
 def make_geoid(vol=None, lay=None):
-        geoid = acts.GeometryIdentifier()
-        if vol is not None:
-            geoid.volume = vol
-        if lay is not None:
-            geoid.layer = lay
-        return geoid
+    geoid = acts.GeometryIdentifier()
+    if vol is not None:
+        geoid.volume = vol
+    if lay is not None:
+        geoid.layer = lay
+    return geoid
 
 
 def get_reco_config(event_label, sim_label, reco_label) -> RecoConfig:
@@ -74,7 +74,7 @@ def get_reco_config(event_label, sim_label, reco_label) -> RecoConfig:
             pt=(0.7 * u.GeV, None),
             absEta=(None, 3.5),
             nMeasurementsMin=6,
-            #nMeasurementsGroupMin=measurementCounter,
+            # nMeasurementsGroupMin=measurementCounter,
             maxHolesAndOutliers=3,
         ),
         ckf_config=CkfConfig(
@@ -139,8 +139,10 @@ def add_my_seeding(
     elif seeding_label == "truth-estimated":
         seedingAlgorithm = SeedingAlgorithm.TruthEstimated
 
-        truthEstimatedSeedingAlgorithmConfigArg = TruthEstimatedSeedingAlgorithmConfigArg(
-            deltaR=(1 * u.mm, 300 * u.mm),
+        truthEstimatedSeedingAlgorithmConfigArg = (
+            TruthEstimatedSeedingAlgorithmConfigArg(
+                deltaR=(1 * u.mm, 300 * u.mm),
+            )
         )
 
         # note that this will use the true hypothesis
@@ -279,7 +281,7 @@ def add_my_reconstruction_chain(
         ckfConfig=reco_config.ckf_config,
         twoWay=True,
         outputDirRoot=tp,
-        #logLevel=acts.logging.VERBOSE,
+        # logLevel=acts.logging.VERBOSE,
     )
     output_files.append({"file": "performance_finding_ckf.root"})
     output_files.append({"file": "performance_fitting_ckf.root"})

@@ -57,12 +57,7 @@ ylabels = [
     r"pull t [mm]",
 ]
 
-for i, variable, ax, ylabel in zip(
-    range(4),
-    variables,
-    axs,
-    ylabels
-):
+for i, variable, ax, ylabel in zip(range(4), variables, axs, ylabels):
     data = vertexing[variable].dropna()
     (mu, sigma), cov = robust_gauss_fit(data)
 

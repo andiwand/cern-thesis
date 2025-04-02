@@ -25,7 +25,11 @@ parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 pts = [1, 10, 100]
-fitting_perf = [args.mu1GeV_fitting_perf, args.mu10GeV_fitting_perf, args.mu100GeV_fitting_perf]
+fitting_perf = [
+    args.mu1GeV_fitting_perf,
+    args.mu10GeV_fitting_perf,
+    args.mu100GeV_fitting_perf,
+]
 fitting_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in fitting_perf]
 
 params = ["d0", "z0", "phi", "theta", "qop", "t"]
@@ -45,7 +49,13 @@ for i, ax, param, ylabel in zip(range(6), axs, params, ylabels):
     for j, pt, perf in zip(range(3), pts, fitting_perf):
         pull_mean = TH1(perf.Get(f"pullwidth_{param}_vs_eta"), xrange=(-3, 3))
 
-        pull_mean.errorbar(ax, label=f"{pt} GeV", marker=get_marker(j), linestyle="", color=get_color(j))
+        pull_mean.errorbar(
+            ax,
+            label=f"{pt} GeV",
+            marker=get_marker(j),
+            linestyle="",
+            color=get_color(j),
+        )
 
     if i == 0:
         ax.legend(bbox_to_anchor=(1.0, 2.4), loc="upper right")

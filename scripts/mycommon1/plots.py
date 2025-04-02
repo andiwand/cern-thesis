@@ -35,17 +35,17 @@ def get_markers():
     Returns a list of markers for plotting.
     """
     markers = [
-        'o',  # circle
-        's',  # square
-        '^',  # triangle_up
-        'v',  # triangle_down
-        'D',  # diamond
-        '*',  # star
-        'X',  # x
-        '+',  # plus
-        'x',  # x
-        '|',  # vertical line
-        '_',  # horizontal line
+        "o",  # circle
+        "s",  # square
+        "^",  # triangle_up
+        "v",  # triangle_down
+        "D",  # diamond
+        "*",  # star
+        "X",  # x
+        "+",  # plus
+        "x",  # x
+        "|",  # vertical line
+        "_",  # horizontal line
     ]
     return markers
 

@@ -29,7 +29,15 @@ parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 pus = [0, 30, 60, 90, 120, 150, 200]
-seeding_perf = [args.ttbar_pu0_seeding_perf, args.ttbar_pu30_seeding_perf, args.ttbar_pu60_seeding_perf, args.ttbar_pu90_seeding_perf, args.ttbar_pu120_seeding_perf, args.ttbar_pu150_seeding_perf, args.ttbar_pu200_seeding_perf]
+seeding_perf = [
+    args.ttbar_pu0_seeding_perf,
+    args.ttbar_pu30_seeding_perf,
+    args.ttbar_pu60_seeding_perf,
+    args.ttbar_pu90_seeding_perf,
+    args.ttbar_pu120_seeding_perf,
+    args.ttbar_pu150_seeding_perf,
+    args.ttbar_pu200_seeding_perf,
+]
 seeding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in seeding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))

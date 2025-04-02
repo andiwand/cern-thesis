@@ -37,7 +37,9 @@ ax.set_xlim(0, 100)
 
 for i, ptype, perf in zip(range(3), ptypes, fitting_perf):
     eff_vs_eta = TH1(perf.Get("reswidth_z0_vs_pT"))
-    eff_vs_eta.errorbar(ax, label=f"{ptype}", marker=get_marker(i), linestyle="", color=get_color(i))
+    eff_vs_eta.errorbar(
+        ax, label=f"{ptype}", marker=get_marker(i), linestyle="", color=get_color(i)
+    )
 
 ax.legend()
 

@@ -26,7 +26,12 @@ parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 pus = [0, 60, 120, 200]
-finding_perf = [args.ttbar_pu0_finding_perf, args.ttbar_pu60_finding_perf, args.ttbar_pu120_finding_perf, args.ttbar_pu200_finding_perf]
+finding_perf = [
+    args.ttbar_pu0_finding_perf,
+    args.ttbar_pu60_finding_perf,
+    args.ttbar_pu120_finding_perf,
+    args.ttbar_pu200_finding_perf,
+]
 finding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in finding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
@@ -38,7 +43,9 @@ ax.set_xlim(-3, 3)
 
 for i, pu, perf in zip(range(4), pus, finding_perf):
     eff_vs_eta = TH1(perf.Get("fakerate_vs_eta"), xrange=(-3, 3))
-    eff_vs_eta.errorbar(ax, label=f"PU {pu}", marker=get_marker(i), linestyle="", color=get_color(i))
+    eff_vs_eta.errorbar(
+        ax, label=f"PU {pu}", marker=get_marker(i), linestyle="", color=get_color(i)
+    )
 
 ax.legend()
 

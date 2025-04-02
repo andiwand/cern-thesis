@@ -30,9 +30,19 @@ parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 pus = [0, 60, 120, 200]
-ambi_perf = [args.ttbar_pu0_ambi_perf, args.ttbar_pu60_ambi_perf, args.ttbar_pu120_ambi_perf, args.ttbar_pu200_ambi_perf]
+ambi_perf = [
+    args.ttbar_pu0_ambi_perf,
+    args.ttbar_pu60_ambi_perf,
+    args.ttbar_pu120_ambi_perf,
+    args.ttbar_pu200_ambi_perf,
+]
 ambi_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in ambi_perf]
-finding_perf = [args.ttbar_pu0_finding_perf, args.ttbar_pu60_finding_perf, args.ttbar_pu120_finding_perf, args.ttbar_pu200_finding_perf]
+finding_perf = [
+    args.ttbar_pu0_finding_perf,
+    args.ttbar_pu60_finding_perf,
+    args.ttbar_pu120_finding_perf,
+    args.ttbar_pu200_finding_perf,
+]
 finding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in finding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
@@ -48,8 +58,12 @@ for i, pu, aperf, fperf in zip(range(4), pus, ambi_perf, finding_perf):
     ambi_eff_vs_eta = TH1(aperf.Get("trackeff_vs_eta"), xrange=(-3, 3))
     finding_eff_vs_eta = TH1(fperf.Get("trackeff_vs_eta"), xrange=(-3, 3))
 
-    ambi_eff_vs_eta.errorbar(ax, label=f"PU {pu}", marker=get_marker(i), linestyle="", color=get_color(i))
-    finding_eff_vs_eta.errorbar(ax, marker=get_marker(i), linestyle="", color=f"C{i}", alpha=0.5)
+    ambi_eff_vs_eta.errorbar(
+        ax, label=f"PU {pu}", marker=get_marker(i), linestyle="", color=get_color(i)
+    )
+    finding_eff_vs_eta.errorbar(
+        ax, marker=get_marker(i), linestyle="", color=f"C{i}", alpha=0.5
+    )
 
 ax.legend()
 

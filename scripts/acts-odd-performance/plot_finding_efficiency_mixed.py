@@ -39,7 +39,9 @@ ax.hlines(1, -3, 3, linestyles="--", color="gray")
 
 for i, ptype, perf in zip(range(3), ptypes, finding_perf):
     eff_vs_eta = TH1(perf.Get("trackeff_vs_eta"), xrange=(-3, 3))
-    eff_vs_eta.errorbar(ax, label=f"{ptype}", marker=get_marker(i), linestyle="", color=get_color(i))
+    eff_vs_eta.errorbar(
+        ax, label=f"{ptype}", marker=get_marker(i), linestyle="", color=get_color(i)
+    )
 
 ax.legend()
 

@@ -12,7 +12,11 @@ class TH1:
         bins = bins[1:]
 
         if xrange is not None:
-            bins = [i for i in bins if th1.GetBinCenter(i) >= xrange[0] and th1.GetBinCenter(i) <= xrange[1]]
+            bins = [
+                i
+                for i in bins
+                if th1.GetBinCenter(i) >= xrange[0] and th1.GetBinCenter(i) <= xrange[1]
+            ]
 
         self.x = np.array([th1.GetBinCenter(i) for i in bins])
 
@@ -24,8 +28,12 @@ class TH1:
 
         try:
             self.y = np.array([th1_tefficiency.GetEfficiency(i) for i in bins])
-            self.y_err_lo = np.array([th1_tefficiency.GetEfficiencyErrorLow(i) for i in bins])
-            self.y_err_hi = np.array([th1_tefficiency.GetEfficiencyErrorUp(i) for i in bins])
+            self.y_err_lo = np.array(
+                [th1_tefficiency.GetEfficiencyErrorLow(i) for i in bins]
+            )
+            self.y_err_hi = np.array(
+                [th1_tefficiency.GetEfficiencyErrorUp(i) for i in bins]
+            )
         except Exception as e:
             self.y = np.array([th1_tefficiency.GetBinContent(i) for i in bins])
             self.y_err_lo = np.array([th1_tefficiency.GetBinError(i) for i in bins])

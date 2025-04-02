@@ -47,7 +47,9 @@ show_algorithms = [
     True,
 ]
 
-assert len(selected_algorithms) == len(algorithm_labels) == len(show_algorithms), "equal number of algorithms and labels required"
+assert (
+    len(selected_algorithms) == len(algorithm_labels) == len(show_algorithms)
+), "equal number of algorithms and labels required"
 
 rel_algorithm_times = []
 for pu, input in zip(pus, args.inputs):
@@ -64,7 +66,10 @@ for pu, input in zip(pus, args.inputs):
             algorithm_indices[algorithm] += 1
         algorithm_index = algorithm_indices[algorithm]
 
-        if algorithm in selected_algorithms or (algorithm, algorithm_index) in selected_algorithms:
+        if (
+            algorithm in selected_algorithms
+            or (algorithm, algorithm_index) in selected_algorithms
+        ):
             total += time_total_s
             try:
                 i = selected_algorithms.index(algorithm)
@@ -84,7 +89,12 @@ xs = np.array(pus) + width / 2
 bottom = np.zeros(len(pus))
 ys_others = np.zeros(len(pus))
 for i, (algorithm_label, show) in enumerate(zip(algorithm_labels, show_algorithms)):
-    ys = np.array([times[algorithm_label] if algorithm_label in times else 0 for times in rel_algorithm_times])
+    ys = np.array(
+        [
+            times[algorithm_label] if algorithm_label in times else 0
+            for times in rel_algorithm_times
+        ]
+    )
 
     if not show:
         ys_others += ys

@@ -57,7 +57,9 @@ def run_reconstruction(
 ):
     detector, tracking_geometry, decorators, field, digi_config, seeding_sel = get_odd()
 
-    event_label, sim_label, reco_label = split_event_sim_reco_label(event_sim_reco_label)
+    event_label, sim_label, reco_label = split_event_sim_reco_label(
+        event_sim_reco_label
+    )
     reco_config = get_reco_config(event_label, sim_label, reco_label)
 
     output_files = []
@@ -105,7 +107,9 @@ def run_reconstruction(
         )
 
         sequencer.addWhiteboardAlias("particles", "particles_simulated")
-        sequencer.addWhiteboardAlias("particles_simulated_selected", "particles_simulated")
+        sequencer.addWhiteboardAlias(
+            "particles_simulated_selected", "particles_simulated"
+        )
     else:
         add_my_simulation_chain(
             output_files=[],  # not outputting the simulation files

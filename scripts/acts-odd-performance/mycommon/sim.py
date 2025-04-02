@@ -151,7 +151,7 @@ def add_my_simulation(
         )
     elif sim_label == "geant4":
         # kill secondaries in case of single particles as this overflows the barcode
-        kill_secondaries = event_type =="single_particles"
+        kill_secondaries = event_type == "single_particles"
 
         addGeant4(
             s=sequencer,
@@ -162,8 +162,8 @@ def add_my_simulation(
             inputParticles=input_particles,
             killVolume=tracking_geometry.highestTrackingVolume,
             killAfterTime=25 * u.ns,
-            #killMinEnergy=100 * u.MeV,
-            #killMinMomentum=100 * u.MeV,
+            # killMinEnergy=100 * u.MeV,
+            # killMinMomentum=100 * u.MeV,
             killSecondaries=kill_secondaries,
             logLevel=logLevel,
         )
