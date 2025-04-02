@@ -111,7 +111,7 @@ for i, (algorithm_label, show) in enumerate(zip(algorithm_labels, show_algorithm
 
     ax.bar_label(
         bar,
-        labels=[f"{y:.2f}" for y in ys],
+        labels=[f"{y:.2f}" if y > 0.05 else "" for y in ys],
         label_type="center",
         fontsize=8,
         color="white",
@@ -127,7 +127,7 @@ bar = ax.bar(
 bottom += ys_others
 ax.bar_label(
     bar,
-    labels=[f"{y:.2f}" for y in ys_others],
+    labels=[f"{y:.2f}" if y > 0.05 else "" for y in ys_others],
     label_type="center",
     fontsize=8,
     color="white",

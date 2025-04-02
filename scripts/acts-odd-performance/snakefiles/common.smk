@@ -1,4 +1,4 @@
-from mycommon.config import (
+from mycommon2.config import (
     list_sim_labels,
     list_event_sim_labels,
     list_event_sim_reco_labels,

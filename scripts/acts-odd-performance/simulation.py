@@ -5,11 +5,11 @@ import tempfile
 from pathlib import Path
 import shutil
 
-from mycommon.config import split_event_sim_label
-from mycommon.detector import get_odd
-from mycommon.rng import get_rng
-from mycommon.sequencer import get_sequencer
-from mycommon.sim import add_my_simulation_chain
+from mycommon2.config import split_event_sim_label
+from mycommon2.detector import get_odd
+from mycommon2.rng import get_rng
+from mycommon2.sequencer import get_sequencer
+from mycommon2.sim import add_my_simulation_chain
 
 
 def main():

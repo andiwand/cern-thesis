@@ -9,7 +9,7 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import atlasify
 
-from mycommon.stats import robust_gauss_fit
+from mycommon2.stats import robust_gauss_fit
 
 
 base_dir = Path(__file__).parent.parent.parent

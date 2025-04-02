@@ -18,7 +18,7 @@ from acts.examples.simulation import (
 )
 import acts.examples.geant4
 
-from mycommon.config import get_event_details
+from mycommon2.config import get_event_details
 
 
 u = acts.UnitConstants

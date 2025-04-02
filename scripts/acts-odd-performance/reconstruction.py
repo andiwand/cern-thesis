@@ -8,12 +8,12 @@ from typing import Optional
 
 import acts
 
-from mycommon.config import split_event_sim_reco_label
-from mycommon.detector import get_odd
-from mycommon.rng import get_rng
-from mycommon.sequencer import get_sequencer
-from mycommon.sim import add_my_simulation_chain
-from mycommon.reco import get_reco_config, add_my_reconstruction_chain
+from mycommon2.config import split_event_sim_reco_label
+from mycommon2.detector import get_odd
+from mycommon2.rng import get_rng
+from mycommon2.sequencer import get_sequencer
+from mycommon2.sim import add_my_simulation_chain
+from mycommon2.reco import get_reco_config, add_my_reconstruction_chain
 
 
 def main():
