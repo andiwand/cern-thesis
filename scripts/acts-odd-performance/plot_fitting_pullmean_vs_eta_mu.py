@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import ROOT
 import atlasify
 
-from mycommon.root import TH1
+from mycommon1.root import TH1
+from mycommon1.plots import get_color, get_marker
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -41,10 +42,10 @@ for i, ax, param, ylabel in zip(range(6), axs, params, ylabels):
         ax.set_xlabel(r"$\eta$")
     ax.set_ylabel(ylabel)
 
-    for pt, perf in zip(pts, fitting_perf):
+    for j, pt, perf in zip(range(3), pts, fitting_perf):
         pull_mean = TH1(perf.Get(f"pullmean_{param}_vs_eta"), xrange=(-3, 3))
 
-        pull_mean.errorbar(ax, fmt=".", label=f"{pt} GeV")
+        pull_mean.errorbar(ax, label=f"{pt} GeV", marker=get_marker(j), linestyle="", color=get_color(j))
 
     low, high = ax.get_ylim()
     bound = max(abs(low), abs(high))

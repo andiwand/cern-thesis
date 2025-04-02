@@ -8,6 +8,9 @@ import awkward as ak
 import matplotlib.pyplot as plt
 import atlasify
 
+from mycommon1.plots import get_color, get_marker
+
+
 columns = [
     "vertex_primary",
     "vertex_secondary",
@@ -64,16 +67,17 @@ for input_type, inputs_list in inputs.items():
             }
         )
 
-for input_type in inputs.keys():
+for i, input_type in enumerate(inputs.keys()):
     data = pd.DataFrame(results[input_type])
 
     ax.errorbar(
         data["pu"],
         data["recoVertexContamination"],
         data["recoVertexContamination_err"],
-        marker="o",
-        linestyle="",
         label=f"{input_type}",
+        marker=get_marker(i),
+        linestyle="",
+        color=get_color(i),
     )
 
 ax.legend()

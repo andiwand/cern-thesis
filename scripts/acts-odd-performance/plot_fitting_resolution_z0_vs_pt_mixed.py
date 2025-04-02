@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import ROOT
 import atlasify
 
-from mycommon.root import TH1
+from mycommon1.root import TH1
+from mycommon1.plots import get_color, get_marker
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -36,7 +37,7 @@ ax.set_xlim(0, 100)
 
 for i, ptype, perf in zip(range(3), ptypes, fitting_perf):
     eff_vs_eta = TH1(perf.Get("reswidth_z0_vs_pT"))
-    eff_vs_eta.errorbar(ax, fmt="o", label=f"{ptype}")
+    eff_vs_eta.errorbar(ax, label=f"{ptype}", marker=get_marker(i), linestyle="", color=get_color(i))
 
 ax.legend()
 

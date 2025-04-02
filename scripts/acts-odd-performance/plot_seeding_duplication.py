@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import ROOT
 import atlasify
 
-from mycommon.root import TH1
+from mycommon1.root import TH1
+from mycommon1.plots import get_color, get_marker
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -31,7 +32,7 @@ ax.set_ylabel("Duplicates")
 ax.set_xlim(-3, 3)
 
 dupl_vs_eta = TH1(seeding_perf.Get("nDuplicated_vs_eta"), xrange=(-3, 3))
-dupl_vs_eta.errorbar(ax, fmt="o")
+dupl_vs_eta.errorbar(ax, marker=get_marker(0), linestyle="", color=get_color(0))
 
 atlasify.atlasify(
     axes=ax,
