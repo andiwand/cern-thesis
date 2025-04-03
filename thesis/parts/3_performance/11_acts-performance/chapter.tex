@@ -23,6 +23,7 @@ Particles and hits are stored in ROOT files and read by the reconstruction chain
 
 \begin{itemize}
     \color{red}
+    \item the power of truth based algorithms
     \item material map validation
 \end{itemize}
 
@@ -58,7 +59,7 @@ It should be noted that the triplet seeding algorithm and its configuration are 
     \label{fig:perf/odd/seeding-efficiency-mu}
 \end{figure}
 
-Figure \ref{fig:perf/odd/seeding-efficiency-mu} shows the seeding efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The efficiency is defined as the ratio of reconstructed and matched seeds, which have 3 out of 3 spacepoints coming from the same truth particle, to the number of selected particles. The observed efficiency is high for all three $p_T$ values. There are inefficiencies at $|\eta| \approx 2$, which is likely due to suboptimal seeding configuration.
+Figure \ref{fig:perf/odd/seeding-efficiency-mu} shows the seeding efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The efficiency is defined as the ratio of reconstructed particles with at least one matched seed to the number of selected particles. The matching requires all three spacepoints to come from the same truth particle. The observed efficiency is high for all three $p_T$ values. There are inefficiencies at $|\eta| \approx 2$, which is likely due to suboptimal seeding configuration.
 
 \begin{figure}[H]
     \centering
@@ -105,82 +106,75 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
 
 \begin{itemize}
     \color{red}
-    \item explain the CKF algorithm
-    \item show the performance of the CKF compared to the seeding
-    \begin{itemize}
-        \item efficiency
-        \item n duplicates
-        \item fake rate
-        \item purity?
-        \item initial parameter residuals
-    \end{itemize}
-    \item above metrics as a function of
-    \begin{itemize}
-        \item pileup
-        \item eta, phi, pt
-    \end{itemize}
+    \item configuration of the track finding algorithm: chi2 cuts, measurement/outlier/holes, two way, stay on seed, seed deduplication
 \end{itemize}
 
-\begin{figure}[h]
+After seeding, the track finding algorithm is used to find complete tracks. The track finding algorithm in ACTS Examples is based on the Combinatorial Kalman Filter (CKF). The implementation of this algorithm has been reworked during the work on this thesis. These developments are described in detail in Chapter \ref{ch:dev/track_finding}. As a quick reminder: the CKF starts a propagation from the seed and collects measurements along the way. These measurements are used to iteratively refine the track by updating the track parameters using the Kalman filter formalism.
+
+The performance of the seeding is essential for the track finding performance. Tracks are only found if the seeding is successful. The track finding algorithm is designed to be robust against seed duplication, but it is good to have moderately low duplication to safe CPU time. The performance of the track finding algorithm is evaluated using the same metrics as for the seeding: efficiency, duplication, and fake ratio. Additionally, the fitting performance is evaluated with the resolution and pull of the fitted track parameters at the interaction point (IP).
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_efficiency_mu.pdf}
-    \caption{Finding efficiency as a function of eta for single muons with 1, 10, 100 GeV transverse momentum.}
+    \caption{Track efficiency as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/finding-efficiency-mu}
 \end{figure}
 
-\begin{figure}[h]
+Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The efficiency is defined as the ratio of reconstructed particles with at least one matched track to the number of selected particles. The matching requires at least 50\% of the measurements on track to come from the same truth particle, and at least 50\% of all the particles' measurements to be on the track. The observed efficiency for $p_T$ 10 and 100 GeV is comparable to the seeding efficiency. For $p_T$ = 1 GeV, the efficiency is significantly lower. This is not fully understood and can have different causes: imprecise material map, incorrect implementation of energy loss or multiple scattering in ACTS, or a problem with the navigation at low $p_T$. Increasing the $\chi^2$ cut for assigning measurements to the track improves the efficiency. Multiple scattering dominates at lower $p_T$ and the fact that the original $\chi^2$ cut is sufficient for higher $p_T$ suggests that the material handling is not optimal.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_duplication.pdf}
-    \caption{Finding duplication as a function of eta for single muons with 1 GeV transverse momentum.}
+    \caption{Track duplication as a function of $\eta$ for single $\mu$ with $p_T = 1$ GeV.}
     \label{fig:perf/odd/finding-duplication}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_efficiency_mixed.pdf}
-    \caption{Finding efficiency as a function of eta for single muons, pions, and electrons with 10 GeV transverse momentum.}
+    \caption{Track efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/finding-efficiency-mixed}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_efficiency_ttbar.pdf}
-    \caption{Finding efficiency as a function of eta for \ttbar events with different pileup.}
+    \caption{Track efficiency as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
     \label{fig:perf/odd/finding-efficiency-ttbar}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_fake_ttbar.pdf}
-    \caption{Finding fake ratio as a function of eta for \ttbar events with different pileup.}
+    \caption{Track fake ratio as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
     \label{fig:perf/odd/finding-fake-ttbar}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_resolution_d0_vs_eta_mu.pdf}
-    \caption{}
+    \caption{Track resolution of $d_0$ as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/fitting-resolution-d0-eta-mu}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_resolution_z0_vs_pt_mixed.pdf}
-    \caption{}
+    \caption{Track resolution of $z_0$ as a function of $p_T$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/fitting-resolution-z0-pt-mixed}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_pullmean_vs_eta_mu.pdf}
-    \caption{}
+    \caption{Pull mean of all fitted track parameters at the IP as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/fitting-pullmean-eta-mu}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_pullwidth_vs_eta_mu.pdf}
-    \caption{}
+    \caption{Pull width of all fitted track parameters at the IP as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/fitting-pullwidth-eta-mu}
 \end{figure}
 
@@ -193,7 +187,7 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
     \item show the performance of the ambiguity resolution compared to the CKF
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/ambi_duplication_ttbar.pdf}
     \caption{}
@@ -209,7 +203,7 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
     \item IP resolution vs CKF
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/refit_pullwidth_vs_eta_mu.pdf}
     \caption{}
@@ -226,28 +220,28 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
     \item 3D vs 4D
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_efficiency.pdf}
     \caption{}
     \label{fig:perf/odd/vertex-efficiency}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_contamination.pdf}
     \caption{}
     \label{fig:perf/odd/vertex-contamination}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_resolution.pdf}
     \caption{}
     \label{fig:perf/odd/vertex-resolution}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_pull.pdf}
     \caption{}
@@ -256,14 +250,14 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
 
 \section{Computation time}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/cpu_total_ttbar.pdf}
     \caption{}
     \label{fig:perf/odd/cpu-total-ttbar}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/cpu_alg_ttbar.pdf}
     \caption{}
