@@ -129,12 +129,18 @@ Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for s
     \label{fig:perf/odd/finding-duplication}
 \end{figure}
 
+Figure \ref{fig:perf/odd/finding-duplication} shows the track duplication for single $\mu$ with $p_T$ = 1 GeV as a function of $\eta$. The duplication is defined as the number of reconstructed tracks matched to the same truth particle. The observed duplication is well below 2\% over the entire $\eta$ range. Compared to the seed duplication in Figure \ref{fig:perf/odd/seeding-duplication}, the track duplication is significantly lower. This is expected, as the track finding algorithm is configured to remove duplicated seeds. The remaining duplicates will be handled by the ambiguity resolution algorithm, later in the reconstruction chain.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_efficiency_mixed.pdf}
     \caption{Track efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/finding-efficiency-mixed}
 \end{figure}
+
+Figure \ref{fig:perf/odd/finding-efficiency-mixed} shows the track efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of $\eta$. The observed efficiency for $\pi$ is up to 1\% lower than for $\mu$. Given that the $\pi$ must have left at least 6 measurements in the detector and at least 3 in the pixes should result in a similar performance as with $\mu$. Why this is not the case is not understood and under investivation. For $e$, the efficiency is significantly lower, with about 95\% over most of the $\eta$ range, but dropping to about 80\% at $|\eta| \approx 1.8$. The reason for the poor finding performance with $e$ can be explained by the track finding algorithm not being optimized for this case. Electrons are not only affected by multiple scattering and ionization loss, but also by bremsstrahlung.
+
+To recover the remaining $e$ efficiency, the track finding algorithm needs to robust against bremsstrahlung. Partitially, this can be achieved by increasing the $\chi^2$ cut for assigning measurements to the track. However, this will also increase the fake rate. In the best case, the track finding can be informed by a region of interest (ROI), for example provided by an electro-magnetic calorimeter. Otherwise the algorithm has to assume that any seed could come from an electron, increasing compute time and fake rate.
 
 \begin{figure}[H]
     \centering
