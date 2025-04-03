@@ -101,7 +101,7 @@
     - [ ] 3.4. Fatras
     - [ ] ✔️ 3.5. Plugins
     - [ ] ✔️ 3.6. The ACTS Examples Framework
-    - [ ] 3.7. The Open Data Detector
+    - [ ] 3.7. The OpenDataDetector
     - [ ] 3.8. Tracking on Accelerators with traccc and detray
 - [ ] II. Developments
   - [ ] ✔️✔️ 4. General deveopments of ACTS
@@ -166,7 +166,7 @@
     - [ ] ✔️✔️✔️ 10.1. Shortcomings
     - [ ] ✔️✔️✔️ 10.2. Proposals for future developments
 - [ ] III. Performance
-  - [ ] 11. Open Data Detector tracking performance with ACTS
+  - [ ] 11. OpenDataDetector tracking performance with ACTS
     - [ ] Intro text
     - [ ] 11.1. Track finding
       - [ ] 11.1.1. Seeding

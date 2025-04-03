@@ -52,7 +52,7 @@ The seed deduplication technique has been implemented in the \texttt{TrackFindin
 
 \input{parts/2_developments/07_trackfinding-developments/tables/seed_deduplication.tex}
 
-Table \ref{tab:dev/trackfinding/seed-deduplication} shows the performance of the track finding algorithm with and without seed deduplication. The results were obtained with the Open Data Detector, \ttbar events at $\sqrt{s} = 14 \ \text{TeV}$, $\langle \mu \rangle = 200$, using fast simulation and a standard reconstruction workflow. It shows that the deduplication has a significant impact on the time per event, but only a small impact on the track efficiency.
+Table \ref{tab:dev/trackfinding/seed-deduplication} shows the performance of the track finding algorithm with and without seed deduplication. The results were obtained with the OpenDataDetector, \ttbar events at $\sqrt{s} = 14 \ \text{TeV}$, $\langle \mu \rangle = 200$, using fast simulation and a standard reconstruction workflow. It shows that the deduplication has a significant impact on the time per event, but only a small impact on the track efficiency.
 
 \section{Stay-on-seed strategy}
 
@@ -62,7 +62,7 @@ This strategy has been implemented in the \texttt{TrackFindingAlgorithm} in the 
 
 \input{parts/2_developments/07_trackfinding-developments/tables/stay_on_seed.tex}
 
-Table \ref{tab:dev/trackfinding/stay-on-seed} shows the performance of the track finding algorithm with and without stay-on-seed. The results were obtained with the Open Data Detector, \ttbar events at $\sqrt{s} = 14 \ \text{TeV}$, $\langle \mu \rangle = 200$, using fast simulation and a standard reconstruction workflow. It shows that the stay-on-seed strategy has a significant impact on the time per event, but only a small impact on the track efficiency.
+Table \ref{tab:dev/trackfinding/stay-on-seed} shows the performance of the track finding algorithm with and without stay-on-seed. The results were obtained with the OpenDataDetector, \ttbar events at $\sqrt{s} = 14 \ \text{TeV}$, $\langle \mu \rangle = 200$, using fast simulation and a standard reconstruction workflow. It shows that the stay-on-seed strategy has a significant impact on the time per event, but only a small impact on the track efficiency.
 
 We should note that this will only make a difference if branching is enabled and the hit density is high enough to result in multiple compatible measurements in the vicinity of the seed. In the example shown, the hit density is high and branching was set to a maximum of 10 per surface.
 
@@ -76,7 +76,7 @@ The remaining challenge is to stitch the resulting track segments together. The 
 
 \input{parts/2_developments/07_trackfinding-developments/tables/two_way.tex}
 
-Table \ref{tab:dev/trackfinding/two-way} shows the performance of the track finding algorithm with and without two-way search. The results were obtained with the Open Data Detector, \ttbar events at $\sqrt{s} = 14 \ \text{TeV}$, $\langle \mu \rangle = 200$, using fast simulation and a standard reconstruction workflow. It shows that the two-way search is able to reduce the duplication rate by deduplicating seeds more effectively. Even though the two-way search involves more computation, it is slightly faster as fewer seeds have to be processed.
+Table \ref{tab:dev/trackfinding/two-way} shows the performance of the track finding algorithm with and without two-way search. The results were obtained with the OpenDataDetector, \ttbar events at $\sqrt{s} = 14 \ \text{TeV}$, $\langle \mu \rangle = 200$, using fast simulation and a standard reconstruction workflow. It shows that the two-way search is able to reduce the duplication rate by deduplicating seeds more effectively. Even though the two-way search involves more computation, it is slightly faster as fewer seeds have to be processed.
 
 \section{Initial covariance}
 

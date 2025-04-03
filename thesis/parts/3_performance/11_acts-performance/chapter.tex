@@ -1,96 +1,107 @@
+This chapter presents an extensive tracking performance study with the OpenDataDetector (ODD) using ACTS and its Examples. The main focus is on the performance of track finding and fitting, but also seeding, ambiguity resolution, and vertexing are covered. The performance is evaluated using various metrics, including efficiency, fake rate, resolution, and pulls. The results are presented for different particle types ($\mu$, $\pi$, $e$) and for \ttbar events with different pileup scenarios. Reconstructed quantities are compared to the truth information to assess the quality of the reconstruction.
+
+A subset of this study has already been presented at the 2023 Connecting the Dots (CTD) conference \cite{ctd-acts-odd}. Due to previous limitations of the track finding, the CTD study only considered truth-based track seeding. This gap is filled in this thesis by including the performance of the triplet seeding algorithm and the improved version of the track finding algorithm. 
+
+The chapter is structured as follows: first, the simulation setup is described and the generated samples are layed out. Then, the reconstruction chain and its cuts are presented. Followed by the performance of the seeding, track finding, ambiguity resolution, track refitting, and vertexing. Finally, the computation time of the reconstruction chain is discussed.
+
+\section{Event generation and simulation}
+
+ACTS Examples offer different methods for event generation, simulation, and digitization. Event generation can be done with a particle gun or with Pythia8. In this study, the particle gun is used to generate single $\mu$, $\pi$, and $e$ to estimate the reconstruction performance under ideal conditions. Pythia8 is used to generate \ttbar events with different pileup scenarios, which are more realistic and closer to the conditions expected in a real hadron collider experiment. Both event simulators, Fatras and Geant4, are used to simulate the passage of the generated particles through the detector. This allows to cross-check the results after reconstruction and may help to identify potential issues in the simulation or reconstruction chain. For instance, Fatras uses the same material model as the reconstruction, which allows to check the material handling. The OpenDataDetector does not provide a realistic digitization, but ACTS Examples offers two fast, truth-based digitization methods: smeared digitization and geometric digitization. The smeared digitization converts simulated hits into measurements by applying user-provided noise, without creating clusters. The geometric digitization uses a user-provided segmentation to estimate cells to activate based on the passage of a particle through the sensor. These cells are directly turned into clusters and measurements without calling the clustering algorithm. For this study, the smeared digitization is used to create measurements from the simulated hits, as the geometric digitization is not fully validated yet.
+
+In summary, the following events have been simulated:
 \begin{itemize}
-    \color{red}
-    \item focus on track finding and fitting performance
-    \item mention+cite CTD contribution, what is the difference to today?
-    \item how do we measure the performance
-    \begin{itemize}
-        \item simulation, params, cuts
-        \item reconstruction chain, params, cuts
-        \item aggregation of the performance metrics
-    \end{itemize}
-    \item what are the limitations of performance studies with ACTS Examples?
-    \item pre conditions
-    \begin{itemize}
-        \item material mapping
-        \item magnetic field
-        \item alignment
-        \item fast digitization - for digital we do not need any plots, for geometric it would be good
-    \end{itemize}
+    \item 100k single $\mu$, $\pi$, $e$ with random charge, $p_T$ of 1, 10, and 100 GeV, uniform $\eta$ between -3 and 3, and uniform $\phi$, generated with the particle gun
+    \item 100k single $\mu$, $\pi$, $e$ with random charge, exponentially distributed $p_T$ between 1 and 100 GeV, uniform $\eta$ between -3 and 3, and uniform $\phi$, generated with the particle gun
+    \item 1k \ttbar events with 200 pileup interactions, generated with Pythia8
+    \item Fatras and Geant4 for event simulation
+    \item Smeared digitization
 \end{itemize}
 
-\section{Simulation}
+Particles and hits are stored in ROOT files and read by the reconstruction chain as inputs. This allows to switch the digitization method without running the event simulation again.
 
-\begin{itemize}
-    \color{red}
-    \item event generation: particle gun / Pythia8
-    \item detector simulation: Fatras / Geant4
-    \item digitization: truth based, smeared / geometric
-\end{itemize}
-
-\section{Clustering}
-
-\begin{itemize}
-    \item truth based
-    \item in case of geometric, show residuals and pulls, potentially per cluster size
-\end{itemize}
-
-\section{Seeding}
+\section{Reconstruction chain and cuts}
 
 \begin{itemize}
     \color{red}
-    \item configuration not optimized, not the focus of this thesis
-    \item explain different seeding algorithms?
-    \item show seeding configuration?
-    \item show the performance of the default seeding algorithm compared to the truth one
-    \begin{itemize}
-        \item efficiency
-        \item fake rate
-        \item purity
-        \item initial parameter residuals?
-    \end{itemize}
-    \item above metrics as a function of
-    \begin{itemize}
-        \item pileup
-        \item eta, phi, pt
-    \end{itemize}
+    \item material map validation
 \end{itemize}
 
-\begin{figure}[h]
+The event reconstruction is implemented on top of the existing components in ACTS Examples. The reconstruction chain consists of the following steps: Truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and vertexing. The individual steps and their performance are described in the following sections. It should be noted that the simulation and reconstruction use the same magnetic field, material and alignment.
+
+The following cuts are applied to the simulated particles:
+\begin{itemize}
+    \item $p_T \ge 1 \text{GeV}$
+    \item $|\eta| < 3.0$
+    \item $q \ne 0$
+    \item 6 or more measurements
+    \item 3 or more measurements in pixels
+\end{itemize}
+
+The following cuts are applied to reconstructed tracks:
+\begin{itemize}
+    \item $p_T > 0.7 \text{GeV}$
+    \item $|\eta| < 3.5$
+    \item 6 or more measurements
+    \item 3 or less outliers and/or holes
+\end{itemize}
+
+\section{Seeding performance}
+
+Seeding is the first step towards finding tracks after spacepoint creations. ACTS Examples offers different seeding algorithms, including truth-based seeding and triplet seeding. Truth-based seeders can be used to evaluate the performance of the reconstruction chain under ideal conditions, while triplet seeding is a more realistic approach that can be used in real experiments. The triplet seeding algorithm works through combinatorics of three spacepoint that may have produces by one particle.
+
+It should be noted that the triplet seeding algorithm and its configuration are currently not optimized for the ODD which can result in low efficiency and high fake rates. Achieving a good performance with the triplet seeding algorithm was not an objective of this study.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_efficiency_mu.pdf}
-    \caption{Seeding efficiency as a function of eta for single muons with 1, 10, 100 GeV transverse momentum.}
+    \caption{Seeding efficiency as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/seeding-efficiency-mu}
 \end{figure}
 
-\begin{figure}[h]
+Figure \ref{fig:perf/odd/seeding-efficiency-mu} shows the seeding efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The efficiency is defined as the ratio of reconstructed and matched seeds, which have 3 out of 3 spacepoints coming from the same truth particle, to the number of selected particles. The observed efficiency is high for all three $p_T$ values. There are inefficiencies at $|\eta| \approx 2$, which is likely due to suboptimal seeding configuration.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_duplication.pdf}
-    \caption{Seed duplication as a function of eta for single muons with 1 GeV transverse momentum.}
+    \caption{Seed duplication as a function of $\eta$ for single $\mu$ with $p_T = 1$ GeV.}
     \label{fig:perf/odd/seeding-duplication}
 \end{figure}
 
-\begin{figure}[h]
+Figure \ref{fig:perf/odd/seeding-duplication} shows the seed duplication for single $\mu$ with $p_T$ = 1 GeV as a function of $\eta$. The duplication is defined as the number of reconstructed seeds matched to the same truth particle. Generally, duplication should be avoided in tracking, and if it appears, it has to be removed at a later stage. In case of the triplet seeding algorithm, duplication is expected and required for robustness against different detector conditions. Given the current configuration, the duplication is about 6 for $|\eta| < 1.5$ and drops at $|\eta| \approx 2$. This drop conicides with the drop in efficiency in Figure \ref{fig:perf/odd/seeding-efficiency-mu} which suggests too low redundancy in this region. This can be a problem of the detector layor or seeding configuration. In the forward region, at $|\eta| > 2.5$ increases to about 12 which is due to the number of endcap disks.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_efficiency_mixed.pdf}
-    \caption{Seeding efficiency as a function of eta for single muons, pions, and electrons with 10 GeV transverse momentum.}
+    \caption{Seeding efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/seeding-efficiency-mixed}
 \end{figure}
 
-\begin{figure}[h]
+Figure \ref{fig:perf/odd/seeding-efficiency-mixed} shows the seeding efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of $\eta$. The observed efficiency is similar for $\pi$ and $\mu$, but generally lower for $e$. The efficiency for $e$ drops with increasing $|\eta|$. This can be explained by the distribution over $\eta$ show in Figure \ref{}.
+
+\begin{itemize}
+    \color{red}
+    \item point to material plot
+\end{itemize}
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_efficiency_ttbar.pdf}
-    \caption{Seeding efficiency as a function of eta for \ttbar events with different pileup.}
+    \caption{Seeding efficiency as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
     \label{fig:perf/odd/seeding-efficiency-ttbar}
 \end{figure}
 
-\begin{figure}[h]
+Figure \ref{fig:perf/odd/seeding-efficiency-ttbar} shows the seeding efficiency for \ttbar events with different pileup <$\mu$> as a function of $\eta$. The observed efficiency drops with increasing pileup in the barrel region $|\eta| < 1.5$. This can be a problem of the detector layor or seeding configuration. The efficiency drops drastically at $|\eta| \approx 2$. This is likely due to the effects seen with single particles in Figure \ref{fig:perf/odd/seeding-efficiency-mu} and \ref{fig:perf/odd/seeding-efficiency-mixed} but amplified by the increased number of particles in the event. The efficiency in the encaps at $|\eta| > 2.5$ is generally high and less affected by pileup. This is likely due to the higher number of layers in the endcaps which increases the redundancy.
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_fake_ttbar.pdf}
-    \caption{Seeding fake ratio as a function of eta for \ttbar events with different pileup.}
+    \caption{Seeding fake ratio as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
     \label{fig:perf/odd/seeding-fake-ttbar}
 \end{figure}
 
-\section{Combinatorial Kalman Filter}
+Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \ttbar events with different pileup $\mu$ as a function of $\eta$. The fake ratio is defined as the number of reconstructed seeds that are not matched to a single truth particle divided by the number of reconstructed seeds. The observed fake ratio increases with increasing pileup and peaks at the already discussed problematic region at $|\eta| \approx 2$.
+
+\section{Track finding performance}
 
 \begin{itemize}
     \color{red}
@@ -173,7 +184,7 @@
     \label{fig:perf/odd/fitting-pullwidth-eta-mu}
 \end{figure}
 
-\section{Ambiguity resolution}
+\section{Ambiguity resolution performance}
 
 \begin{itemize}
     \color{red}
@@ -189,7 +200,7 @@
     \label{fig:perf/odd/ambi-duplication-ttbar}
 \end{figure}
 
-\section{Track fitting}
+\section{Track refitting performance}
 
 \begin{itemize}
     \color{red}
@@ -205,7 +216,7 @@
     \label{fig:perf/odd/refit-pullwidth-eta-mu}
 \end{figure}
 
-\section{Vertexing}
+\section{Vertexing performance}
 
 \begin{itemize}
     \color{red}
@@ -258,3 +269,26 @@
     \caption{}
     \label{fig:perf/odd/cpu-alg-ttbar}
 \end{figure}
+
+\section{Summary, conclusion, and outlook}
+
+\begin{itemize}
+    \color{red}
+    \item what are the limitations of performance studies with ACTS Examples?
+    \item pre conditions
+    \begin{itemize}
+        \item material mapping
+        \item magnetic field
+        \item alignment
+        \item fast digitization - for digital we do not need any plots, for geometric it would be good
+    \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+    \color{red}
+    \item performance shown on various parts of the reconstruction chain
+    \item still missing more realistic digitization
+    \item single muon efficiency low for 1 GeV
+    \item material map might be suboptimal
+    \item truth based vertex seeder
+\end{itemize}
