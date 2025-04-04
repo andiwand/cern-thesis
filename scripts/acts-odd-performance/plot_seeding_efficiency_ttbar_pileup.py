@@ -42,8 +42,8 @@ seeding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in seeding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"<$\mu$>")
-ax.set_ylabel("Efficiency")
+ax.set_xlabel(r"$\langle \mu \rangle$")
+ax.set_ylabel("Technical efficiency")
 
 ax.set_xlim(0, 200)
 

@@ -23,11 +23,15 @@ Particles and hits are stored in ROOT files and read by the reconstruction chain
 
 \begin{itemize}
     \color{red}
-    \item the power of truth based algorithms
     \item material map validation
+    \item detector efficiency
 \end{itemize}
 
 The event reconstruction is implemented on top of the existing components in ACTS Examples. The reconstruction chain consists of the following steps: Truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and vertexing. The individual steps and their performance are described in the following sections. It should be noted that the simulation and reconstruction use the same magnetic field, material and alignment.
+
+ACTS Examples provides different truth based algorithms for track seeding, track finding, vertex seeding, and vertex finding. These algorithms allow to evaluate the performance of individual algorithms under ideal conditions and can give an insight into the performance of the reconstruction chain. Truth-based algorithms were used during this study to compare the performance of the reconstruction chain with and without truth information.
+
+Since the ODD has time information in the pixel system, the reconstruction chain was designed to support 4D reconstruction as much as possible.
 
 The following cuts are applied to the simulated particles:
 \begin{itemize}
@@ -46,22 +50,30 @@ The following cuts are applied to reconstructed tracks:
     \item 3 or less outliers and/or holes
 \end{itemize}
 
+The following cuts are applied to match reconstructed objects to truth:
+\begin{itemize}
+    \item 100\% of the spacepoints forming a seed must be matched to the same truth particle
+    \item 50\% of the measurements forming a track must be matched to the same truth particle
+    \item 50\% of the measurements of the truth particle must be covered by the track (double matching)
+    \item 70\% of the track weight must be matched to truth particles that come from the same interaction
+\end{itemize}
+
 \section{Seeding performance}
 
 Seeding is the first step towards finding tracks after spacepoint creations. ACTS Examples offers different seeding algorithms, including truth-based seeding and triplet seeding. Truth-based seeders can be used to evaluate the performance of the reconstruction chain under ideal conditions, while triplet seeding is a more realistic approach that can be used in real experiments. The triplet seeding algorithm works through combinatorics of three spacepoint that may have produces by one particle.
 
 It should be noted that the triplet seeding algorithm and its configuration are currently not optimized for the ODD which can result in low efficiency and high fake rates. Achieving a good performance with the triplet seeding algorithm was not an objective of this study.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_efficiency_mu.pdf}
-    \caption{Seeding efficiency as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
+    \caption{Technical seeding efficiency as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/seeding-efficiency-mu}
 \end{figure}
 
-Figure \ref{fig:perf/odd/seeding-efficiency-mu} shows the seeding efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The efficiency is defined as the ratio of reconstructed particles with at least one matched seed to the number of selected particles. The matching requires all three spacepoints to come from the same truth particle. The observed efficiency is high for all three $p_T$ values. There are inefficiencies at $|\eta| \approx 2$, which is likely due to suboptimal seeding configuration.
+Figure \ref{fig:perf/odd/seeding-efficiency-mu} shows the seeding efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The technical efficiency is defined as the ratio of reconstructed particles with at least one matched seed to the number of selected particles. The matching requires all three spacepoints to come from the same truth particle. The observed efficiency is high for all three $p_T$ values. There are inefficiencies at $|\eta| \approx 2$, which is likely due to suboptimal seeding configuration.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_duplication.pdf}
     \caption{Seed duplication as a function of $\eta$ for single $\mu$ with $p_T = 1$ GeV.}
@@ -73,7 +85,7 @@ Figure \ref{fig:perf/odd/seeding-duplication} shows the seed duplication for sin
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_efficiency_mixed.pdf}
-    \caption{Seeding efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
+    \caption{Technical seeding efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/seeding-efficiency-mixed}
 \end{figure}
 
@@ -84,19 +96,19 @@ Figure \ref{fig:perf/odd/seeding-efficiency-mixed} shows the seeding efficiency 
     \item point to material plot
 \end{itemize}
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_efficiency_ttbar.pdf}
-    \caption{Seeding efficiency as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
+    \caption{Technical seeding efficiency as a function of $\eta$ for \ttbar events with different pileup $\langle \mu \rangle$.}
     \label{fig:perf/odd/seeding-efficiency-ttbar}
 \end{figure}
 
-Figure \ref{fig:perf/odd/seeding-efficiency-ttbar} shows the seeding efficiency for \ttbar events with different pileup <$\mu$> as a function of $\eta$. The observed efficiency drops with increasing pileup in the barrel region $|\eta| < 1.5$. This can be a problem of the detector layor or seeding configuration. The efficiency drops drastically at $|\eta| \approx 2$. This is likely due to the effects seen with single particles in Figure \ref{fig:perf/odd/seeding-efficiency-mu} and \ref{fig:perf/odd/seeding-efficiency-mixed} but amplified by the increased number of particles in the event. The efficiency in the encaps at $|\eta| > 2.5$ is generally high and less affected by pileup. This is likely due to the higher number of layers in the endcaps which increases the redundancy.
+Figure \ref{fig:perf/odd/seeding-efficiency-ttbar} shows the seeding efficiency for \ttbar events with different pileup $\langle \mu \rangle$ as a function of $\eta$. The observed efficiency drops with increasing pileup in the barrel region $|\eta| < 1.5$. This can be a problem of the detector layor or seeding configuration. The efficiency drops drastically at $|\eta| \approx 2$. This is likely due to the effects seen with single particles in Figure \ref{fig:perf/odd/seeding-efficiency-mu} and \ref{fig:perf/odd/seeding-efficiency-mixed} but amplified by the increased number of particles in the event. The efficiency in the encaps at $|\eta| \ge 2.3$ is generally high and less affected by pileup. This is likely due to the higher number of layers in the endcaps which increases the redundancy.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/seeding_fake_ttbar.pdf}
-    \caption{Seeding fake ratio as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
+    \caption{Seeding fake ratio as a function of $\eta$ for \ttbar events with different pileup $\langle \mu \rangle$.}
     \label{fig:perf/odd/seeding-fake-ttbar}
 \end{figure}
 
@@ -104,25 +116,34 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
 
 \section{Track finding performance}
 
-\begin{itemize}
-    \color{red}
-    \item configuration of the track finding algorithm: chi2 cuts, measurement/outlier/holes, two way, stay on seed, seed deduplication
-\end{itemize}
-
 After seeding, the track finding algorithm is used to find complete tracks. The track finding algorithm in ACTS Examples is based on the Combinatorial Kalman Filter (CKF). The implementation of this algorithm has been reworked during the work on this thesis. These developments are described in detail in Chapter \ref{ch:dev/track_finding}. As a quick reminder: the CKF starts a propagation from the seed and collects measurements along the way. These measurements are used to iteratively refine the track by updating the track parameters using the Kalman filter formalism.
 
-The performance of the seeding is essential for the track finding performance. Tracks are only found if the seeding is successful. The track finding algorithm is designed to be robust against seed duplication, but it is good to have moderately low duplication to safe CPU time. The performance of the track finding algorithm is evaluated using the same metrics as for the seeding: efficiency, duplication, and fake ratio. Additionally, the fitting performance is evaluated with the resolution and pull of the fitted track parameters at the interaction point (IP).
+The performance of the seeding is essential for the track finding performance. Tracks are only found if the seeding is successful. The track finding algorithm is designed to be robust against seed duplication, but it is good to have moderately low duplication to safe CPU time. The performance of the track finding algorithm is evaluated using the same metrics as for the seeding: efficiency, duplication, and fake ratio. Additionally, the fitting performance is evaluated with the resolution and pull of the fitted track parameters at the interaction point.
 
-\begin{figure}[H]
+The following configuration was used for the track finding algorithm:
+\begin{itemize}
+    \item $\chi^2 \le 15$ cut for assigning measurements to the track
+    \item $\chi^2 \le 25$ cut for assigning outliers to the track
+    \item Track cut 6 or more measurements
+    \item Track cut 3 or less outliers and/or holes
+    \item Track cut $p_T > 0.7$ GeV
+    \item Track cut $|\eta| < 3.5$
+    \item Branching factor: 1
+    \item Two way finding: enabled
+    \item Stay on seed: enabled
+    \item Seed deduplication: enabled
+\end{itemize}
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_efficiency_mu.pdf}
-    \caption{Track efficiency as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
+    \caption{Technical track efficiency as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/finding-efficiency-mu}
 \end{figure}
 
-Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The efficiency is defined as the ratio of reconstructed particles with at least one matched track to the number of selected particles. The matching requires at least 50\% of the measurements on track to come from the same truth particle, and at least 50\% of all the particles' measurements to be on the track. The observed efficiency for $p_T$ 10 and 100 GeV is comparable to the seeding efficiency. For $p_T$ = 1 GeV, the efficiency is significantly lower. This is not fully understood and can have different causes: imprecise material map, incorrect implementation of energy loss or multiple scattering in ACTS, or a problem with the navigation at low $p_T$. Increasing the $\chi^2$ cut for assigning measurements to the track improves the efficiency. Multiple scattering dominates at lower $p_T$ and the fact that the original $\chi^2$ cut is sufficient for higher $p_T$ suggests that the material handling is not optimal.
+Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The technical efficiency is defined as the ratio of reconstructed particles with at least one matched track to the number of selected particles. The matching requires at least 50\% of the measurements on track to come from the same truth particle, and at least 50\% of all the particles' measurements to be on the track. The observed efficiency for $p_T$ 10 and 100 GeV is comparable to the seeding efficiency. For $p_T$ = 1 GeV, the efficiency is significantly lower. This is not fully understood and can have different causes: imprecise material map, incorrect implementation of energy loss or multiple scattering in ACTS, or a problem with the navigation at low $p_T$. Increasing the $\chi^2$ cut for assigning measurements to the track improves the efficiency. Multiple scattering dominates at lower $p_T$ and the fact that the original $\chi^2$ cut is sufficient for higher $p_T$ suggests that the material handling is not optimal.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_duplication.pdf}
     \caption{Track duplication as a function of $\eta$ for single $\mu$ with $p_T = 1$ GeV.}
@@ -131,164 +152,165 @@ Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for s
 
 Figure \ref{fig:perf/odd/finding-duplication} shows the track duplication for single $\mu$ with $p_T$ = 1 GeV as a function of $\eta$. The duplication is defined as the number of reconstructed tracks matched to the same truth particle. The observed duplication is well below 2\% over the entire $\eta$ range. Compared to the seed duplication in Figure \ref{fig:perf/odd/seeding-duplication}, the track duplication is significantly lower. This is expected, as the track finding algorithm is configured to remove duplicated seeds. The remaining duplicates will be handled by the ambiguity resolution algorithm, later in the reconstruction chain.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_efficiency_mixed.pdf}
-    \caption{Track efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
+    \caption{Technical track efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/finding-efficiency-mixed}
 \end{figure}
 
-Figure \ref{fig:perf/odd/finding-efficiency-mixed} shows the track efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of $\eta$. The observed efficiency for $\pi$ is up to 1\% lower than for $\mu$. Given that the $\pi$ must have left at least 6 measurements in the detector and at least 3 in the pixes should result in a similar performance as with $\mu$. Why this is not the case is not understood and under investivation. For $e$, the efficiency is significantly lower, with about 95\% over most of the $\eta$ range, but dropping to about 80\% at $|\eta| \approx 1.8$. The reason for the poor finding performance with $e$ can be explained by the track finding algorithm not being optimized for this case. Electrons are not only affected by multiple scattering and ionization loss, but also by bremsstrahlung.
+Figure \ref{fig:perf/odd/finding-efficiency-mixed} shows the track efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of $\eta$. The observed efficiency for $\pi$ is up to 1\% lower than for $\mu$. Given that the $\pi$ must have left at least 6 measurements in the detector and at least 3 in the pixes should result in a similar performance as with $\mu$. Why this is not the case is under investivation. For $e$, the efficiency is significantly lower, with about 95\% over most of the $\eta$ range, but dropping to about 80\% at $|\eta| \approx 1.8$. The reason for the poor finding performance with $e$ can be explained by the track finding algorithm not being optimized for this case. Electrons are not only affected by multiple scattering and ionization loss, but also by bremsstrahlung.
 
 To recover the remaining $e$ efficiency, the track finding algorithm needs to robust against bremsstrahlung. Partitially, this can be achieved by increasing the $\chi^2$ cut for assigning measurements to the track. However, this will also increase the fake rate. In the best case, the track finding can be informed by a region of interest (ROI), for example provided by an electro-magnetic calorimeter. Otherwise the algorithm has to assume that any seed could come from an electron, increasing compute time and fake rate.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_efficiency_ttbar.pdf}
-    \caption{Track efficiency as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
+    \caption{Technical track efficiency as a function of $\eta$ for \ttbar events with different pileup $\langle \mu \rangle$.}
     \label{fig:perf/odd/finding-efficiency-ttbar}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/finding-efficiency-ttbar} shows the track efficiency for \ttbar events with different pileup $\langle \mu \rangle$ as a function of $\eta$. The observed efficiency is similar to the seeding efficiency shown in Figure \ref{fig:perf/odd/seeding-efficiency-ttbar}. It drops with increasing pileup in the barrel region $|\eta| < 1.5$ and drastically at $|\eta| \approx 2$. There is an overall offset of about 2\% similar to the single $\pi$ efficiency which is likely due to the same reasons. The efficiency in the endcaps at $|\eta| \ge 2.3$ is generally high and less affected by pileup.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/finding_fake_ttbar.pdf}
-    \caption{Track fake ratio as a function of $\eta$ for \ttbar events with different pileup <$\mu$>.}
+    \caption{Track fake ratio as a function of $\eta$ for \ttbar events with different pileup $\langle \mu \rangle$.}
     \label{fig:perf/odd/finding-fake-ttbar}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/finding-fake-ttbar} shows the track fake ratio for \ttbar events with different pileup $\langle \mu \rangle$ as a function of $\eta$. The fake ratio is defined as the number of reconstructed tracks that are not matched to a single truth particle divided by the number of reconstructed tracks. The observed fake ratio is below 2.5\% over the entire $\eta$ range and increases with increasing pilup. Compared to the seeding fake ratio in Figure \ref{fig:perf/odd/seeding-fake-ttbar}, the track fake rate is significantly lower. This is expected, as the track finding algorithm will try to find all compatible measurements and requires at least 6 for the track to be valid. The triplet seeding depends on only 3 measurements and is therefore more likely to produce fake seeds. The remaining fake tracks will be handled by the ambiguity resolution algorithm, later in the reconstruction chain.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_resolution_d0_vs_eta_mu.pdf}
     \caption{Track resolution of $d_0$ as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/fitting-resolution-d0-eta-mu}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/fitting-resolution-d0-eta-mu} shows the impact parameter resolution $d_0$ as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV. The resolution is defined as the width of the residual distribution. The residual is defined as the difference between the fitted and simulated truth value $(x^\text{reco} - x^\text{true})$. The resolution is determined by the spatial resolution of the innermost layers, the amount of material travered by the particle, and its momentum. For high momentum paritcles the resolution converges to the intrinsic resolution of the detector, determined by the spatial resolution of the innermost layer.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_resolution_z0_vs_pt_mixed.pdf}
     \caption{Track resolution of $z_0$ as a function of $p_T$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/fitting-resolution-z0-pt-mixed}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/fitting-resolution-z0-pt-mixed} shows the impact parameter resolution $z_0$ as a function of $p_T$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV. The observed resolution is similar for all three particle types across the entire $p_T$ range. At high momentum the resolution converges to the intrinsic resolution of the detector.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_pullmean_vs_eta_mu.pdf}
-    \caption{Pull mean of all fitted track parameters at the IP as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
+    \caption{Pull mean of all fitted track parameters at the interaction point as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/fitting-pullmean-eta-mu}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/fitting-pullmean-eta-mu} shows the pull mean of all fitted track parameters at the interaction point as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV. The pull is defined as the residual divided by the estimated uncertainty of the fitted parameter $(\frac{x^\text{reco} - x^\text{true}}{\sigma_x^\text{reco}})$. The pull mean is defined as the mean of the pull distribution. The pull mean should be 0 for an unbiased parameter estimator. The observed pull mean is close to 0 for all three $p_T$ values. For 100 GeV the pull mean seems to depend on $\eta$ in the non-bending plane $z_0$ and $\theta$.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/fitting_pullwidth_vs_eta_mu.pdf}
-    \caption{Pull width of all fitted track parameters at the IP as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
+    \caption{Pull width of all fitted track parameters at the interaction point as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/fitting-pullwidth-eta-mu}
 \end{figure}
 
+Figure \ref{fig:perf/odd/fitting-pullwidth-eta-mu} shows the pull width of all fitted track parameters at the interaction point as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV. The pull width is defined as the width of the pull distribution. The pull width should be 1 for an unbiased error estimator. The observed pull width is with up to 5\% close to 1 in the barrel region $|\eta| < 1.0$ for all three $p_T$ values and deviates further outwards up to 20\%. For 1 and 10 GeV the pull width is generally higher than 1, while for 100 GeV it is lower than 1. This suggests suboptimal material handling or improper scaling of the initial covariance.
+
 \section{Ambiguity resolution performance}
 
-\begin{itemize}
-    \color{red}
-    \item explain the greedy ambiguity resolution algorithm quickly
-    \item link to the impl section
-    \item show the performance of the ambiguity resolution compared to the CKF
-\end{itemize}
+After track finding, the ambiguity resolution algorithm is used to remove duplicate and fake tracks. The algorithm is based on a greedy approach, where the track with the most shared measurements and fewest measurements is removed first. A detailed description of the algorithm and its implementation is provided in Section \ref{sec:dev/general/greedy-ambiguity-resolution}. The performance of the ambiguity resolution algorithm can be evaluated using the same metrics as for the track finding: efficiency, duplication, and fake ratio.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/ambi_duplication_ttbar.pdf}
-    \caption{}
+    \caption{Average track duplication as a function of $\eta$ for \ttbar events with different pileup $\langle \mu \rangle$. The transparent markers on the top show the track duplication before ambiguity resolution.}
     \label{fig:perf/odd/ambi-duplication-ttbar}
 \end{figure}
 
+Figure \ref{fig:perf/odd/ambi-duplication-ttbar} shows the average track duplication for \ttbar events with different pileup $\langle \mu \rangle$ as a function of $\eta$. The transparent markers on the top show the track duplication before ambiguity resolution. The observed duplication drops effectively to 0 after ambiguity resolution in the barrel region $|\eta| < 1$. Outside the barrel the duplication is about $10^{-4}$.
+
 \section{Track refitting performance}
 
-\begin{itemize}
-    \color{red}
-    \item explain the track fitting algorithm
-    \item why refit after finding?
-    \item IP resolution vs CKF
-\end{itemize}
+After track ambiguities are resolved, the tracks are refitted using a Kalman filter. In this study, this is done for demonstraction and validation purposes. In a real experiment, this can be a crucial step to improve the track parameter resolution given more information from other subsystems of the detector, like electron refitting using a Guassian Sum Filter (GSF) after a cluster was found in the electromagnetic calorimeter. A refitting algorithm makes use of the already identified measurements and refined initial parameters from the finding step.
 
-\begin{figure}[H]
+No significant changes in the resolutions and pull means are observed after refitting.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/refit_pullwidth_vs_eta_mu.pdf}
-    \caption{}
+    \caption{Pull width of all refitted track parameters at the interaction point as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/refit-pullwidth-eta-mu}
 \end{figure}
 
+Figure \ref{fig:perf/odd/refit-pullwidth-eta-mu} shows the pull width of all refitted track parameters at the interaction point as a function of $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV. Compared to the pull widths after finding in Figure \ref{fig:perf/odd/fitting-pullwidth-eta-mu}, after refitting the pull width is generally bigger than 1. Since the fitter is effectively the same, this suggests that the initial parameters and their covariance are not optimal before track finding.
+
 \section{Vertexing performance}
 
-\begin{itemize}
-    \color{red}
-    \item explain the vertexing algorithm
-    \item resolutions and pulls for hard scatter
-    \item efficiency, split rate, merge rate vs pileup
-    \item 3D vs 4D
-\end{itemize}
+After tracks have been found, ambiguities have been resolved, and the tracks are properly fitted, the primary vertexing algorithm is used to reconstruct the primary interactions using these tracks. For this purpose the Adaptive Multi Vertex Finder (AMVF) is used. This algorithm is specifically desined for high pileup scenarios and allows tracks to be assigned to multiple vertices. The performance of a vertexing algorithm can be quantified by its efficiency in finding vertices, the purity of the reconstructed vertices, and the resolution and pulls of the reconstructed positions. A reconstructed vertex can be built from tracks that are associated to different true interactions. Depending on the composition ratios, such a reconstructed vertex may be classified as \textit{merged}. Similarly, tracks from one true interaction can be reconstructed as multiple vertices. Depending on the composition ratios, both vertices may be classified as \textit{split}. Otherwise the vertex is classified as \textit{clean}.
 
-\begin{figure}[H]
+\texttt{TruthVertexSeeder} is the vertex seeder used in this study. It uses truth information about the vertex positions to create seeds for the AMVF and supports time information. Even though the \texttt{AdaptiveGridDensityVertexFinder} has beed adopted to use time information during the work on this thesis, it is not yet fully validated. For this reason and the time dimension support, the \texttt{TruthVertexSeeder} was choosen for this study.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_efficiency.pdf}
-    \caption{}
+    \caption{Number of reconstructed clean vertices as a function of pileup $\langle \mu \rangle$ for \ttbar events with and without using the time dimension.}
     \label{fig:perf/odd/vertex-efficiency}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/vertex-efficiency} shows the number of reconstructed clean vertices as a function of pileup $\langle \mu \rangle$ for \ttbar events with and without using the time dimension. With increasing pileup, the gap between clean vertices reconstructed with and without time dimension increases. This suggests that the time dimension is beneficial for the vertexing algorithm, as it allows to better separate the vertices in time. The number of reconstructed clean vertices is about 1.5 times higher for $\langle \mu \rangle=200$ with time dimension than without.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_contamination.pdf}
-    \caption{}
+    \caption{Hard-scatter vertex contamination as a function of pileup $\langle \mu \rangle$ for \ttbar events with and without using the time dimension.}
     \label{fig:perf/odd/vertex-contamination}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/vertex-contamination} shows the hard-scatter vertex contamination as a function of pileup $\langle \mu \rangle$ for \ttbar events with and without using the time dimension. The contamination is defined as the sum of track weight that is not associated to the true interaction divided by the total track weight on the reconstructed vertex. The observed contamination is strictly higher without using the time dimension. This suggests that the time dimension is beneficial for rejecting tracks from pileup interactions.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_resolution.pdf}
-    \caption{}
+    \caption{Hard-scatter vertex resolutions for \ttbar events.}
     \label{fig:perf/odd/vertex-resolution}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/vertex-resolution} shows the hard-scatter vertex resolutions for \ttbar events. The resolution is defined as the width of the residual distribution. The observed residual distribtuion centers at 0 for the spatial dimensions and fits well with a gaussian distribution. The $t$ residuals show a bias which is due to the pion particle hypothesis during reconstruction. The resolution scale is smaller compared to the track ones since the vertex fitter will combine the information from all tracks.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/vertex_pull.pdf}
-    \caption{}
+    \caption{Hard-scatter vertex pulls for \ttbar events.}
     \label{fig:perf/odd/vertex-pull}
 \end{figure}
 
+Figure \ref{fig:perf/odd/vertex-pull} shows the hard-scatter vertex pulls for \ttbar events. The observed pull means are close to 0 for the spatial dimensions. For $t$ we observe the same bias as with the residual in Figure \ref{fig:perf/odd/vertex-resolution}. The observed pull widths too wide for the spatial dimensions which is due to the broad track pull widths.
+
 \section{Computation time}
 
-\begin{figure}[H]
+Computation time is an important aspect of a reconstruction chain if resources are limited. The computation time of the reconstruction chain is evaluated using the relative CPU time spent in the different reconstruction steps. The CPU time is measured for \ttbar events with different pileup scenarios.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/cpu_total_ttbar.pdf}
-    \caption{}
+    \caption{Relative CPU time for reconstructing \ttbar events as a function of pileup $\langle \mu \rangle$.}
     \label{fig:perf/odd/cpu-total-ttbar}
 \end{figure}
 
-\begin{figure}[H]
+Figure \ref{fig:perf/odd/cpu-total-ttbar} shows the relative CPU time for reconstructing \ttbar events with different pileup $\langle \mu \rangle$. The observed CPU time increases superlinearly with increasing pileup. This is due the increasing hit combinatorics and its impact on the track seeding and finding.
+
+\begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/cpu_alg_ttbar.pdf}
-    \caption{}
+    \caption{Relative CPU time per algorithm for reconstructing \ttbar events with different pileup $\langle \mu \rangle$.}
     \label{fig:perf/odd/cpu-alg-ttbar}
 \end{figure}
 
+Figure \ref{fig:perf/odd/cpu-alg-ttbar} shows the relative CPU time per algorithm for reconstructing \ttbar events with different pileup $\langle \mu \rangle$. The observed CPU time is dominated by the track finding and seeding. Seeding takes an increasing fraction of the CPU time with increasing pileup.
+
 \section{Summary, conclusion, and outlook}
 
-\begin{itemize}
-    \color{red}
-    \item what are the limitations of performance studies with ACTS Examples?
-    \item pre conditions
-    \begin{itemize}
-        \item material mapping
-        \item magnetic field
-        \item alignment
-        \item fast digitization - for digital we do not need any plots, for geometric it would be good
-    \end{itemize}
-\end{itemize}
+The reconstruction performance of the ODD using ACTS and its Examples has been evaluated using different event samples. The performance of the individual algorithms, seeding, track finding, ambiguity resolution, track refitting, and vertexing, has been presented. Efficiencies are generally high, with weeknesses in certain detector regions or with different particle types. Increasing the performance further requires optimizing the configuration of the seeding, optimization of the material map, and improving the handling of electrons.
 
-\begin{itemize}
-    \color{red}
-    \item performance shown on various parts of the reconstruction chain
-    \item still missing more realistic digitization
-    \item single muon efficiency low for 1 GeV
-    \item material map might be suboptimal
-    \item truth based vertex seeder
-\end{itemize}
+Limitations of this study are the lack of a realistic digitization and the use of a truth-based vertex seeding algorithm. The geometric digitization is not fully validated yet and the performance of the non-truth-based vertex seeder with time information is not fully understood yet. Apart from that, this study used an homogeneous magnetic field and perfect alignment which is not realistic for a real experiment. Future studies can build on this work and include these aspects.

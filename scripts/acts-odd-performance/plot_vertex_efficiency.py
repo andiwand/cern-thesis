@@ -83,7 +83,7 @@ for i, input_type in enumerate(inputs.keys()):
 
 ax.legend()
 
-ax.set_xlabel(r"<$\mu$>")
+ax.set_xlabel(r"$\langle \mu \rangle$")
 ax.set_ylabel("Clean vertices")
 
 atlasify.atlasify(

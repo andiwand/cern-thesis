@@ -81,7 +81,7 @@ for pu, input in zip(pus, args.inputs):
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"<$\mu$>")
+ax.set_xlabel(r"$\langle \mu \rangle$")
 ax.set_ylabel("Rel. CPU time")
 
 width = 20

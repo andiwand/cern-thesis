@@ -54,6 +54,9 @@ atlasify.atlasify(
     subtext="ACTS v40.0.0\nsingle muons, <$\\mu$> = 0",
 )
 
+ylim = ax.get_ylim()
+ax.set_ylim(0, ylim[1])
+
 fig.tight_layout()
 
 if args.output is not None:

@@ -49,6 +49,7 @@ To validate and improve the track finding in ACTS Core, the Examples framework w
 \end{description}
 
 \section{Implementation of \texttt{GreedyAmbiguityResolution}}
+\label{sec:dev/general/greedy-ambiguity-resolution}
 
 Track finding returns a track candidate container that can contain duplicate and fake tracks. These ambiguities have to be resolved to get a clean track collection which represents the event as good as possible. This is the responsibility of the ambiguity resolution and it is a crucial step in the tracking workflow which can be done in various ways. The greedy ambiguity resolution is a simple and fast method to resolve ambiguities. It is based on the idea that the best track candidate is the one with the most hits and least shared hits. If two competing track candidates share hits, the one with the best $\chi^2$ is chosen. This process is repeated until no ambiguities are left.
 

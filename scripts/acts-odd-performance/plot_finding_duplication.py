@@ -27,7 +27,7 @@ finding_perf = ROOT.TFile.Open(args.finding_perf.absolute().as_posix())
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
 ax.set_xlabel(r"$\eta$")
-ax.set_ylabel("Duplicates")
+ax.set_ylabel("Average duplication")
 
 dupl_vs_eta = TH1(finding_perf.Get("nDuplicated_vs_eta"), xrange=(-3, 3))
 dupl_vs_eta.errorbar(ax, marker=get_marker(0), linestyle="", color=get_color(0))

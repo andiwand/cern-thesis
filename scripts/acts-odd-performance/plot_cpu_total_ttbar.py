@@ -56,7 +56,7 @@ totals_rel = [total / totals[0] for total in totals]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"<$\mu$>")
+ax.set_xlabel(r"$\langle \mu \rangle$")
 ax.set_ylabel("Rel. CPU time")
 
 ax.plot(
