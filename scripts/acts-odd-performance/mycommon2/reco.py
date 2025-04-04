@@ -261,6 +261,15 @@ def add_my_reconstruction_chain(
         ),
     )
 
+    sequencer.addWriter(
+        acts.examples.RootParticleWriter(
+            level=acts.logging.INFO,
+            inputParticles="particles_digitized_selected",
+            filePath=tp / "particles_selected.root",
+        )
+    )
+    output_files.append({"file": "particles_selected.root"})
+
     add_my_seeding(
         sequencer,
         seeding_label,

@@ -1,4 +1,4 @@
-This chapter presents an extensive tracking performance study with the OpenDataDetector (ODD) using ACTS and its Examples. The main focus is on the performance of track finding and fitting, but also seeding, ambiguity resolution, and vertexing are covered. The performance is evaluated using various metrics, including efficiency, fake rate, resolution, and pulls. The results are presented for different particle types ($\mu$, $\pi$, $e$) and for \ttbar events with different pileup scenarios. Reconstructed quantities are compared to the truth information to assess the quality of the reconstruction.
+This chapter presents an extensive tracking performance study with the OpenDataDetector (ODD) using Acts and its Examples. The main focus is on the performance of track finding and fitting, but also seeding, ambiguity resolution, and vertexing are covered. The performance is evaluated using various metrics, including efficiency, fake rate, resolution, and pulls. The results are presented for different particle types ($\mu$, $\pi$, $e$) and for \ttbar events with different pileup scenarios. Reconstructed quantities are compared to the truth information to assess the quality of the reconstruction.
 
 A subset of this study has already been presented at the 2023 Connecting the Dots (CTD) conference \cite{ctd-acts-odd}. Due to previous limitations of the track finding, the CTD study only considered truth-based track seeding. This gap is filled in this thesis by including the performance of the triplet seeding algorithm and the improved version of the track finding algorithm. 
 
@@ -6,7 +6,7 @@ The chapter is structured as follows: first, the simulation setup is described a
 
 \section{Event generation and simulation}
 
-ACTS Examples offer different methods for event generation, simulation, and digitization. Event generation can be done with a particle gun or with Pythia8. In this study, the particle gun is used to generate single $\mu$, $\pi$, and $e$ to estimate the reconstruction performance under ideal conditions. Pythia8 is used to generate \ttbar events with different pileup scenarios, which are more realistic and closer to the conditions expected in a real hadron collider experiment. Both event simulators, Fatras and Geant4, are used to simulate the passage of the generated particles through the detector. This allows to cross-check the results after reconstruction and may help to identify potential issues in the simulation or reconstruction chain. For instance, Fatras uses the same material model as the reconstruction, which allows to check the material handling. The OpenDataDetector does not provide a realistic digitization, but ACTS Examples offers two fast, truth-based digitization methods: smeared digitization and geometric digitization. The smeared digitization converts simulated hits into measurements by applying user-provided noise, without creating clusters. The geometric digitization uses a user-provided segmentation to estimate cells to activate based on the passage of a particle through the sensor. These cells are directly turned into clusters and measurements without calling the clustering algorithm. For this study, the smeared digitization is used to create measurements from the simulated hits, as the geometric digitization is not fully validated yet.
+Acts Examples offer different methods for event generation, simulation, and digitization. Event generation can be done with a particle gun or with Pythia8. In this study, the particle gun is used to generate single $\mu$, $\pi$, and $e$ to estimate the reconstruction performance under ideal conditions. Pythia8 is used to generate \ttbar events with different pileup scenarios, which are more realistic and closer to the conditions expected in a real hadron collider experiment. Both event simulators, Fatras and Geant4, are used to simulate the passage of the generated particles through the detector. This allows to cross-check the results after reconstruction and may help to identify potential issues in the simulation or reconstruction chain. For instance, Fatras uses the same material model as the reconstruction, which allows to check the material handling. The OpenDataDetector does not provide a realistic digitization, but Acts Examples offers two fast, truth-based digitization methods: smeared digitization and geometric digitization. The smeared digitization converts simulated hits into measurements by applying user-provided noise, without creating clusters. The geometric digitization uses a user-provided segmentation to estimate cells to activate based on the passage of a particle through the sensor. These cells are directly turned into clusters and measurements without calling the clustering algorithm. For this study, the smeared digitization is used to create measurements from the simulated hits, as the geometric digitization is not fully validated yet.
 
 In summary, the following events have been simulated:
 \begin{itemize}
@@ -21,15 +21,9 @@ Particles and hits are stored in ROOT files and read by the reconstruction chain
 
 \section{Reconstruction chain and cuts}
 
-\begin{itemize}
-    \color{red}
-    \item material map validation
-    \item detector efficiency
-\end{itemize}
+The event reconstruction is implemented on top of the existing components in Acts Examples. The reconstruction chain consists of the following steps: Truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and vertexing. The individual steps and their performance are described in the following sections. It should be noted that the simulation and reconstruction use the same magnetic field, material and alignment.
 
-The event reconstruction is implemented on top of the existing components in ACTS Examples. The reconstruction chain consists of the following steps: Truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and vertexing. The individual steps and their performance are described in the following sections. It should be noted that the simulation and reconstruction use the same magnetic field, material and alignment.
-
-ACTS Examples provides different truth based algorithms for track seeding, track finding, vertex seeding, and vertex finding. These algorithms allow to evaluate the performance of individual algorithms under ideal conditions and can give an insight into the performance of the reconstruction chain. Truth-based algorithms were used during this study to compare the performance of the reconstruction chain with and without truth information.
+Acts Examples provides different truth based algorithms for track seeding, track finding, vertex seeding, and vertex finding. These algorithms allow to evaluate the performance of individual algorithms under ideal conditions and can give an insight into the performance of the reconstruction chain. Truth-based algorithms were used during this study to compare the performance of the reconstruction chain with and without truth information.
 
 Since the ODD has time information in the pixel system, the reconstruction chain was designed to support 4D reconstruction as much as possible.
 
@@ -58,9 +52,29 @@ The following cuts are applied to match reconstructed objects to truth:
     \item 70\% of the track weight must be matched to truth particles that come from the same interaction
 \end{itemize}
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/detector_efficiency_mixed.pdf}
+    \caption{Detector efficiency as a function of $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
+    \label{fig:perf/odd/detector-efficiency-mixed}
+\end{figure}
+
+Using the truth cuts applied after simulation an upper bound for the physics efficiency can be estimated. The efficiency is defined as the ratio of reconstructible particles to the number of generated particles. Figure \ref{fig:perf/odd/detector-efficiency-mixed} shows the detector efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of $\eta$. The observed efficiency is above 99\% and similar for $\mu$ and $e$, but generally lower for $\pi$. This is due to hadronic interactions of the $\pi$ with the material, before the hit criteria is met.
+
+Efficiencies shown in the following sections are defined as the ratio of reconstructed particles with at least one matched object to the number of reconstructible particles. This is called \textit{technical efficiency} and is used to evaluate the performance of reconstruction algorithms. The technical efficiency is not a direct measure of the physics efficiency, as it does not take into account the number of generated particles.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/3_performance/11_acts-performance/figures/detector_material.pdf}
+    \caption{Material validation up to the long strip system for $X/X_0$ as a function of $\eta$ between Acts and Geant4.}
+    \label{fig:perf/odd/detector-material}
+\end{figure}
+
+Figure \ref{fig:perf/odd/detector-material} shows the material validation up to the long strip system for $X/X_0$ as a function of $\eta$ between Acts and Geant4. The observed material in Acts is within 10\% in agreement to Geant4 for most of the $\eta$ range, but there are some discrepancies at $|\eta| \approx 0.3$ and $|\eta| \approx 1.0$. These bigger differences may be due to Geant4 steps that already reach into the solenoid.
+
 \section{Seeding performance}
 
-Seeding is the first step towards finding tracks after spacepoint creations. ACTS Examples offers different seeding algorithms, including truth-based seeding and triplet seeding. Truth-based seeders can be used to evaluate the performance of the reconstruction chain under ideal conditions, while triplet seeding is a more realistic approach that can be used in real experiments. The triplet seeding algorithm works through combinatorics of three spacepoint that may have produces by one particle.
+Seeding is the first step towards finding tracks after spacepoint creations. Acts Examples offers different seeding algorithms, including truth-based seeding and triplet seeding. Truth-based seeders can be used to evaluate the performance of the reconstruction chain under ideal conditions, while triplet seeding is a more realistic approach that can be used in real experiments. The triplet seeding algorithm works through combinatorics of three spacepoint that may have produces by one particle.
 
 It should be noted that the triplet seeding algorithm and its configuration are currently not optimized for the ODD which can result in low efficiency and high fake rates. Achieving a good performance with the triplet seeding algorithm was not an objective of this study.
 
@@ -89,12 +103,7 @@ Figure \ref{fig:perf/odd/seeding-duplication} shows the seed duplication for sin
     \label{fig:perf/odd/seeding-efficiency-mixed}
 \end{figure}
 
-Figure \ref{fig:perf/odd/seeding-efficiency-mixed} shows the seeding efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of $\eta$. The observed efficiency is similar for $\pi$ and $\mu$, but generally lower for $e$. The efficiency for $e$ drops with increasing $|\eta|$. This can be explained by the distribution over $\eta$ show in Figure \ref{}.
-
-\begin{itemize}
-    \color{red}
-    \item point to material plot
-\end{itemize}
+Figure \ref{fig:perf/odd/seeding-efficiency-mixed} shows the seeding efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of $\eta$. The observed efficiency is similar for $\pi$ and $\mu$, but generally lower for $e$. The efficiency for $e$ drops with increasing $|\eta|$. This can be explained by the increasing material $X/X_0$ towards higher $|\eta|$ values, shown in Figure \ref{}.
 
 \begin{figure}[h!]
     \centering
@@ -116,7 +125,7 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
 
 \section{Track finding performance}
 
-After seeding, the track finding algorithm is used to find complete tracks. The track finding algorithm in ACTS Examples is based on the Combinatorial Kalman Filter (CKF). The implementation of this algorithm has been reworked during the work on this thesis. These developments are described in detail in Chapter \ref{ch:dev/track_finding}. As a quick reminder: the CKF starts a propagation from the seed and collects measurements along the way. These measurements are used to iteratively refine the track by updating the track parameters using the Kalman filter formalism.
+After seeding, the track finding algorithm is used to find complete tracks. The track finding algorithm in Acts Examples is based on the Combinatorial Kalman Filter (CKF). The implementation of this algorithm has been reworked during the work on this thesis. These developments are described in detail in Chapter \ref{ch:dev/track_finding}. As a quick reminder: the CKF starts a propagation from the seed and collects measurements along the way. These measurements are used to iteratively refine the track by updating the track parameters using the Kalman filter formalism.
 
 The performance of the seeding is essential for the track finding performance. Tracks are only found if the seeding is successful. The track finding algorithm is designed to be robust against seed duplication, but it is good to have moderately low duplication to safe CPU time. The performance of the track finding algorithm is evaluated using the same metrics as for the seeding: efficiency, duplication, and fake ratio. Additionally, the fitting performance is evaluated with the resolution and pull of the fitted track parameters at the interaction point.
 
@@ -141,7 +150,7 @@ The following configuration was used for the track finding algorithm:
     \label{fig:perf/odd/finding-efficiency-mu}
 \end{figure}
 
-Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The technical efficiency is defined as the ratio of reconstructed particles with at least one matched track to the number of selected particles. The matching requires at least 50\% of the measurements on track to come from the same truth particle, and at least 50\% of all the particles' measurements to be on the track. The observed efficiency for $p_T$ 10 and 100 GeV is comparable to the seeding efficiency. For $p_T$ = 1 GeV, the efficiency is significantly lower. This is not fully understood and can have different causes: imprecise material map, incorrect implementation of energy loss or multiple scattering in ACTS, or a problem with the navigation at low $p_T$. Increasing the $\chi^2$ cut for assigning measurements to the track improves the efficiency. Multiple scattering dominates at lower $p_T$ and the fact that the original $\chi^2$ cut is sufficient for higher $p_T$ suggests that the material handling is not optimal.
+Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for single $\mu$ as a function of $\eta$ for different $p_T$. The technical efficiency is defined as the ratio of reconstructed particles with at least one matched track to the number of selected particles. The matching requires at least 50\% of the measurements on track to come from the same truth particle, and at least 50\% of all the particles' measurements to be on the track. The observed efficiency for $p_T$ 10 and 100 GeV is comparable to the seeding efficiency. For $p_T$ = 1 GeV, the efficiency is significantly lower. This is not fully understood and can have different causes: imprecise material map, incorrect implementation of energy loss or multiple scattering in Acts, or a problem with the navigation at low $p_T$. Increasing the $\chi^2$ cut for assigning measurements to the track improves the efficiency. Multiple scattering dominates at lower $p_T$ and the fact that the original $\chi^2$ cut is sufficient for higher $p_T$ suggests that the material handling is not optimal.
 
 \begin{figure}[h!]
     \centering
@@ -311,6 +320,6 @@ Figure \ref{fig:perf/odd/cpu-alg-ttbar} shows the relative CPU time per algorith
 
 \section{Summary, conclusion, and outlook}
 
-The reconstruction performance of the ODD using ACTS and its Examples has been evaluated using different event samples. The performance of the individual algorithms, seeding, track finding, ambiguity resolution, track refitting, and vertexing, has been presented. Efficiencies are generally high, with weeknesses in certain detector regions or with different particle types. Increasing the performance further requires optimizing the configuration of the seeding, optimization of the material map, and improving the handling of electrons.
+The reconstruction performance of the ODD using Acts and its Examples has been evaluated using different event samples. The performance of the individual algorithms, seeding, track finding, ambiguity resolution, track refitting, and vertexing, has been presented. Efficiencies are generally high, with weeknesses in certain detector regions or with different particle types. Increasing the performance further requires optimizing the configuration of the seeding, optimization of the material map, and improving the handling of electrons.
 
 Limitations of this study are the lack of a realistic digitization and the use of a truth-based vertex seeding algorithm. The geometric digitization is not fully validated yet and the performance of the non-truth-based vertex seeder with time information is not fully understood yet. Apart from that, this study used an homogeneous magnetic field and perfect alignment which is not realistic for a real experiment. Future studies can build on this work and include these aspects.

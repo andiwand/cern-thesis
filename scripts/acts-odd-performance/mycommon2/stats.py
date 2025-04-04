@@ -76,12 +76,11 @@ def clopper_pearson(k, n, alpha=0.32):
     Clopper Pearson intervals are a conservative estimate.
     """
     p = k / n
-    if p == 1.0:
-        return p, p, p
     p_upper = np.maximum(
         scipy.stats.beta.ppf(1 - alpha / 2, k + 1, n - k), np.zeros_like(p)
     )
     p_lower = np.minimum(scipy.stats.beta.ppf(alpha / 2, k, n - k + 1), np.ones_like(p))
+    p_lower[p == 1.0], p_upper[p == 1.0] = 1.0, 1.0
     return p, p_upper, p_lower
 
 

@@ -2,6 +2,9 @@ include: "../common.smk"
 
 rule all_plots:
     input:
+        "plots/acts-odd-performance/detector_material.pdf",
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/detector_efficiency_mixed.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_duplication.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_mu.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_mixed.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
@@ -36,6 +39,30 @@ rule all_plots:
 
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/cpu_total_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/cpu_alg_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
+
+rule plot_detector_material:
+    input:
+        script = "scripts/acts-odd-performance/plot_detector_material.py",
+        scan_acts = "data/acts-odd-performance/scan/fatras/material_tracks.root",
+        scan_geant4 = "data/acts-odd-performance/scan/geant4/material_tracks.root",
+    output:
+        "plots/acts-odd-performance/detector_material.pdf",
+    shell:
+        """
+        python {input.script} {input.scan_acts} {input.scan_geant4} --output {output}
+        """
+
+rule plot_detector_efficiency_mixed:
+    input:
+        script = "scripts/acts-odd-performance/plot_detector_efficiency_mixed.py",
+        reco_particles = expand("data/acts-odd-performance/reco/1{ptype}-pt10GeV_{{sim_label}}_{{seeding_label}}/particles_selected.root", ptype=["mu", "pi", "e"]),
+        sim_particles = expand("data/acts-odd-performance/sim/1{ptype}-pt10GeV_{{sim_label}}/particles.root", ptype=["mu", "pi", "e"]),
+    output:
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/detector_efficiency_mixed.pdf",
+    shell:
+        """
+        python {input.script} {input.reco_particles} {input.sim_particles} --output {output}
+        """
 
 rule plot_seeding_duplication:
     input:
