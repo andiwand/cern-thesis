@@ -12,9 +12,9 @@
 - event generation
 - event simulation
 - digitization + clustering
-  - explain different clustering in ACTS Examples
+  - explain different clustering in Acts Examples
 - seeding
-  - explain different seeders in ACTS Examples
+  - explain different seeders in Acts Examples
   - only seeding in pixels
   - seeding config not optimized for ODD
 - finding

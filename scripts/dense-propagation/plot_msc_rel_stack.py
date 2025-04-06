@@ -30,7 +30,7 @@ parser.add_argument(
         f"{base_dir}/data/dense-propagation/acts/msc_eloss_fe_{t}mm.csv"
         for t in [10, 100, 1000]
     ],
-    help="Path to ACTS input file",
+    help="Path to Acts input file",
 )
 parser.add_argument(
     "--output",
@@ -53,7 +53,7 @@ fig, axs = plt.subplots(
 )
 
 # fig.suptitle("Relative positional uncertainty of muons passing Fe")
-fig.supylabel("$\Delta$ position / ACTS")
+fig.supylabel("$\Delta$ position / Acts")
 
 for i, ax, label, g4_input, acts_input in zip(
     range(3), axs, labels, args.g4_input, args.acts_input
@@ -74,9 +74,9 @@ for i, ax, label, g4_input, acts_input in zip(
         acts_std = make_acts_msc_stats(acts_data, edges, log_range)
 
     # ax.hlines(1, edges[0], edges[-1], linestyle="--", color="C0", label="Geant4")
-    # ax.errorbar(mid, acts_std / g4_std, yerr=g4_std_std*(acts_std/g4_std**2), marker="o", linestyle="", color="C1", label="ACTS")
+    # ax.errorbar(mid, acts_std / g4_std, yerr=g4_std_std*(acts_std/g4_std**2), marker="o", linestyle="", color="C1", label="Acts")
 
-    ax.hlines(1, edges[0], edges[-1], linestyle="--", color="C1", label="ACTS")
+    ax.hlines(1, edges[0], edges[-1], linestyle="--", color="C1", label="Acts")
     ax.errorbar(
         mid,
         g4_std / acts_std,

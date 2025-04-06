@@ -24,7 +24,7 @@ parser.add_argument(
     "--acts-input",
     type=Path,
     default=f"{base_dir}/data/dense-propagation/acts/msc_eloss_fe_1000mm.csv",
-    help="Path to ACTS input file",
+    help="Path to Acts input file",
 )
 parser.add_argument(
     "--output",
@@ -78,7 +78,7 @@ if args.acts_input is not None:
     )
 
     ax.errorbar(
-        mid, acts_total_mean, yerr=acts_std, marker="^", linestyle="", label="ACTS"
+        mid, acts_total_mean, yerr=acts_std, marker="^", linestyle="", label="Acts"
     )
 
 ax.set_xscale("log")
@@ -144,18 +144,18 @@ for p_min, p_max in [
     print("g4", mean, std)
 
     if True:
-        oax.axvline(acts_mean, color="red", linestyle="--", label="ACTS mean")
+        oax.axvline(acts_mean, color="red", linestyle="--", label="Acts mean")
         # oax.axvline(
         #     acts_mean - acts_std,
         #     color="orange",
         #     linestyle="--",
-        #     label="ACTS mean - std",
+        #     label="Acts mean - std",
         # )
         # oax.axvline(
         #     acts_mean + acts_std,
         #     color="orange",
         #     linestyle="--",
-        #     label="ACTS mean + std",
+        #     label="Acts mean + std",
         # )
 
     oax.legend()

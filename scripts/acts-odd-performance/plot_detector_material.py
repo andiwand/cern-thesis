@@ -98,7 +98,7 @@ atlasify.atlasify(
     axes=axs[0],
     brand="ODD",
     atlas="Simulation",
-    subtext="ACTS v40.0.0\n",
+    subtext="Acts v40.0.0\n",
 )
 
 ylim = axs[0].get_ylim()

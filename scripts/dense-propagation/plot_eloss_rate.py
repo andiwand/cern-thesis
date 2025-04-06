@@ -33,7 +33,7 @@ parser.add_argument(
     "--acts-input",
     type=Path,
     default=f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv",
-    help="Path to ACTS input file",
+    help="Path to Acts input file",
 )
 parser.add_argument(
     "--output",
@@ -125,32 +125,32 @@ if args.g4_input is not None:
         acts_std = acts_eloss["landau_sigma"][acts_mask].mean()
 
         if False:
-            oax.axvline(acts_mean, color="red", linestyle="--", label="ACTS mean")
+            oax.axvline(acts_mean, color="red", linestyle="--", label="Acts mean")
             oax.axvline(
                 acts_mean - acts_std,
                 color="orange",
                 linestyle="--",
-                label="ACTS mean - std",
+                label="Acts mean - std",
             )
             oax.axvline(
                 acts_mean + acts_std,
                 color="orange",
                 linestyle="--",
-                label="ACTS mean + std",
+                label="Acts mean + std",
             )
 
-            oax.axvline(acts_mode, color="green", linestyle="--", label="ACTS mode")
+            oax.axvline(acts_mode, color="green", linestyle="--", label="Acts mode")
             oax.axvline(
                 acts_mode - acts_std,
                 color="limegreen",
                 linestyle="--",
-                label="ACTS mode - std",
+                label="Acts mode - std",
             )
             oax.axvline(
                 acts_mode + acts_std,
                 color="limegreen",
                 linestyle="--",
-                label="ACTS mode + std",
+                label="Acts mode + std",
             )
 
         oax.legend()
@@ -193,10 +193,10 @@ if args.acts_input is not None:
         yerr=acts_landau_sigma,
         fmt="^",
         linestyle="",
-        label="ACTS",
+        label="Acts",
     )
-    # ax.plot(mid, acts_total_mean, marker="^", linestyle="", label="ACTS")
-    # ax.plot(mid, acts_bethe, label="ACTS bethe")
+    # ax.plot(mid, acts_total_mean, marker="^", linestyle="", label="Acts")
+    # ax.plot(mid, acts_bethe, label="Acts bethe")
 
 ax.set_xscale("log")
 ax.set_yscale("log")

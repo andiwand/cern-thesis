@@ -92,7 +92,7 @@ for i, variable, ax, ylabel in zip(range(4), variables, axs, ylabels):
             outside=True,
             brand="ODD",
             atlas="Simulation",
-            subtext="ACTS v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV, <$\\mu$> = 0",
+            subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV, <$\\mu$> = 0",
             offset=18,
         )
     else:

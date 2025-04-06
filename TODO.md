@@ -49,7 +49,7 @@
 
 ### scripts
 
-- [ ] ODD+ACTS performance scripts
+- [ ] ODD+Acts performance scripts
   - [ ] track finding
     - [ ] single particles / ttbar0/200
     - [ ] Geant4 / Fatras for testing
@@ -93,18 +93,18 @@
     - [ ] ✔️ 2.10. Track Fitting
       - [ ] ✔️ 2.10.1. Kalman Filter
     - [ ] ✔️ 2.11. Vertexing
-  - [ ] ✔️ 3. ACTS: A Common Tracking Software
+  - [ ] ✔️ 3. Acts: A Common Tracking Software
     - [ ] ✔️ Into text
     - [ ] ✔️ 3.1. Components and their connections
     - [ ] ✔️ 3.2. Units and Constants
     - [ ] ✔️ 3.3. Track Parameterization
     - [ ] 3.4. Fatras
     - [ ] ✔️ 3.5. Plugins
-    - [ ] ✔️ 3.6. The ACTS Examples Framework
+    - [ ] ✔️ 3.6. The Acts Examples Framework
     - [ ] 3.7. The OpenDataDetector
     - [ ] 3.8. Tracking on Accelerators with traccc and detray
 - [ ] II. Developments
-  - [ ] ✔️✔️ 4. General deveopments of ACTS
+  - [ ] ✔️✔️ 4. General deveopments of Acts
     - [ ] ✔️✔️ Into text
     - [ ] ✔️✔️ 4.1. Propagator Developments
       - [ ] ✔️✔️ 4.1.1. An alternative steering mechanism
@@ -124,7 +124,7 @@
   - [x] 6. Navigator developments
     - [x] Into text
     - [x] 6.1. Navigation subtleties and edge cases
-    - [x] 6.2. A streamlined Navigation Model for ACTS
+    - [x] 6.2. A streamlined Navigation Model for Acts
     - [x] 6.3. Robust Intersection Handling for Cylinders
     - [x] 6.4. Remove path limit and overstep limit
     - [x] 6.5. Decoupling from the stepper
@@ -153,7 +153,7 @@
     - [x] 8.7. Performance
   - [ ] ✔️✔️✔️ 9. Tracking with time information
     - [ ] ✔️✔️✔️ Intro text
-    - [ ] ✔️✔️✔️ 9.1. 4D tracking in ACTS
+    - [ ] ✔️✔️✔️ 9.1. 4D tracking in Acts
     - [ ] ✔️✔️✔️ 9.2. Correlations with the time parameter
     - [ ] ✔️✔️✔️ 9.3. Spacepoints with time
     - [ ] ✔️✔️✔️ 9.4. Seeding with time
@@ -166,7 +166,7 @@
     - [ ] ✔️✔️✔️ 10.1. Shortcomings
     - [ ] ✔️✔️✔️ 10.2. Proposals for future developments
 - [ ] III. Performance
-  - [ ] 11. OpenDataDetector tracking performance with ACTS
+  - [ ] 11. OpenDataDetector tracking performance with Acts
     - [ ] Intro text
     - [ ] 11.1. Track finding
       - [ ] 11.1.1. Seeding
@@ -174,7 +174,7 @@
     - [ ] 11.2. Ambiguity resolution
     - [ ] 11.3. Track fitting
     - [ ] 11.4. Vertexing
-  - [ ] 12. ITk tracking performance with ACTS
+  - [ ] 12. ITk tracking performance with Acts
     - [ ] Intro text
 - [ ] IV. Conclusion and Outlook
   - [ ] 13. Conclusion

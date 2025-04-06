@@ -1,21 +1,21 @@
 \begin{itemize}
     \color{red}
-    \item what is ACTS and where does it come from
+    \item what is Acts and where does it come from
     \item what is its purpose and goals
     \item how is the project structured
 \end{itemize}
 
-ACTS stands for A Common Tracking Software and is a community-driven project which aims to provide experiment independent reconstruction algorithms written in modern C++. Apart from that ACTS can be used for algorithm prototyping and early performance studies. The project is open source and can be found on GitHub.
+Acts stands for A Common Tracking Software and is a community-driven project which aims to provide experiment independent reconstruction algorithms written in modern C++. Apart from that Acts can be used for algorithm prototyping and early performance studies. The project is open source and can be found on GitHub.
 
 The project is structured in a modular way, where each component is responsible for a specific task, such as magnetic field, material, geometry, propagation, track finding, track fitting, and vertexing. These components interact with each other in various ways.
 
-ACTS consists of two main parts: the Core library and the Examples framework. The Core library is a toolbox and meant to be used by experiments to build their own reconstruction framework using tools provided by ACTS. The Examples framework demonstrates how to use the Core library and provides a set of tools to run algorithms on a simulated detector. The Examples framework can be used for educational purposes, testing and early performance studies but it is generally disencouraged to use it for production workflows.
+Acts consists of two main parts: the Core library and the Examples framework. The Core library is a toolbox and meant to be used by experiments to build their own reconstruction framework using tools provided by Acts. The Examples framework demonstrates how to use the Core library and provides a set of tools to run algorithms on a simulated detector. The Examples framework can be used for educational purposes, testing and early performance studies but it is generally disencouraged to use it for production workflows.
 
 The reason for this separation is that a reconstruction framework is highly experiment specific and should be tailored to the specific needs of the experiment. The Core library is meant to be used as a building block for such a framework. The Examples framework is meant to be used as a starting point for new users to get familiar with the Core library.
 
 \section{Components and their connections}
 
-ACTS can be thought of a collection of components which interact with each other to build higher and higher level of abstractions. The most basic components are the magnetic field, the geometry and the material. The magnetic field can be queried for the field strength at a given point in space. There are a few implementations available with the simplest one being a constant field. The geometry component deals with surfaces, layers and volumes which then build up the tracking geometry. The material component abstracts material properties and provides utilities to estimate interactions with the material.
+Acts can be thought of a collection of components which interact with each other to build higher and higher level of abstractions. The most basic components are the magnetic field, the geometry and the material. The magnetic field can be queried for the field strength at a given point in space. There are a few implementations available with the simplest one being a constant field. The geometry component deals with surfaces, layers and volumes which then build up the tracking geometry. The material component abstracts material properties and provides utilities to estimate interactions with the material.
 
 The propagator component is responsible for moving parameters along the particle's trajectory. The most prominent use case is to extrapolate track parameters from one surface to another. The propagator uses the magnetic field to calculate the trajectory of the particle. The geometry is used to check for intersections with the tracking geometry and the material is used to estimate energy loss and multiple scattering.
 
@@ -25,18 +25,18 @@ Around these components there are a few more definitions and concepts which do n
 
 \section{Units and Constants}
 
-To make sense of physical quantities, ACTS uses a defined set of relevant units. They can be found in \texttt{Acts/Definitions/Units.hpp}.
+To make sense of physical quantities, Acts uses a defined set of relevant units. They can be found in \texttt{Acts/Definitions/Units.hpp}.
 
 Most importantly, lengths are measured in millimeters and energies in GeV. The speed of light is set to $1$ which means the time unit is implicitly set to millimeters. Time in seconds can be obtained by dividing the value with pre-defined constants which are related to the SI units.
 
-One should note that units are ultimately a choice but one which is taken by ACTS and it cannot be changed by the user. Having a consistent, pre-defined set of units allows for easier to read and consistent code. The type of scalars and vectors in the code do not have to reflect the units, since the units are implicit for the dimension. Some decisions taken for units and constants reach further into the ACTS codebase than just \texttt{Units.hpp}. For example $c = 1$ is built into many equations and cannot be changed easily.
+One should note that units are ultimately a choice but one which is taken by Acts and it cannot be changed by the user. Having a consistent, pre-defined set of units allows for easier to read and consistent code. The type of scalars and vectors in the code do not have to reflect the units, since the units are implicit for the dimension. Some decisions taken for units and constants reach further into the Acts codebase than just \texttt{Units.hpp}. For example $c = 1$ is built into many equations and cannot be changed easily.
 
 The choice of measuring lengths in millimeters has direct consequences for the time units. For example $1 ns = 299.79 mm$ (the distance light travels in one nanosecond in vacuum) which is a big value compared to the typical spatial resolution of micrometers in tracking detectors. This can potentially lead to numerical instabilities and is under investigation.
 
 \section{Track Parameterization}
 \label{sec:intro/acts/track-parameterization}
 
-Track parameters describe the state of a particle at a given point in space and/or time. This includes the position, time, direction and charge/momentum of the particle. There are two kinds of track parameters in ACTS: bound parameters and free parameters. Bound track parameters are expressed with a local position at a given surface and their direction with two spherical coordinate angles, while free track parameters are expressed with a global cartesian position and a normalized direction vector.
+Track parameters describe the state of a particle at a given point in space and/or time. This includes the position, time, direction and charge/momentum of the particle. There are two kinds of track parameters in Acts: bound parameters and free parameters. Bound track parameters are expressed with a local position at a given surface and their direction with two spherical coordinate angles, while free track parameters are expressed with a global cartesian position and a normalized direction vector.
 
 \begin{equation}
     \mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^T
@@ -55,15 +55,15 @@ The charge/momentum parameter captures the curvature of the trajectory given a m
     \item angles and their value range
 \end{itemize}
 
-In ACTS \texttt{BoundTrackParameters} contain the bound parameter vector, the surface and optionally a covariance matrix. \texttt{FreeTrackParameters} contain the free parameter vector and optionally a covariance matrix.
+In Acts \texttt{BoundTrackParameters} contain the bound parameter vector, the surface and optionally a covariance matrix. \texttt{FreeTrackParameters} contain the free parameter vector and optionally a covariance matrix.
 
 Track parameters are the input for the propagation and can be extrapolated along the trajectory. This is ultimately the basis for the track fitting.
 
-Note that the ACTS bound track parameters are sort of standard for collider experiments. This comes with two caveats: the bound parametrization does not make a lot of sense for foward exteriments and there are poles in the parametrization which can lead to numerical instabilities. This can be avoided by rotating the tracking geometry away from the poles.
+Note that the Acts bound track parameters are sort of standard for collider experiments. This comes with two caveats: the bound parametrization does not make a lot of sense for foward exteriments and there are poles in the parametrization which can lead to numerical instabilities. This can be avoided by rotating the tracking geometry away from the poles.
 
-The track parametrization is ultimately a choice, there is not single best parametrization. Since ACTS aims to be experiment independent a more general solution would be preferable but was not reached yet. The parametrization is deeply baked into ACTS which makes it hard to change. At the same time an abstraction for the track parameters might bring a compute performance penalty.
+The track parametrization is ultimately a choice, there is not single best parametrization. Since Acts aims to be experiment independent a more general solution would be preferable but was not reached yet. The parametrization is deeply baked into Acts which makes it hard to change. At the same time an abstraction for the track parameters might bring a compute performance penalty.
 
-Track parameters should be unique and "well-behaved" in the sense that they should not have singularities or discontinuities. This is not always the case with the ACTS track parameters. Additionally, for numerical stability, they should live on a similar scale which also depends on the units and geometry.
+Track parameters should be unique and "well-behaved" in the sense that they should not have singularities or discontinuities. This is not always the case with the Acts track parameters. Additionally, for numerical stability, they should live on a similar scale which also depends on the units and geometry.
 
 \section{Event data model}
 
@@ -77,7 +77,7 @@ Track parameters should be unique and "well-behaved" in the sense that they shou
 \begin{itemize}
     \color{red}
     \item what is fatras
-    \item how does it relate to ACTS
+    \item how does it relate to Acts
 \end{itemize}
 
 Fatras can be tought of as a plugin without additional dependencies.
@@ -90,11 +90,11 @@ Fatras can be tought of as a plugin without additional dependencies.
     \item which plugins are available
 \end{itemize}
 
-ACTS comes with multiple plugins which can be used to extend the functionality of the Core library, given certain dependencies are met. The plugins can be enabled or disabled during the build process. This is a modular approach to keep the Core library's dependencies to a minimum.
+Acts comes with multiple plugins which can be used to extend the functionality of the Core library, given certain dependencies are met. The plugins can be enabled or disabled during the build process. This is a modular approach to keep the Core library's dependencies to a minimum.
 
 Some of these plugins deal with geometry input sources like DD4hep or TGeo. Others deal with serialization and deserialization of data like Json or EDM4hep.
 
-\section{The ACTS Examples Framework}
+\section{The Acts Examples Framework}
 
 \begin{itemize}
     \color{red}
