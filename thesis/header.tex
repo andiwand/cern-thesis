@@ -12,6 +12,7 @@
 \usepackage{xstring} % Für IF in Titelseite
 \usepackage{bm}
 \usepackage{float}
+\usepackage{svg}
 
 \usepackage[version=3]{mhchem} % Für Chemische Formeln
 \usepackage{braket} % Für das quantenmechanische Bra-Ket
@@ -47,9 +48,6 @@
 
 \newcommand{\writeIn}[1]{\usepackage[#1]{babel}} % Definiert einen neuen Befehl um die Sprache des Dokuments zu setzen
 
-\usepackage[usenames,dvipsnames]{color} % Farben für den todo Befehl
-\newcommand{\todo}[1]{{\color{Cerulean}(TODO: #1)}} % Einfach \todo{Text} verwenden!
-
 \newcommand{\blankpage}{ \newpage \thispagestyle{empty} \mbox{} \newpage }
 
 \usepackage{parskip}
@@ -57,6 +55,7 @@
 
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric,arrows.meta,arrows}
+\usetikzlibrary{calc}
 
 \DeclareMathOperator{\arctantwo}{arctan2}
 
