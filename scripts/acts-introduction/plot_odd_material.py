@@ -52,19 +52,27 @@ for name, label in zip(region_order, region_labels):
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4), layout="compressed")
 mplhep.histplot(hists, ax=ax, stack=True, histtype="fill", label=labels)
-ymin, ymax = ax.get_ylim()
 ax.set_xlim(hists[0].axes[0].edges[0], hists[0].axes[0].edges[-1])
-ax.set_ylim(top=1.2 * ymax)
 ax.set_xlabel(x_label)
 ax.set_ylabel(y_label)
 ax.legend()
+
+if args.x == "eta":
+    ymin, ymax = ax.get_ylim()
+    ax.vlines(
+        [-3, 3],
+        ymin,
+        ymax,
+        color="black",
+        linestyle="--",
+    )
 
 atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
     subtext="Acts v40.0.0",
-    enlarge=1.2,
+    enlarge=1.3,
 )
 
 if args.output is not None:
