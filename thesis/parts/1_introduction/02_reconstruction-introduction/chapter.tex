@@ -1,6 +1,5 @@
 \begin{itemize}
     \color{red}
-    \item should this rather be called track reconstruction?
     \item what is track reconstruction
     \begin{itemize}
         \item what is a track
@@ -10,24 +9,49 @@
     \begin{itemize}
         \item tracks and vertices
     \end{itemize}
+    \item history
+    \begin{itemize}
+        \item how did track reconstruction evolve
+    \end{itemize}
 \end{itemize}
 
-Reconstruction is the process of extracting information from the raw data collected by the detector. This proceedure can be thought of as building higher and higher level objects in a chain of reconstruction steps.
+Reconstruction is the process of extracting underlying physical information from the raw data collected by a detector.
 
-This thesis is concerned with the reconstruction of tracks from charged particles and the reconstruction of primary vertices.
+Due to the complexity of the process, reconstruction is usually done in a series of steps. Each step takes the output of the previous step and produces new outputs.
 
-Track reconstruction is a crutial step in the reconstruction of the full event in a particle physics experiment. It is the process of reconstructing the trajectoris of charged particles as they traverse the detector. After a trajectoy is found and fitted to the detector measurements, the track can be used to determine the particle's momentum, charge sign and origin.
+% This proceedure can be thought of as building higher and higher level objects in a chain of reconstruction steps.
+
+This thesis is mainly concerned with the reconstruction of tracks from charged particles and the reconstruction of primary vertices.
+
+Track reconstruction is a crutial step in the reconstruction of the full event in a particle physics experiment. It is the process of reconstructing the trajectories of charged particles as they traverse the detector. After a trajectoy is found and fitted to the detector measurements, the track can be used to estimate the particle's momentum, charge, and origin.
 
 In a subsequent step called vertex reconstruction, tracks are used to find the point where the particles were produced. The position of the vertex in comparison with the interaction region can be used to get an insight into the event topology.
 
-\section{History}
+\section{Reconstruction chains and objects}
 
 \begin{itemize}
     \color{red}
-    \item how did track reconstruction evolve
+    \item clusters
+    \item spacepoints
+    \item tracks
+    \item vertices
 \end{itemize}
 
-\section{Detection of Charged Particles}
+A reconstruction chain is a preceedure of steps to ultimately extract all the information of interest from an event. In the context of this thesis, reconstruction chains produce tracks and vertices as final objects. In the context of a particle physics experiment, reconstruction chains will also produce higher level objects like jets, missing energy, etc.
+
+A typical reconstruction chain starts with the clustering of raw sensor readings to form measurements of the particle's trajectory. These measurements are transformed into spacepoints, which are points in the global 3D detector coordinate system and represent the position of all the detected hits in the detector caused by created particles during the event interaction. Spacepoints can be grouped into potential track candidates called seeds. This is usually done with 3 spacepoints as this is the minimum to get a first estimate of the track parameters. Using the seeds and their initial parameters a track finding algorithm can be used to find the full track and to filter out fakes. The track is then fitted to all the compatible measurements. Finally, fitted tracks can be grouped and a vertex can be reconstructed.
+Reconstruction objects are the inputs and outputs of reconstruction algorithms and described with an Event Data Model (EDM).
+
+\section{Particle-matter interactions}
+
+\begin{itemize}
+    \color{red}
+    \item what are the main interactions
+\end{itemize}
+
+Free, energetic particles interact with matter in a variety of ways. The most common interactions are ionization, bremsstrahlung, pair production, and nuclear interactions. These interactions are used to determine the particle's properties but will also limit the detector's performance. For this reason, the material budget of a detector is a critical parameter during its design and is used to determine the detector's resolution and efficiency.
+
+\section{Detection of charged particles}
 
 \begin{itemize}
     \color{red}
@@ -35,91 +59,87 @@ In a subsequent step called vertex reconstruction, tracks are used to find the p
     \item silicon sensors
 \end{itemize}
 
-\section{Reconstruction Objects}
-
-\begin{itemize}
-    \color{red}
-    \item clusters
-    \item space points
-    \item tracks
-    \item vertices
-\end{itemize}
-
-Reconstruction objects are the inputs and outputs of reconstruction algorithms and described with an Event Data Model (EDM).
-
-A typical reconstruction chain starts with the clustering of raw sensor readings to form measurements of the particle's trajectory. These measurements are transformed into space points, which are points in the global 3D detector coordinate system and represent the position of all the detected hits in the detector caused by created particles during the event interaction. Space points can be grouped into potential track candidates called seeds. This is usually done with 3 space points as this is the minimum to get a first estimate of the track parameters. Using the seeds and their initial parameters a track finding algorithm can be used to find the full track and to filter out fakes. The track is then fitted to all the compatible measurements. Finally, fitted tracks can be grouped and a vertex can be reconstructed.
-
-\section{Reconstruction Chains}
-
-\begin{itemize}
-    \color{red}
-    \item illustration of a track reconstruction chains
-\end{itemize}
-
-A reconstruction chain is a preceedure of steps to ultimately extract all the information of interest from an event. In the context of this thesis, reconstruction chains produce tracks and vertices as final objects. In the context of a particle physics experiment, reconstruction chains will also produce higher level objects like jets, missing energy, etc.
-
-\section{Particle-Matter Interactions}
-
-\begin{itemize}
-    \color{red}
-    \item what are the main interactions
-\end{itemize}
-
-Free, energetic particles interact with matter in a variety of ways. The most common interactions are ionization, bremsstrahlung, pair production, and nuclear interactions. These interactions are used to determine the particle's properties but will also limit the detector's performance. For this reason, the material budget of a detector is a critical parameter during the design and can be used to determine the detector's resolution and efficiency.
-
-\section{Equations of Motion}
+\section{Equations of motion}
 \label{sec:into/reco/equations-of-motion}
 
-\begin{itemize}
-    \color{red}
-    \item what is the equations of motion
-\end{itemize}
+The equations of motion describe the trajectory of a free, charged particle in the presents of a magnetic field. Ignoring any material interactions, the equations can be written as:
 
-The equations of motion describes the trajectory of a free, charged particle in the presents of a magnetic field. Ignoring any material interactions, the equation is a second order differential equation.
+\begin{align}
+    \label{eq:intro/reco/eom}
+    \frac{d^2\mathbf{r}}{ds^2} &= \lambda \mathbf{T} \times \mathbf{B}(\mathbf{r}) \\
+    \frac{dt}{ds} &= \sqrt{1 + \frac{m^2}{p^2}}
+\end{align}
 
-\begin{equation}
-    \frac{d^2\vec{p}}{dt^2} = q \vec{v} \times \vec{B}
-\end{equation}
+with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, magnetic field $\mathbf{B}$, the cartesian position $\mathbf{r}$, the rest frame time $t$, the path length $s$, the absolute momentum $p$, the mass $m$, and the charge $q$.
 
-In a homogenous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. In reality, the magnetic field is not homogenous and the equations of motion are solved numerically. The most common method to solve the equations of motion is the Runge-Kutta-Nystrom method, which is discussed in the next section.
+In a homogenous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. While in reality, the magnetic field is not homogenous and the equations of motion are solved numerically. The most common method to solve the equations of motion is the Runge-Kutta-Nyström method, which is discussed in the next section.
 
-This equation can be extended to include the effects of continuous energy loss.
+This equation can be extended to include the effects of continuous energy loss which is described in Section \ref{sec:dev/dense/equations-of-motion}.
 
-\subsection{Runge-Kutta-Nystrom Method}
+\subsection{Runge-Kutta-Nyström method}
 \label{sec:into/reco/runge-kutta-nystrom}
 
-\begin{itemize}
-    \color{red}
-    \item formalism
-\end{itemize}
+The Runge-Kutta-Nyström (RKN) method allows to solve second-order ordinary differential equations (ODE) numerically. It is a specialized Runge-Kutta (RK) method which operates on second-order instead of first-order ODE.\footnote{The RKN method can be derived from the RK method by rewriting the second-order ODE into a first-order ODE.} In track reconstruction, the RKN method is used to solve the equations of motion of a charged particle in a magnetic field, provided in Equation \ref{eq:intro/reco/eom}.
 
-The Runge-Kutta-Nystrom method is a numerical method to solve ordinary differential equations. It is a generalization of the Runge-Kutta method to second order differential equations. In track reconstruction, the method is used to solve the equations of motion of a charged particle in a magnetic field.
+A fourth-order RKN has the benefit of only requiring 3 magnetic field evaluations per step. At the same time, it has proven to be stable and accurate for tracking applications. The integration is performed as follows:
 
-\subsection{Jacobian and Covariance Transport}
+\begin{align}
+    \mathbf{T}_{n+1} &= \mathbf{T}_n + \frac{h}{6} (\mathbf{k}_1 + 2 \mathbf{k}_2 + 2 \mathbf{k}_3 + \mathbf{k}_4) \\
+    \mathbf{r}_{n+1} &= \mathbf{r}_n + h \mathbf{T}_n + \frac{h^2}{6} (\mathbf{k}_1 + \mathbf{k}_2 + \mathbf{k}_3)
+    \label{eq:intro/reco/rkn}
+\end{align}
 
-\begin{itemize}
-    \color{red}
-    \item formalism
-    \item expression for path length uncertainty?
-\end{itemize}
+with the step size $h$ and the four intermediate RKN steps $k_i$.
 
-Linear error propagation can be used to not only propagate the track parameters but also its uncertainties. Since we are dealing with vector quantities, the error propagation is done with the Jacobian matrix. This is crucial for track fitting with the least squares method, as this requires linear systems to minimize the $\chi^2$.
+The intermediate steps $k_i$ are defined as:
 
-The Jacobian transport matrix can be extracted from the Runge-Kutta-Nystrom method by taking the derivative of the track parameters with respect to the initial parameters. This only yields the transport matrix for free track parameters. In order to get the full transport matrix for bound to bound parameter propagation, the Jacobian matrix has to be multiplied with the Jacobian matrix of the bound to free and free to bound transformation.
+\begin{align}
+    \mathbf{k}_1 &= \mathbf{f}\left( t_n, \mathbf{y}_n, \mathbf{y}^{\prime}_n \right) \\
+    \mathbf{k}_2 &= \mathbf{f}\left( t_n + \frac{h}{2}, \mathbf{y}_n + \frac{h}{2} \mathbf{y}^{\prime}_n + \frac{h^2}{8} \mathbf{k}_1, \mathbf{y}^{\prime}_n + \frac{h}{2} \mathbf{k}_1 \right) \\
+    \mathbf{k}_3 &= \mathbf{f}\left( t_n + \frac{h}{2}, \mathbf{y}_n + \frac{h}{2} \mathbf{y}^{\prime}_n + \frac{h^2}{8} \mathbf{k}_1, \mathbf{y}^{\prime}_n + \frac{h}{2} \mathbf{k}_2 \right) \\
+    \mathbf{k}_4 &= \mathbf{f}\left( t_n + h, \mathbf{y}_n + h \mathbf{y}^{\prime}_n + \frac{h^2}{2} \mathbf{k}_3, \mathbf{y}^{\prime}_n + h \mathbf{k}_3 \right)
+    \label{eq:intro/reco/rkn-steps}
+\end{align}
+
+with $\mathbf{y}_n = \left( \mathbf{r}^T \, t \right)^T$, $\mathbf{y}^{\prime}_n = \left( \mathbf{T}^T \, \frac{dt}{ds} \right)^T$, and the current path length $t_n = s$. The differential equation $\mathbf{f}$ is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}.
+
+The global error of the fourth-order RKN method is of order $\mathcal{O}(h^4)$, while the local error is of order $\mathcal{O}(h^5)$. An adaptive step size can be used to improve the performance of the RKN method, which is further discussed in Section \ref{sec:dev/stepper/adaptive-step-size}.
+
+\subsection{Track parameters}
+
+Track parameters summarize the observable state of a particle's trajectory at a given point. Usually this includes: the position, the local direction, and the local curvature of the trajectory. Time can also be included as a parameter if it is available.
+
+Track parameters can be bound to a surface or free. Bound track parameters are defined on a surface, while free track parameters are defined in the global 3D coordinate system. The motivation for bound track parameters is that they represent an observable state for tracking detectors.
+
+Track parameterization is ultimately a choice. There is no single best parameterization for all applications. Experiments will use a parameterization that is best suited for their specific needs. Collider experiments are usually symmetric with respect to the beamline and use spherical and/or cylindrical coordinate systems to leverage that. If the magnetic field aligns with the beam axis, curvature only affects the transverse plane (also called bending plane), which can be reflected in the parameterization.
+
+\subsection{Jacobian and covariance transport}
+
+In tracking, covariance transport is the process of propagating track parameter uncertainties along the trajectory. It is crucial for some reconstruction algorithms like the Kalman filter based track fitting. Apart from that, the track parameter covariance can be used for physics and validation purposes.
+
+Covariance transport can be achieved by linearizing the track parameter transport into a Jacobian matrix. The Jacobian is a matrix of partial derivatives which describes how the track parameters change with respect to the initial parameters. The free transport Jacobian matrix can be extracted from the RKN method by taking the derivative of the track parameters with respect to the initial parameters. This is a semi-analytical approach as it depends on the formalism of the numerical integration. In order to get the full transport Jacobian matrix for bound to bound parameter propagation, the Jacobian matrix has to be multiplied with the Jacobian matrix of the bound to free and free to bound transformations.
 
 \begin{equation}
-    \mathbf{J}_{\text{bound\textrightarrow bound}} = \mathbf{J}_{\text{bound\textrightarrow free}} \ \mathbf{J}_{\text{free\textrightarrow free}} \ \mathbf{J}_{\text{free\textrightarrow bound}}
+    \mathbf{J}_\text{bound\textrightarrow bound} = \mathbf{J}_\text{bound\textrightarrow free} \ \left[ \mathbf{I} + \dv{\mathbf{x}_\text{free}}{s} \ \pdv{s}{\mathbf{x}_\text{free}} \right] \ \mathbf{J}_\text{free\textrightarrow free} \ \mathbf{J}_\text{free\textrightarrow bound}
 \end{equation}
 
-An additional term has to be included to handle path length uncertainties.
+An additional term is included to handle path length uncertainties. This can be thought of as a correction term due to projection effects. If the trajectory does not cross the surface perpendicular, the error of the local positions need to be increased. $\dv{\mathbf{x}_\text{free}}{s}$ is the derivative of the free track parameters with respect to the path length $s$ and is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}. The fourth-order RKN method provides evaluates this with $\mathbf{k}_4$. $\pdv{s}{\mathbf{x}_\text{free}}$ is the partial derivative of the path length with respect to the free track parameters and is obtained from the approached surface.
 
 The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters. This is done by multiplying the Jacobian matrix with the covariance.
 
 \begin{equation}
-    \mathbf{\Sigma}_{\text{next}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^T
+    \mathbf{\Sigma}_{\text{new}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^T
 \end{equation}
 
-\section{Pattern Recognition}
+with the covariance on the previous surface $\mathbf{\Sigma}_{\text{previous}}$, and the covariance on the new surface $\mathbf{\Sigma}_{\text{new}}$.
+
+Derivations and validations of the Jacobian and covariance transport can be found in \textcite{bomki-jac}.
+
+\section{Clustering}
+
+\section{Spacepoint formation}
+
+\section{Pattern recognition}
 
 \begin{itemize}
     \color{red}
@@ -131,7 +151,7 @@ Pattern recognition is the process of identifying patterns in the detector measu
 
 Examples of pattern recognition algorithms are the Hough transform and classical triplet seeding.
 
-\section{Track Finding}
+\section{Track finding}
 
 \begin{itemize}
     \color{red}
@@ -158,7 +178,7 @@ After the pattern recognition step, the track finding algorithm is used to find 
 
 After the track finding we might end up with multiple tracks that are caused by the same particle (duplicate) or tracks that are caused by different particles (fake). This is called track ambiguity. In order to deal with track ambiguity, track finding algorithms have to be able to filter out fakes and duplicates.
 
-\section{Track Fitting}
+\section{Track fitting}
 
 \begin{itemize}
     \color{red}
@@ -170,7 +190,7 @@ After the track finding we might end up with multiple tracks that are caused by 
 
 After finding all the measurements that belong to a track, the track can be fitted to the measurements. Track fitting is the process of finding the track parameters that best describe the measurements. This is done with a least squares method or a Kalman filter, which is equivalent to the least squares method if {\color{red}???}. The track parameters are then used to determine the particle's momentum, charge sign and origin.
 
-\subsection{Kalman Filter}
+\subsection{Kalman filter}
 
 \begin{itemize}
     \color{red}

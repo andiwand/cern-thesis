@@ -15,6 +15,7 @@ This class used to be quite involved and a central cause of problems for the pro
 Another improvement was removing the sign of the \texttt{accuracy} limit. In rare cases the accuracy was set during overstep resolution which caused it to be negative. This effectively locked the step size resulting in a failed propagation due to reaching the step count limit. The new implementation decides the sign for the accuracy limit based on the \texttt{navigator} and \texttt{actor} limits.
 
 \section{Implementation of an adaptive step size}
+\label{sec:dev/stepper/adaptive-step-size}
 
 Adaptive step size is a technique to improve the performance of the numerical integration given a certain accuracy target. The idea is to adjust the step size based on the local curvature of the trajectory. In regions of high curvature a smaller step size is used to resolve the trajectory more accuratly. In regions of low curvature a larger step size is used to accelerate the propagation and to limit the accumulation of machine precision errors.
 

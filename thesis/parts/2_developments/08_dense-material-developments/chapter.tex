@@ -10,7 +10,8 @@ While the surface-based approach is a long standing feature in Acts, the volume-
 
 Similar to the existing surface-based approach, this implementation focues on two interactions with the material, continuous energy loss and multiple scattering, which are described in the following sections. Afterwards, a reference with Geant4 is established and the implementation in Acts is described. Finally, the performance of the implementation is evaluated.
 
-\section{Modified Equations of Motion}
+\section{Modified equations of motion}
+\label{sec:dev/dense/equations-of-motion}
 
 Continuous energy loss affects the trajectory of a particle and needs to be treated in the equations of motion. Section \ref{sec:into/reco/equations-of-motion} describes the equations of motion for a particle in vacuum and in a magnetic field. The equations of motion can be extended to include continuous energy loss:
 
@@ -22,9 +23,9 @@ Continuous energy loss affects the trajectory of a particle and needs to be trea
     \label{eq:dev/dense/eom}
 \end{align}
 
-with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, the absolute momentum $p$, the energy loss rate $g$, the mass $m$, and the charge $q$ of the particle.
+with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, the magnetic field $\mathbf{B}$, the cartesian position $\mathbf{r}$, the rest frame time $t$, the path length $s$, the absolute momentum $p$, the energy loss rate $g$, the mass $m$, and the charge $q$.
 
-The dependent variables to be integrated are chosen as $\mathbf{y} = (\mathbf{r}^T \; t \; \Lambda)^T$ with their first derivatives $\mathbf{y}' = (\mathbf{T}^T \; \frac{dt}{ds} \; \lambda)^T$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nystrom method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
+The dependent variables to be integrated are chosen as $\mathbf{y} = (\mathbf{r}^T \; t \; \Lambda)^T$ with their first derivatives $\mathbf{y}' = (\mathbf{T}^T \; \frac{dt}{ds} \; \lambda)^T$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nyström method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
 
 The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions \cite{pub-2008-003} :
 
@@ -90,7 +91,7 @@ for $E > 1 \, \text{TeV}$. Below $8 \, \text{GeV}$ the energy loss is negligible
 
 \textbf{Integration}
 
-The equations of motion are integrated using the Runge-Kutta-Nystrom method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}. This also affects the transport Jacobian which is used to propagate the covariance of the particle. Derivations of the transport Jacobian for the modified equations of motion can be found in \textcite{pub-2009-002}.
+The equations of motion are integrated using the Runge-Kutta-Nyström method which is described in Section \ref{sec:into/reco/Runge-Kutta-Nyström}. This also affects the transport Jacobian which is used to propagate the covariance of the particle. Derivations of the transport Jacobian for the modified equations of motion can be found in \textcite{pub-2009-002}.
 
 Apart from the energy loss, the particle's trajectory is also affected by multiple scattering. Multiple scattering is a random deflection of the particle's trajectory due to the Coulomb interaction with the material. Since this is a stochastic process which averages to no deflection over a large number of particles it has no effect on the average trajectory. However, it does affect the resolution of the track parameters which needs to be taken into account in the covariance transport.
 
@@ -264,7 +265,7 @@ While this approach led to promising results, the implementation was unsatisfact
 \section{Final implementation with \texttt{SympyStepper}}
 \label{sec:dev/dense/sympy}
 
-The \texttt{SympyStepper} is a new stepper implementation in Acts based on symbolic math expressions with are transformed into code. Developments and performance are described in Section \ref{sec:dev/stepper/sympy}. It is an alternative approach to the \texttt{EigenStepper} where the math has to be done first and then manually transcribed into code using a linear algebra framework like Eigen. \texttt{SymPy} has the benefit of writing concise and readable math expressions which can be used to generate the stepping code automatically, including the derivation of the transport Jacobian. As such, including the continuous energy loss is just a matter of changing the equations of motion, which then automatically affect the Runge-Kutta-Nystrom integration and the transport Jacobian.
+The \texttt{SympyStepper} is a new stepper implementation in Acts based on symbolic math expressions with are transformed into code. Developments and performance are described in Section \ref{sec:dev/stepper/sympy}. It is an alternative approach to the \texttt{EigenStepper} where the math has to be done first and then manually transcribed into code using a linear algebra framework like Eigen. \texttt{SymPy} has the benefit of writing concise and readable math expressions which can be used to generate the stepping code automatically, including the derivation of the transport Jacobian. As such, including the continuous energy loss is just a matter of changing the equations of motion, which then automatically affect the Runge-Kutta-Nyström integration and the transport Jacobian.
 
 With this new implementation a generalized stepping extension mechanism is avoided and the continuous multiple scattering and energy loss is implemented as a separate routine. The \texttt{SympyStepper} switches to this routine when the particle passes through dense material. Instead of trying to generalize this, which was attemted with the \texttt{EigenStepper}, the \texttt{SympyStepper} just enumerates the two cases we are aware of: vacuum and dense material.
 
