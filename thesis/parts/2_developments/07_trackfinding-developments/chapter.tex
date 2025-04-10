@@ -45,6 +45,7 @@ The branch finalization is triggered when a propagation abort condition is met o
 This act of finalizing a branch was done in multiple places and essentially duplicated. It has been refactored to a single function which can be called from different places. This results in better maintainable code which is easier to reason about.
 
 \section{Seed deduplication}
+\label{sec:dev/trackfinding/seed-deduplication}
 
 Seed deduplication is a technique to avoid finding the same tracks through different seeds multiple times. For instance, a triplet seeding algorithm can produce many seeds for the same particle. While this is partially by design to gain redundancy and to mitigate operation effects, e.g. inactive modules, it can also be a waste of compute time.
 
@@ -55,6 +56,7 @@ The seed deduplication technique has been implemented in the \texttt{TrackFindin
 Table \ref{tab:dev/trackfinding/seed-deduplication} shows the performance of the track finding algorithm with and without seed deduplication. The results were obtained with the OpenDataDetector, \ttbar events at $\sqrt{s} = 14 \ \text{TeV}$, $\langle \mu \rangle = 200$, using fast simulation and a standard reconstruction workflow. It shows that the deduplication has a significant impact on the time per event, but only a small impact on the track efficiency.
 
 \section{Stay-on-seed strategy}
+\label{sec:dev/trackfinding/stay-on-seed}
 
 Stay-on-seed is a strategy to keep the CKF on the selected measurements of the seed and prohibit it from branching into other measurements. Since the initial parameter covariance is inflated, the CKF will see a couple of compatible measurements in the vicinity of the seed. In case of a triplet seeder, the combinatorics of these measurements are already explored and the CKF does not need to redo this work.
 
@@ -67,6 +69,7 @@ Table \ref{tab:dev/trackfinding/stay-on-seed} shows the performance of the track
 We should note that this will only make a difference if branching is enabled and the hit density is high enough to result in multiple compatible measurements in the vicinity of the seed. In the example shown, the hit density is high and branching was set to a maximum of 10 per surface.
 
 \section{Two-way track finding}
+\label{sec:dev/trackfinding/two-way}
 
 In order to find all measurements a particle has left in the detector, the CKF either needs to start at the very first measurement or needs to be able to look for measurements in both directions. Once in the forward direction, the particle traveled along, and once in the opposite direction, towards the origin of the particle. Since the CKF only branches in the propagation direction, this cannot be simply added to the existing algrithm.
 
