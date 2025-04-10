@@ -1,4 +1,4 @@
-Acts stands for A Common Tracking Software and is a community-driven project that aims to provide experiment independent track reconstruction algorithms written in modern C++ \cite{acts-2022}. Its origins are close to Athena, the ATLAS reconstruction software, and the majority of its main developers are members of ATLAS to this day. Acts is planned to be used extensively in the ATLAS Phase-2 reconstruction \cite{atlas-tdr-029-add}. Apart from that, it is already adopted or in the process of adaptation by various other experiments, such as: Faser \cite{faser}\cite{faser2}, sPHENIX \cite{sphenix}, STCF \cite{stcf}, LDMX \cite{ldmx}, ePIC \cite{epic}, Alice \cite{alice}, COMET \cite{comet2}, NA60+ \cite{na60+}, Lohengrin \cite{lohengrin}, and CEPC \cite{cepc}. The project is open source and can be found on GitHub \footnote{\url{https://github.com/acts-project/acts}}.
+Acts stands for A Common Tracking Software and is a community-driven project that aims to provide experiment independent track reconstruction algorithms written in modern C++ \cite{acts-2022}. Its origins are close to the ATLAS track reconstruction software, and the majority of its main developers are members of the ATLAS collaboration to this day. Acts is planned to be used extensively in the ATLAS Phase-2 reconstruction and potentially fast track simulation \cite{atlas-tdr-029-add}. Apart from that, it is already adopted or in the process of adaptation by various other experiments, such as: Faser \cite{faser}\cite{faser2}, sPHENIX \cite{sphenix}, STCF \cite{stcf}, LDMX \cite{ldmx}, ePIC \cite{epic}, Alice \cite{alice}, COMET \cite{comet2}, NA60+ \cite{na60+}, Lohengrin \cite{lohengrin}, and CEPC \cite{cepc}. The project is open source and can be found on GitHub \footnote{\url{https://github.com/acts-project/acts}}.
 
 % Acts is structured in a modular way, where each component is responsible for a specific task. Examples are: the magnetic field, material, geometry, propagation, track finding, track fitting, and vertexing. These components interact with each other in various ways.
 
@@ -14,7 +14,7 @@ Acts can be thought of as a collection of components which interact with each ot
 
 The propagator component is responsible for moving parameters along a particle's trajectory. The most prominent use case is to extrapolate track parameters from one surface to another. The propagator uses the magnetic field to estimate the beding of the particle's trajectory. The geometry is used to check for intersections with the tracking geometry and the material is used to estimate energy loss and multiple scattering.
 
-Ultimately, algorithms are built on top of these components. Some of them depend on the propagation, like classical track finding and track fitting algorithms, while others just depend on the geometry, like the triplet seeding algorihtm.
+Ultimately, algorithms are built on top of these components. Some of them depend on the propagation, like classical track finding and track fitting algorithms, while others just depend on the geometry, like the spacepoint formation.
 
 There are a few more definitions and concepts which do not necessarily map directly to single components in the code. Two of these are units and constants, and the track parameterization, which are discussed in the following sections.
 
@@ -26,7 +26,7 @@ Most importantly, lengths are measured in millimeters and energies in GeV. The s
 
 Units are ultimately a choice, but one that is taken by Acts and not the user. Having a consistent, pre-defined set of units allows for easier to read and consistent code. The types of scalars and vectors in Acts do not reflect their units, since they are implicit for the dimension. Some decisions taken for units and constants reach further into the Acts codebase than just \texttt{Units.hpp}. For example $c = 1$ is built implicitly into many equations.
 
-The choice of measuring length in millimeters has direct consequences for the time units. The distance light travels in one nanosecond in vacuum $1 \text{ns} = 299.79 \text{mm/c}$ results in a big value compared to the typical spatial resolution of micrometers in tracking detectors. This can potentially lead to numerical instabilities and may need reconsideration in the future.
+The choice of measuring length in millimeters has direct consequences for the time units. The distance light travels in one nanosecond in vacuum $1\ \text{ns} = 299.79\ \text{mm/c}$ results in a big value compared to the typical spatial resolution of micrometers in tracking detectors. This can potentially lead to numerical instabilities and may need reconsideration in the future.
 
 \section{Track parameterization}
 \label{sec:intro/acts/track-parameterization}
@@ -41,11 +41,11 @@ Track parameters describe the observable state of a track at a given point in sp
     \mathbf{x}_\text{global} = \left(g_0, g_1, g_2, t, d_0, d_1, d_2, q/p\right)^\mathrm{T}
 \end{equation}
 
-The azimuthal $\phi$ should be within $[-\pi, \pi)$, but values outside this range are also accepted as they uniquely map to a valid value in the range. The polar angle $\theta$ has to be within $[0, \pi]$, while $0$ and $\pi$ should be avoided as they correspond to the poles of the spherical coordinate system. The charge over momentum parameter $q/p$ captures the curvature of the trajectory given the local magnetic field. This choice can be motivated by the equations of motion for a free particle in a magnetic field. The charge is signed and the momentum is the magnitude of the momentum vector. Using the absolute momentum magnitude over the traverse momentum magnitude is more general given an arbitraty magnetic field. To extract the momentum from $q/p$, one has to assume an absolute charge of the particle.
+The azimuthal angle, $\phi$, should be within $[-\pi, \pi)$, but values outside this range are also accepted as they uniquely map to a valid value in the range. The polar angle, $\theta$, has to be within $[0, \pi]$, while $0$ and $\pi$ should be avoided as they correspond to the poles of the spherical coordinate system. The charge over momentum parameter, $q/p$, captures the curvature of the trajectory given the local magnetic field. This choice can be motivated by the equations of motion for a free particle in a magnetic field. The charge is signed and the momentum is the magnitude of the momentum vector. Using the absolute momentum magnitude over the traverse momentum magnitude is more general given an arbitraty magnetic field. To extract the momentum from $q/p$, one has to assume an absolute charge of the particle.
 
 In Acts, \texttt{BoundTrackParameters} contain the bound parameter vector, the surface, a particle hypothesis and optionally a covariance matrix. Similarly, \texttt{FreeTrackParameters} contain the free parameter vector, a particle hypothesis and optionally a covariance matrix.
 
-Note that the Acts bound track parameters are sort of standard for collider experiments. This comes with two caveats: the bound parametrization does not make a lot of sense for foward exteriments and there are poles in the parametrization which can lead to numerical instabilities. This can be avoided by rotating the tracking geometry away from the poles.
+Note that the Acts \texttt{BoundTrackParameters} are sort of standard for collider experiments. This comes with two caveats: the bound parametrization does not make a lot of sense for foward exteriments and there are poles in the parametrization which can lead to numerical instabilities. This can be avoided by rotating the tracking geometry away from the poles.
 
 Track parametrization is ultimately a choice and there is not single best one. Since Acts aims to be experiment independent, a more general solution would be preferable but was not reached yet. The parametrization is deeply baked into Acts which makes it hard to change. At the same time an abstraction for the track parameters might bring a compute performance penalty.
 
@@ -55,18 +55,18 @@ Track parametrization is ultimately a choice and there is not single best one. S
 
 The event data model (EDM) in Acts is a collection of data structures which are used to store inputs and outputs of the reconstruction. For example, Acts Core defines containers and access to spacepoints, seeds and tracks. While Acts Examples defines remaining types like clusters and measurements. Current EDM implementations try to be experiment independent by defining interfaces for read and write access and providing default implementations within Acts Core. The main reason for this is to avoid copying data to and from user-defined data structures. This is beneficial for memory usage, but might have performance implications which are currently under investigation. Potentially Acts could define a set of EDM types and couple its algorithms to these types directly. This would also avoid C++ template interfaces in the algorihtms.
 
-Most tracking EDMs can be tought of as tables. Each row corresponds to a single object and each column corresponds to a property of the object. The rows are indexed by an integer ID which is unique for the object. An example for this is the track EDM. The track container stores track parameters, the reference surface, the particle hypothesis and the last track state index which points into the track state container. The track state container stores track parameters for each surface crossed and links to the previous track states.
+Most tracking EDMs can be thought of as tables. Each row corresponds to a single object and each column corresponds to a property of the object. The rows are indexed by an integer ID which is unique for the object. An example for this is the track EDM. The track container stores track parameters, the reference surface, the particle hypothesis and the last track state index which points into the track state container. The track state container stores track parameters for each surface crossed and links to the previous track states.
 
 \section{Tracking geometry}
 
-A tracking geometry is a simplified version of the full detector geometry with the purpose of simplifying and accelerating tracking algorithms. Real detectors consist of support structures, cables, cooling pipes, etc. which are not directly relevant for tracking. The Acts tracking geometry consists of surfaces, layers, and volumes. These are hierarchical: volumes contain layers, and layers contain surfaces. Surfaces come in different shapes, like rectangular or cylindrical. Volumes are enclosed with boundary surfaces, which connect to other volumes or to the end of world.
+A tracking geometry is a simplified version of the full detector geometry with the purpose of simplifying and accelerating tracking algorithms. Real detectors consist of support structures, cables, cooling pipes, etc. which are not directly relevant for track reconstruction algorithms. The Acts tracking geometry consists of surfaces, layers, and volumes. These are hierarchical: volumes contain layers, and layers contain surfaces. Surfaces come in different shapes, like rectangular or cylindrical. Volumes are enclosed with boundary surfaces, which connect to other volumes or to the end of world.
 
-The tracking geometry distinguishes between sensitive and passive surfaces. Sensitive surfaces measure the state or properties of particles partially. Passive surfaces represent logical structures of the detector or carry accumulated passive detector material. The proceedure of deriving this accumulated material is called \textit{material mapping}.
+The tracking geometry distinguishes between sensitive and passive surfaces. Sensitive surfaces measure parts of the state or properties of particles, like their 2D hit position. Passive surfaces represent logical structures of the detector or carry accumulated passive detector material. The procedure of deriving this accumulated material is called \textit{material mapping}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/1_introduction/03_acts-introduction/figures/tracking_geometry.pdf}
-    \caption{Illustration of a (a) detector geometry and (b) tracking geometry with sensitive parts in green and passive parts in orange. Gracefully taken from \textcite{gessinger-thesis}.}
+    \caption{Illustration of (a) a detector geometry with sensitive parts in green and passive parts in orange and (b) a corresponding tracking geometry. Gracefully taken from \textcite{gessinger-thesis}.}
     \label{fig:intro/acts/tracking-geometry}
 \end{figure}
 
@@ -76,13 +76,13 @@ Figure \ref{fig:intro/acts/tracking-geometry} illustrates the difference between
 
 Acts comes with a fast track simulation module called Fatras. It can be used to simulate the passage of particles through a detector based on its tracking geometry, magnetic field and mapped material.
 
-Fatras is heavily used in Acts Examples, for testing Acts in general, and early performance studies. The main benefit is its speed compared to full simulation frameworks like Geant4, and its simplicity by directly using the Acts geometry and material. Fatras is not meant to be used for detailed studies as it only implementes a few physics interactions but for instance no hadronic interactions.
+Fatras is heavily used in Acts Examples, for testing Acts in general, and early performance studies. The main benefit is its speed compared to full simulation frameworks like Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016}, and its simplicity by directly using the Acts geometry and material. Fatras is not meant to be used for detailed studies as it only implementes a few physics interactions but for instance no hadronic interactions.
 
 \section{Plugins}
 
 Acts comes with a list of plugins which can be used to extend the functionality of the Core library with additional external dependencies. Acts Core is designed to have a minimal set of dependencies. Everything that goes beyond these are optional and captured by a plugin. Plugins can be enabled or disabled during the build process.
 
-There are geometry plugins to deal with different input sources like DD4hep \cite{dd4hep}, ROOT's TGeo, and Geant4. There are also plugins for serialization and deserialization of data like Json, EDM4hep, and ROOT.
+There are geometry plugins to deal with different input sources like DD4hep \cite{dd4hep}, GeoModel \cite{geomodel}, ROOT's TGeo \cite{root}, and Geant4. There are also plugins for serialization and deserialization of data like Json, EDM4hep \cite{edm4hep}, and ROOT.
 
 \section{The Examples framework}
 
@@ -90,11 +90,11 @@ The Examples framework exercises the use of the Core library to build a reconstr
 
 The goal of the Examples is to test common workflows and to enable monitoring of our algorithms on a higher level. Testing within the Core library cannot include a detailed simulation and reconstruction chains. The Examples framework provides a way to test the Core library in a more realistic environment.
 
-The Examples provide various detectors, such as a generic telescope detector and the OpenDataDetector. A sequencer component allows to execute reconstruction algorihtms in a given order. There is a central event data store called \texttt{Whiteboard}, algorithms can use to reach for their input and return their output to. Algorithms perform the individual steps of the reconstruction chain, like track finding, track fitting, and vertexing. Readers and writers can be used to move event and reconstruction data from and to disk. Special summary writers exist to measure the performance of reconstruction algorithms using truth information.
+The Examples provide various detectors, such as a generic telescope detector and the OpenDataDetector. A sequencer component allows to execute reconstruction algorihtms in a given order. There is a central event data store called \texttt{Whiteboard}, which can be used by algorithms to reach for their input and return their output to. Algorithms perform the individual steps of the reconstruction chain, like track finding, track fitting, and vertexing. Readers and writers can be used to move event and reconstruction data from and to disk. Special summary writers exist to measure the performance of reconstruction algorithms using truth information.
 
 \section{The OpenDataDetector}
 
-The Open Data Detector (ODD) \cite{odd-v2} is an evolution of the TrackML \cite{trackml} detector with a more realistic material mudget and simulation supoort with Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016}. It is an (HL-)LHC-like full silicon prototype inner detector based on DD4hep \cite{dd4hep} and consists of 3 sub detectors: Pixel, Short Strips, and Long Strips. Since recently, the ODD can be extended with calorimeters \cite{odd-chep} and a muon system, to investigate other reconstruction techniques. The layout of the ODD inner tracking system is illustrated in Figure \ref{fig:intro/acts/odd-layout}. The Long Strips are two sided modules rotated with a stereo angle of 4 mrad. Details about the sub detectors are summaried in Table \ref{tab:intro/acts/odd-details}. The project is open source and can be found on CERN's GitLab instance \footnote{\url{https://gitlab.cern.ch/acts/OpenDataDetector}}.
+The OpenDataDetector (ODD) \cite{odd-v2} is an evolution of the TrackML \cite{trackml} detector with a more realistic material budget and simulation support with Geant4. It is an (HL-)LHC-like full silicon prototype inner detector based on DD4hep and consists of 3 sub detectors: Pixel, Short Strips, and Long Strips. Since recently, the ODD can be extended with calorimeters \cite{odd-chep} and a muon system, to investigate other reconstruction techniques. The layout of the ODD inner tracking system is illustrated in Figure \ref{fig:intro/acts/odd-layout}. The Long Strips are two sided modules rotated with a stereo angle of 4 mrad. Details about the sub detectors are summaried in Table \ref{tab:intro/acts/odd-details}. The project is open source and can be found on CERN's GitLab instance \footnote{\url{https://gitlab.cern.ch/acts/OpenDataDetector}}.
 
 \begin{figure}[H]
     \centering
@@ -114,18 +114,18 @@ The Open Data Detector (ODD) \cite{odd-v2} is an evolution of the TrackML \cite{
        \hline
        Long Strip & 1D & 72 µm spatial & 2 / 6 \\
     \end{tabular}
-    \caption{Details about the ODD sub detectors. Note that spatial and temporal resolutions are configurable but consistently used in an Acts context, as provided here.}
+    \caption{Details about the ODD sub detectors. Note that spatial and temporal resolutions are configurable. But they are consistently used as provided here in an Acts context.}
     \label{tab:intro/acts/odd-details}
 \end{table}
 
-Acts Examples uses DD4hep \cite{dd4hep} to construct a tracking geometry from the detector description of the ODD. This geometry can then be used for track reconstruction and fast track simulation (Fatras). A more realistic simulation can be achieved using Geant4. Events can be generated using a particle gun or Pythia8 \cite{pythia8}.
+Acts Examples uses DD4hep to construct a tracking geometry from the detector description of the ODD. This geometry can then be used for track reconstruction and fast track simulation (Fatras). A more realistic simulation can be achieved using Geant4. Events can be generated using a particle gun or Pythia8 \cite{pythia8}.
 
-The reference frame used for the ODD is defined as follows: the Z axis points along the beam line, the Y axis points towards the center of an imaginary accelerator, and the X axis is determined by the right hand rule. The azimuthal angle $\phi$ is defined as $\text{atan2}(y,x)$ in the transverse plane XY, and the polar angle $\theta$ is defined as $\text{atan2}(\sqrt{x^2+y^2},z)$. The pseudo rapidity $\eta$ is given by $-\text{ln}(\text{tan}\frac{\theta}{2})$.
+The reference frame used for the ODD is defined as follows: the Z axis points along the beam line, the Y axis points towards the center of an imaginary accelerator, and the X axis is determined by the right hand rule. The azimuthal angle $\phi$ is defined as $\phi = \text{atan2}(y,x)$ in the transverse plane XY, and the polar angle $\theta$ is defined as $\theta = \text{atan2}(\sqrt{x^2+y^2},z)$. The pseudo rapidity $\eta$ is given by $\eta = -\text{ln}(\text{tan}\frac{\theta}{2})$.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/1_introduction/03_acts-introduction/figures/odd_hits.pdf}
-    \caption{Number of hits as a function of $\eta$ for single $\mu$ with $p_T = 100$ GeV.}
+    \caption{Number of hits as a function of $\eta$ for single $\mu$ with $p_T = 100$ GeV. The dashed lines indicate the minimum and maximum number of hits per $\eta$ bin.}
     \label{fig:intro/acts/odd-hits}
 \end{figure}
 
