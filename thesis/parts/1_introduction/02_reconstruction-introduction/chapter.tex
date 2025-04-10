@@ -2,19 +2,19 @@ Reconstruction is the process of extracting underlying physical information from
 
 This thesis is mainly concerned with the reconstruction of tracks from charged particles and the reconstruction of primary vertices. Track reconstruction is a crutial step in the reconstruction of the full event in a particle physics experiment. It is the process of reconstructing the trajectories of charged particles as they traverse the detector. After a trajectoy is found and fitted to the detector measurements, the track can be used to estimate the particle's momentum, charge, and origin.
 
-In a subsequent step called vertex reconstruction, tracks are used to find the point where the particles were produced. The position of the vertex in comparison with the interaction region can be used to get an insight into the event topology.
+In a subsequent step called vertex reconstruction, tracks are used to find the point where the particles were produced, called vertex. The position of the vertex in comparison to the interaction region can be used to get an insight into the event processes.
 
 This chapter is an introduction to the concepts and methods used in track and vertex reconstruction. It provides an overview of the relevant particle-matter interactions, the equations of motion for charged particle in a magnetic field, the Runge-Kutta-Nyström method to integrate the equations of motion, track parameters, Jacobian and covariance transport, reconstruction chains and objects, and different reconstrution algorithms.
 
 \section{Particle-matter interactions}
 
-Free, energetic particles interact with matter in a variety of ways. The most common interactions are ionization, bremsstrahlung, pair production, and nuclear interactions. These interactions are used to determine the particle's state and properties but will also limit the performance of a detector. For this reason, the material amount in a detector is a critical parameter during its design and is used to determine the detector's resolution and efficiency.
+Free, energetic particles interact with matter in a variety of ways. The most common interactions are ionization, bremsstrahlung, pair production, and nuclear interactions. These interactions are used to determine the particle's state and properties, but will also limit the performance of a detector. For this reason, the material amount in a detector is a critical parameter during its design and is used to determine the detector's resolution and efficiency.
 
 Interactions between particles and matter can be catagorized into elastic and inelastic interactions.
 
-During elastic interactions, the particle can be deflected but does not lose a significant amount of energy. An example of this is multiple Coulomb scattering, which in first order affects the direction of the particle's trajectory. Additionally, a shift in the transverse plane relative to the incident direction can build up if the multiple scattering evolves over a long distance.
+During elastic interactions, the particle can be deflected but does not lose a significant amount of energy. An example of this is multiple Coulomb scattering, which in first order only affects the direction of the particle's trajectory. Additionally, a shift in the transverse plane relative to the incident direction can build up if the multiple scattering evolves over a long distance.
 
-For inelastic interactions, the particle loses a significant amount of energy or is absorbed in the material. This can happen through ionization, bremsstrahlung, or hadronic interactions. Bremsstrahlung is especially relevant for light particles like electrons. Hadronic interactions are relevant for hadronic particles and can lead to the disintegration of the incoming particle. Inelastic interactions can lead to the production of secondary particles, which may be subject to detection. At the same time, they can reduce the number of produced hits in the detector and thus reduce the efficiency of the detector.
+For inelastic interactions, the particle loses a significant amount of energy or is absorbed in the material. This can happen through ionization, bremsstrahlung, or hadronic interactions. Bremsstrahlung is especially relevant for light particles like electrons. Hadronic interactions are relevant for hadronic particles and can lead to the disintegration of the incoming particle. Inelastic interactions can lead to the production of secondary particles, which may also be subject to detection. At the same time, they can reduce the number of produced hits in the detector for a given particle and thus reduce the efficiency of the detector.
 
 \section{Detection of charged particles}
 
@@ -44,7 +44,7 @@ This equation can be extended to include the effects of continuous energy loss w
 
 The Runge-Kutta-Nyström (RKN) method allows to solve second-order ordinary differential equations (ODE) numerically. It is a specialized Runge-Kutta (RK) method which operates on second-order instead of first-order ODE.\footnote{The RKN method can be derived from the RK method by rewriting the second-order ODE into a first-order ODE.} In track reconstruction, the RKN method is used to solve the equations of motion of a charged particle in a magnetic field, provided in Equation \ref{eq:intro/reco/eom}.
 
-A fourth-order RKN has the benefit of only requiring 3 magnetic field evaluations per step. At the same time, it has proven to be stable and accurate for tracking applications. The integration is performed as follows:
+A fourth-order RKN has the benefit of only requiring 3 magnetic field evaluations per step. At the same time, it has proven to be stable and accurate for tracking applications \cite{pub-2009-001}. The integration is performed as follows:
 
 \begin{align}
     \mathbf{T}_{n+1} &= \mathbf{T}_n + \frac{h}{6} (\mathbf{k}_1 + 2 \mathbf{k}_2 + 2 \mathbf{k}_3 + \mathbf{k}_4) \\
@@ -52,9 +52,9 @@ A fourth-order RKN has the benefit of only requiring 3 magnetic field evaluation
     \label{eq:intro/reco/rkn}
 \end{align}
 
-with the step size $h$ and the four intermediate RKN steps $k_i$.
+with the next direction estimate $\mathbf{T}_{n+1}$, the next position estimate $\mathbf{r}_{n+1}$, the step size $h$, and the four intermediate RKN steps $\mathbf{k}_i$.
 
-The intermediate steps $k_i$ are defined as:
+The intermediate steps $\mathbf{k}_i$ are defined as:
 
 \begin{align}
     \mathbf{k}_1 &= \mathbf{f}\left( t_n, \mathbf{y}_n, \mathbf{y}^{\prime}_n \right) \\
@@ -81,15 +81,15 @@ Track parameterization is ultimately a choice. There is no single best parameter
 
 In tracking, covariance transport is the process of propagating track parameter uncertainties along the trajectory. It is crucial for some reconstruction algorithms like the Kalman filter based track fitting. Apart from that, the track parameter covariance can be used for physics and validation purposes.
 
-Covariance transport can be achieved by linearizing the track parameter transport into a Jacobian matrix. The Jacobian is a matrix of partial derivatives which describes how the track parameters change with respect to the initial parameters. The free transport Jacobian matrix can be extracted from the RKN method by taking the derivative of the track parameters with respect to the initial parameters. This is a semi-analytical approach as it depends on the formalism of the numerical integration. In order to get the full transport Jacobian matrix for bound to bound parameter propagation, the Jacobian matrix has to be multiplied with the Jacobian matrix of the bound to free and free to bound transformations.
+Covariance transport can be achieved by linearizing the track parameter transport into a Jacobian matrix. The Jacobian is a matrix of partial derivatives which describes how the track parameters change at a given point with respect to the initial parameters. The free transport Jacobian matrix can be extracted from the RKN method by taking the derivative of the track parameters with respect to the initial parameters. This is a semi-analytical approach as it depends on the formalism of the numerical integration. In order to get the full transport Jacobian matrix for bound to bound parameter propagation, the Jacobian matrix has to be multiplied with the Jacobian matrix of the bound to free and free to bound transformations.
 
 \begin{equation}
     \mathbf{J}_\text{bound\textrightarrow bound} = \mathbf{J}_\text{bound\textrightarrow free} \ \left[ \mathbf{I} + \dv{\mathbf{x}_\text{free}}{s} \ \pdv{s}{\mathbf{x}_\text{free}} \right] \ \mathbf{J}_\text{free\textrightarrow free} \ \mathbf{J}_\text{free\textrightarrow bound}
 \end{equation}
 
-An additional term is included to handle path length uncertainties. This can be thought of as a correction term due to projection effects. If the trajectory does not cross the surface perpendicular, the error of the local positions need to be increased. $\dv{\mathbf{x}_\text{free}}{s}$ is the derivative of the free track parameters with respect to the path length $s$ and is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}. The fourth-order RKN method provides evaluates this with $\mathbf{k}_4$. $\pdv{s}{\mathbf{x}_\text{free}}$ is the partial derivative of the path length with respect to the free track parameters and is obtained from the approached surface.
+An additional term is included to handle path length uncertainties. This can be thought of as a correction term due to projection effects. If the trajectory does not cross the surface perpendicular, the error of the local positions need to be increased. $\dv{\mathbf{x}_\text{free}}{s}$ is the derivative of the free track parameters with respect to the path length $s$ and is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}. The fourth-order RKN method evaluates this with $\mathbf{k}_4$. $\pdv{s}{\mathbf{x}_\text{free}}$ is the partial derivative of the path length with respect to the free track parameters and is obtained from the approached surface.
 
-The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters. This is done by multiplying the Jacobian matrix with the covariance.
+The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters from one surface to the next. This is done by multiplying the Jacobian matrix with the covariance.
 
 \begin{equation}
     \mathbf{\Sigma}_{\text{new}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^\mathrm{T}
@@ -103,7 +103,7 @@ Derivations and validations of the Jacobian and covariance transport can be foun
 
 A reconstruction chain is a preceedure of steps to ultimately extract all the information of interest from an event. In the context of this thesis, reconstruction chains produce tracks and vertices as final objects. In a broader context of a particle physics experiment, reconstruction chains will also produce higher level objects like jets, missing energy, etc.
 
-A typical track reconstruction chain starts with the clustering of raw sensor readings to form measurements of the particle's trajectory. These measurements are transformed into spacepoints. Spacepoints are points in the global 3D detector coordinate system and represent the position of all potential hits particles left in the detector in one event. These points can be grouped into potential track candidates called seeds. Usually this is done with 3 spacepoints, as this is the minimum to get a first track parameter estimate. Using the seeds and their initial parameters a track finding algorithm can be used to find the full track and to filter out random combinations, also called fakes. The track is then fitted to all the compatible measurements. Finally, fitted tracks can be grouped into sets which seemingly originate from the same location, also called vertices.
+A typical track reconstruction chain starts with the clustering of raw sensor readings to form measurements of the particle's trajectory. These measurements are transformed into spacepoints. Spacepoints are points in the global 3D detector coordinate system and represent the position of all potential hits particles left in the detector in one event. These points can be grouped into track candidates, called seeds. Usually this is done with 3 spacepoints, as this is the minimum to get a first track parameter estimate. Using the seeds and their initial parameters a track finding algorithm can be used to find the full track and to filter out random combinations, called fakes. The track is then fitted to all the compatible measurements. Finally, fitted tracks can be grouped into sets which seemingly originate from the same location, called vertices.
 
 Reconstruction objects are the inputs to and outputs from reconstruction steps. They are captured and described with an event data model (EDM). Examples are clusters, spacepoints, seeds, tracks, and vertices. Where clusters are produced from raw sensor data using clustering algorithms, spacepoints are produced from clusters using spacepoint formation algorithms, seeds are produced from spacepoints using pattern recognition algorithms, tracks are produced from seeds using track finding algorithms, and vertices are produced from tracks using vertexing algorithms.
 
@@ -115,7 +115,7 @@ Reconstruction algorithms are the building blocks of a reconstruction chain. The
 
 % there would be more to say about cluster uncertainty, calibration, lorenz angle, pile-up dependency, ...
 
-Clustering is usually the very first step in the reconstruction chain. It is the process of grouping raw sensor readings which seem to have been produced by a single particle. This is important for pixel and strip detectors, since a traversing particle may not activate a single sensor cell but rather a cluster of cells, which is illustrated in Figure \ref{fig:intro/reco/clustering}. The clustering is usually done with a connected component analysis (CCA) algorithm.
+Clustering is usually the very first step in the reconstruction chain. It is the process of grouping raw sensor readings which seem to have been produced by a single particle. This is important for pixel and strip detectors, since a traversing particle may not activate a single sensor cell but rather a cluster of cells, which is illustrated in Figure \ref{fig:intro/reco/clustering}. Clustering is usually done with a connected component analysis (CCA) algorithm.
 
 \begin{figure}[h]
     \centering
@@ -124,7 +124,7 @@ Clustering is usually the very first step in the reconstruction chain. It is the
     \label{fig:intro/reco/clustering}
 \end{figure}
 
-After a cluster is identified it is transformed into a measurement. This can be done by equally weighting the sensor cells positions (also called \textit{digital} clustering) or with a weighted average (also called \textit{analog} clustering) based on the charge amount or time over threshold (ToT) provided by the sensor. If available, the latter is usually preferred as it provides a better estimate of the hit position.
+After a cluster is identified it is transformed into a measurement. This can be done by equally weighting the sensor cell positions (also called \textit{digital} clustering) or with a weighted average (also called \textit{analog} clustering) based on the charge amount or time over threshold (ToT) provided by the sensor. If available, the latter is usually preferred as it provides a better estimate of the hit position.
 
 Clusters can be degraded by two effects: cluster splitting and cluster merging. Cluster splitting occurs when a single hit is reconstructed as multiple clusters. This can happen randomly when sensor cells are below threshold or sensor cells are damaged. Cluster merging occurs when multiple hits are reconstructed as a single cluster. This can happen when the hits are too close together, noise activates intermediate sensor cells, or secondary particles are produced. Both effects can lead to a loss of efficiency and resolution.
 
@@ -134,7 +134,7 @@ Clusters can be degraded by two effects: cluster splitting and cluster merging. 
 
 Spacepoints form the basis of pattern recognition as they represent the position of all potential hits particles left in the detector in one event. They are produced from measurements by transforming them from their local coordinate system into the global 3D coordinate system. This is done by applying the transformation matrix of the sensor to the measurements. The transformation matrix is usually obtained from the detector geometry.
 
-For pixel sensors the spacepoint formation is straightforward as the measurement is 2D and the transformation results in a unique 3D point. For strip sensors the spacepoint formation is more complex as the measurement is 1D and the transformation results in a line in 3D. Strip spacepoints can still be formed in case of two-sided sensors with a stereo angle between them.
+For pixel sensors, the spacepoint formation is straightforward as the measurement is 2D and the transformation results in a unique 3D point. For strip sensors the spacepoint formation is more complex as the measurement is 1D and the transformation results in a line in 3D. Strip spacepoints can still be formed in case of two-sided sensors with a stereo angle between them by combining clusters from both sides.
 
 \subsection{Pattern recognition}
 
@@ -149,11 +149,11 @@ Pattern recognition is the process of identifying hits that are caused by the sa
     \label{fig:intro/reco/seeding}
 \end{figure}
 
-Examples of pattern recognition algorithms are the Hough transform and classical triplet seeding. The Hough transform is a global method which uses all spacepoints to find track candidates simultaneously. It is based on the idea that a spacepoint can be transformed into a line and these lines intersect at a common point if they originate from the same particle. The Hough transform is computationally expensive and not suitable for high multiplicity and high event rates. Classical triplet seeding is a local method which partitions spacepoints into detector regions. Then it uses a combinatorial approach to find triplets of spacepoints that are compatible with a track originating from the interaction region. Various cuts can be applied to reduce the combinatorics and to filter out random combinations. The usage of 3 spacepoints is motivated by the fact that 3 points are needed to estimate the track parameters. More than 3 spacepoints can be used to reduce random combinations. The triplet seeding is fast and can be used for high multiplicity and high event rates.
+Examples of pattern recognition algorithms are the Hough transform and classical triplet seeding. The Hough transform is a global method which uses all spacepoints to find track candidates simultaneously. It is based on the idea that a spacepoint can be transformed into a line and these lines intersect at a common point if they are created by the same particle. The Hough transform is computationally expensive and not suitable for high multiplicity and high event rates. Classical triplet seeding is a local method which partitions spacepoints into detector regions. It then uses a combinatorial approach to find triplets of spacepoints that are compatible with a track originating from the interaction region. Various cuts can be applied to reduce the combinatorics and to filter out random combinations. The usage of 3 spacepoints is motivated by the fact that 3 points are needed to estimate the track parameters. More than 3 spacepoints can be used to reduce random combinations further. The triplet seeding is fast and can be used for high multiplicity and high event rates.
 
 \subsection{Track finding}
 
-In a clasical track reconstruction chain, track finding depends on a pattern recognition which produces seeds. Seeds are track candidates which only contain a subset of measurements that belong to a single particle. Track finding is the process of finding the complete track from the track candidate seeds. A common algorithm to achieve this is the combinatorial Kalman filter (CKF). The CKF propagates through the detector, starting from the seed, and tries to find all the compatible measurements. It uses the Kalman formalism to update the track parameters with each measurement. This is illustrated in Figure \ref{fig:intro/reco/finding}. Usually the input seeds contain a number of duplicates and fakes. The CKF has more discrimination power as it is supposed find all measurements and cuts can be applied to filter out fakes. Usually, duplicates have to be filtered out in a subsequent step.
+In a clasical track reconstruction chain, track finding depends on a pattern recognition which produces seeds. Seeds are track candidates which only contain a subset of measurements that belong to a single particle. Track finding is the process of finding the complete track from the track candidate seeds. A common algorithm to achieve this is the combinatorial Kalman filter (CKF). The CKF traverses the detector, starting from the seed, and tries to find all the compatible measurements. It uses the Kalman formalism to update the track parameters with encountered measurements. This is illustrated in Figure \ref{fig:intro/reco/finding}. Usually the input seeds contain a number of duplicates and fakes. The CKF has more discrimination power as it is supposed find all measurements and cuts can be applied to filter out fakes. Usually, duplicates have to be filtered out in a subsequent step.
 
 \begin{figure}[h]
     \centering
@@ -166,19 +166,19 @@ Modern machine learning based algorithms exist which combine pattern recognition
 
 \subsection{Track ambiguity resolution}
 
-Track finding can produce multiple tracks that correspond to the same particle (\textit{duplicate}) or tracks that do not correspond to one single particle (\textit{fake}). This is called track ambiguity and has to be treated to reduce systematic biases.
+Track finding can produce multiple tracks that correspond to the same particle (called \textit{duplicate}) or tracks that do not correspond to one single particle (called \textit{fake}). This is called track ambiguity and has to be treated to reduce systematic biases.
 
-One handle on track ambiguity is the number of shared measurements between tracks. If two tracks share a large number of measurements, they are likely to be duplicates. If a tracks shares a large number of measurements with multiple other tracks, it is likely to be fakes. This can be used to filter out duplicates and fakes.
+One handle on track ambiguity is the number of shared measurements between tracks. If two tracks share a large number of measurements, they are likely to be duplicates. If a tracks shares a large number of measurements with multiple other tracks, it is likely to be fakes. This heuristic can be used to filter out duplicates and fakes.
 
 \subsection{Track fitting}
 
-After all measurements that belong to a track have been identified, the track can be fitted to these measurements and the impact parameters can be estimated. In case of track finding with a CKF, this is already done simultaneously with the finding. Different algorithms exist to fit tracks to measurements. The most common one is the Kalman filter (KF) \cite{fruehwirth}, which is a recursive algorithm that uses one measurement at a time to update the local track parameters. The KF is optimal for linear systems and gaussian noise. This is not the case for electrons, which are subject to bremsstrahlung which is highly non-gaussian. In this case a Gaussian-sum filter (GSF) \cite{fruehwirth-gsf} can be used, which can be thought of as an extension of the KF.
+After all measurements that belong to a track have been identified, the track can be fitted to these measurements and the impact parameters can be estimated. In case of track finding with a CKF, this is already done simultaneously with the finding. Different algorithms exist to fit tracks to measurements. The most common one is the Kalman filter (KF) \cite{fruehwirth}, which is a recursive algorithm that uses one measurement at a time to update the local track parameters. The KF is optimal for linear systems and gaussian white noise. This is not the case for electrons, which are subject to highly non-gaussian bremsstrahlung. In this case a Gaussian-sum filter (GSF) \cite{fruehwirth-gsf} can be used, which can be thought of as an extension of the KF.
 
-Alternatively to the KF, a global fit can be used. This can be done by minimizing the $\chi^2$ of the track parameters with respect to all measurements. The global fit is not recursive and requires all measurements to be available at once. It is usually slower than the KF but can be more accurate in some cases.
+Alternatively to the KF, a global fit can be used. This can be done by minimizing the $\chi^2$ of the reconstructed trajectory with respect to all measurements. The global fit is not recursive and requires all measurements to be available at once. It is usually slower than the KF but can be more accurate in some cases.
 
 \subsubsection{Kalman filter}
 
-The Kalman filter (KF) is an iterative algorithm that estimates the state of a linear dynamic system from a series of measurements with gaussian noise. The KF consists of two steps: prediction and update. In the prediction step, the state and its uncertainty are extrapolated based on the previous state and the model of the system. In the update step, the predicted state is updated with a measurement and its uncertainty. This is illustrated in Figure \ref{fig:intro/reco/kalman}. The KF is optimal for linear systems and gaussian noise. It is widely used in tracking applications, as it can be used to estimate the track parameters and their uncertainties.
+The Kalman filter (KF) is an iterative algorithm that estimates the state of a linear dynamic system from a series of measurements with gaussian white noise. The KF consists of two steps: prediction and update. In the prediction step, the state and its uncertainty are extrapolated based on the previous state and the model of the system. In the update step, the predicted state is updated with a given measurement and its uncertainty. This is illustrated in Figure \ref{fig:intro/reco/kalman}. The KF is optimal for linear systems and gaussian white noise. It is widely used in tracking applications, as it can be used to reject outliers and estimate track parameters and their uncertainties.
 
 \begin{figure}[h]
     \centering
@@ -187,7 +187,7 @@ The Kalman filter (KF) is an iterative algorithm that estimates the state of a l
     \label{fig:intro/reco/kalman}
 \end{figure}
 
-A powerful feature of the KF is that the state can be not directly observable, also called hidden. In tracking, usually only the local position on a sensor is observed, while direction and curvature cannot be directly observed. The KF can be used to estimate these parameters even though they are hidden.
+A powerful feature of the KF is that the state does not need to be directly observable, but can be \textit{hidden}. In tracking, usually only the local position on a sensor is observable, while direction and curvature cannot be directly observed. The KF can be used to estimate these parameters even though they are locally hidden.
 
 The evolution of the state vector is described by
 
@@ -197,7 +197,7 @@ The evolution of the state vector is described by
 
 with the state vector $\mathbf{x}_k$, the state transition matrix $\mathbf{F}_k$, and the process noise $\mathbf{w}_k$. The process noise is assumed to be gaussian with zero mean and a covariance matrix $\mathbf{Q}_k$.
 
-For tracking purposes, the state transition matrix $\mathbf{F}_k$ can be obtained by the Jacobian transport matrix from the propagation, as described in Section \ref{sec:intro/reco/jac-transport}.
+For tracking purposes, the state transition matrix $\mathbf{F}_k$ can be obtained by the Jacobian transport matrix from the surface to surface propagation, as described in Section \ref{sec:intro/reco/jac-transport}.
 
 A measurement at step $k$ is described by
 
@@ -210,7 +210,7 @@ with the measurement vector $\mathbf{m}_k$, the measurement matrix $\mathbf{H}_k
 The KF evolves through two steps: predition and update. In the prediction step, the state and its covariance are extrapolated based on the previous state and the model of the system:
 
 \begin{align}
-    \mathbf{x}_{k|k-1} &= \mathbf{F}_{k-1} \mathbf{x}_{k-1} \\
+    \mathbf{x}_{k|k-1} &= \mathbf{F}_{k-1} \mathbf{x}_{k-1|k-1} \\
     \mathbf{C}_{k|k-1} &= \mathbf{F}_{k-1} \mathbf{C}_{k-1|k-1} \mathbf{F}_{k-1}^\mathrm{T} + \mathbf{Q}_{k-1}
 \end{align}
 
@@ -247,4 +247,6 @@ with the appropriate state vector $\mathbf{x}_k$, its covariance $\mathbf{C}_k$,
     \label{fig:intro/reco/vertexing}
 \end{figure}
 
-Vertexing is the process of locating the point where particles from a single interactions were produced. In case of primary vertexing, the reconstruction of vertices from the actual primary collisions, this is usually done with the impact parameters of fitted tracks. Figure \ref{fig:intro/reco/vertexing} illustrates the difference between primary vertices and secondary vertices. Similar to tracking, vertexing is usually done in a sequence of steps: seeding, finding, and fitting. Vertex seeding identifies regions of interest, usually based on track density. The vertex finding then uses the seeds to find tracks that are compatible with the vertex seed. The vertex fitting then uses the tracks to fit the vertex position. Simultaneously, the track parameters can be fitted to the vertex, improving the impact parameter resolution further. Common vertex fitters are Kalman-based fitters \cite{fruehwirth} and the Billoir fitter \cite{billoir}.
+Vertexing is the process of locating the point where particles from a single interactions were produced. In case of primary vertexing, the reconstruction of vertices from the actual primary collisions, this is usually done with the impact parameters of fitted tracks. Figure \ref{fig:intro/reco/vertexing} illustrates the difference between primary vertices and secondary vertices.
+
+Similar to tracking, vertexing is usually done in a sequence of steps: seeding, finding, and fitting. Vertex seeding identifies regions of interest, usually based on track density. The vertex finding then uses the seeds to find tracks that are compatible with the vertex seed. The vertex fitting then uses the selected tracks to fit the vertex position. Simultaneously, the track parameters can be fitted to the vertex, improving the impact parameter resolution further. Common vertex fitters are Kalman-based fitters \cite{fruehwirth} and the Billoir fitter \cite{billoir}.
