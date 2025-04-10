@@ -14,21 +14,11 @@
 
 ## current
 
-- [ ] ODD performance
-  - seeding
-    - efficiency, duplication, fakes
-  - track finding
-    - various single particle efficiency
-    - various ttbar PU efficiency
-  - ambi
-    - comparison duplication, fakes over eta and pT
-  - track fitting
-    - various single particle resolutions over eta and pT
-    - single muon pulls over eta
-  - truth matching: double matching, seed 3/3
-  - PU selection for reco
-  - pT log performance plots
-  - make number of bins configureable in performance plots?
+- [ ] get intro done
+- [ ] what is a ttbar event? where to put this?
+- [ ] what is pileup? where to put this?
+- [ ] mention traccc / detray? -> acts intro
+- [ ] what is a particle gun? -> acts intro?
 - [ ] define ITk performance outline
   - rename / focus on track finding using CKF
 - [ ] line break after hyphen?
@@ -67,6 +57,7 @@
 - [ ] Kurzfassung
 - [ ] Abstract
 - [ ] I. Introduction
+  - [ ] Intro text
   - [ ] 1. General introduction
     - [ ] Into text
     - [ ] 1.1. Motivation
@@ -77,43 +68,40 @@
     - [ ] 1.5. The ATLAS Experiment
       - [ ] 1.5.1. The ATLAS Detector
       - [ ] 1.5.2. Phase-2 Upgrade
-  - [ ] ✔️ 2. Reconstruction of tracks and primary vertices
-    - [ ] ✔️ Into text
-    - [ ] 2.1. History
-    - [ ] 2.2. Detection of Charged Particles
-    - [ ] ✔️ 2.3. Reconstruction Objects
-    - [ ] ✔️ 2.4. Reconstruction Chains
-    - [ ] ✔️ 2.5. Particle-Matter Interactions
-    - [ ] ✔️ 2.6. Equation of Motion
-      - [ ] ✔️ 2.6.1. Runge-Kutta-Nystrom Method
-      - [ ] ✔️ 2.6.2. Jacobian and Covariance Transport
-    - [ ] ✔️ 2.7. Pattern Recognition
-    - [ ] ✔️ 2.8. Track Finding
-    - [ ] ✔️ 2.9. Track ambiguity
-    - [ ] ✔️ 2.10. Track Fitting
-      - [ ] ✔️ 2.10.1. Kalman Filter
-    - [ ] ✔️ 2.11. Vertexing
-  - [ ] ✔️ 3. Acts: A Common Tracking Software
-    - [ ] ✔️ Into text
-    - [ ] ✔️ 3.1. Components and their connections
-    - [ ] ✔️ 3.2. Units and Constants
-    - [ ] ✔️ 3.3. Track Parameterization
-    - [ ] 3.4. Fatras
-    - [ ] ✔️ 3.5. Plugins
-    - [ ] ✔️ 3.6. The Acts Examples Framework
-    - [ ] 3.7. The OpenDataDetector
-    - [ ] 3.8. Tracking on Accelerators with traccc and detray
-- [ ] II. Developments
-  - [ ] ✔️✔️ 4. General deveopments of Acts
-    - [ ] ✔️✔️ Into text
-    - [ ] ✔️✔️ 4.1. Propagator Developments
-      - [ ] ✔️✔️ 4.1.1. An alternative steering mechanism
-    - [ ] ✔️✔️ 4.2. A new measurement projection mechanism
-    - [ ] ✔️✔️ 4.3. Developments on the Examples framework
-    - [ ] ✔️✔️ 4.4. Implementation of GreedyAmbiguityResolution
-    - [ ] ✔️✔️ 4.5. Implementation of ParticleHypothesis
-    - [ ] ✔️✔️ 4.6. Redesign of BoundaryTolerance
-    - [ ] ✔️✔️ 4.7. Implementation of MbfSmoother
+  - [x] 2. Reconstruction of tracks and primary vertices
+    - [x] Into text
+    - [x] 2.1. Particle-Matter Interactions
+    - [x] 2.2. Detection of Charged Particles
+    - [x] 2.3. Equation of Motion
+    - [x] 2.4. Runge-Kutta-Nystrom Method
+    - [x] 2.5. Track parameters
+    - [x] 2.6. Jacobian and covariance transport
+    - [x] 2.7. Reconstruction chains and objects
+    - [x] 2.8. Reconstruction algorithms
+  - [x] 3. Acts: A Common Tracking Software
+    - [x] Into text
+    - [x] 3.1. Components and their connections
+    - [x] 3.2. Units and constants
+    - [x] 3.3. Track parameterization
+    - [x] 3.4. Event data model
+    - [x] 3.5. Tracking geometry
+    - [x] 3.6. Fatras
+    - [x] 3.7. Plugins
+    - [x] 3.8. The Examples framework
+    - [x] 3.9. The OpenDataDetector
+    - [ ] 3.10. Tracking on Accelerators with traccc and detray
+- [x] II. Developments
+  - [ ] Intro text
+  - [x] 4. General deveopments of Acts
+    - [x] Into text
+    - [x] 4.1. Propagator developments
+      - [x] 4.1.1. An alternative steering mechanism
+    - [x] 4.2. A new measurement projection mechanism
+    - [x] 4.3. Developments on the Examples framework
+    - [x] 4.4. Implementation of GreedyAmbiguityResolution
+    - [x] 4.5. Implementation of ParticleHypothesis
+    - [x] 4.6. Redesign of BoundaryTolerance
+    - [x] 4.7. Implementation of MbfSmoother
   - [x] 5. Stepper developments
     - [x] Into text
     - [x] 5.1. Reworking the ConstrainedStep
@@ -131,17 +119,17 @@
     - [x] 6.6. Direct navigator
     - [x] 6.7. Try-all navigators
     - [x] 6.8. Conceptualized solution for surface ambiguity
-  - [ ] ✔️✔️✔️ 7. Track finding developments
-    - [ ] ✔️✔️✔️ Into text
-    - [ ] ✔️✔️✔️ 7.1. Vector track container backend
-    - [ ] ✔️✔️✔️ 7.2. Two way track finding
-    - [ ] ✔️✔️✔️ 7.3. CKF as a component
-    - [ ] ✔️✔️✔️ 7.4. Extrapolation
-    - [ ] ✔️✔️✔️ 7.5. Measurement selector
-    - [ ] ✔️✔️✔️ 7.6. Branch stopper
-    - [ ] ✔️✔️✔️ 7.7. Track container for branches
-    - [ ] ✔️✔️✔️ 7.8. Branch finalization
-    - [ ] ✔️✔️✔️ 7.9. Initial covariance
+  - [x] 7. Track finding developments
+    - [x] Into text
+    - [x] 7.1. Vector track container backend
+    - [x] 7.2. Two way track finding
+    - [x] 7.3. CKF as a component
+    - [x] 7.4. Extrapolation
+    - [x] 7.5. Measurement selector
+    - [x] 7.6. Branch stopper
+    - [x] 7.7. Track container for branches
+    - [x] 7.8. Branch finalization
+    - [x] 7.9. Initial covariance
   - [x] 8. Tracking with dense material
     - [x] Intro text
     - [x] 8.1. Motivation
@@ -151,29 +139,30 @@
     - [x] 8.5. First attempts with EigenStepper
     - [x] 8.6. SympyStepper
     - [x] 8.7. Performance
-  - [ ] ✔️✔️✔️ 9. Tracking with time information
-    - [ ] ✔️✔️✔️ Intro text
-    - [ ] ✔️✔️✔️ 9.1. 4D tracking in Acts
-    - [ ] ✔️✔️✔️ 9.2. Correlations with the time parameter
-    - [ ] ✔️✔️✔️ 9.3. Spacepoints with time
-    - [ ] ✔️✔️✔️ 9.4. Seeding with time
-    - [ ] ✔️✔️✔️ 9.5. Track finding and fitting with time
-    - [ ] ✔️✔️✔️ 9.6. Vertex finding with time
-    - [ ] ✔️✔️✔️ 9.7. Vertex fitting with time
-    - [ ] ✔️✔️✔️ 9.8. Summary and outlook
-  - [ ] ✔️✔️✔️ 10. Summary of developments
-    - [ ] ✔️✔️✔️ Into text
-    - [ ] ✔️✔️✔️ 10.1. Shortcomings
-    - [ ] ✔️✔️✔️ 10.2. Proposals for future developments
-- [ ] III. Performance
-  - [ ] 11. OpenDataDetector tracking performance with Acts
-    - [ ] Intro text
-    - [ ] 11.1. Track finding
-      - [ ] 11.1.1. Seeding
-      - [ ] 11.1.2. Combinatorial Kalman Filter
-    - [ ] 11.2. Ambiguity resolution
-    - [ ] 11.3. Track fitting
-    - [ ] 11.4. Vertexing
+  - [x] 9. Tracking with time information
+    - [x] Intro text
+    - [x] 9.1. 4D tracking in Acts
+    - [x] 9.2. Correlations with the time parameter
+    - [x] 9.3. Spacepoints with time
+    - [x] 9.4. Seeding with time
+    - [x] 9.5. Track finding and fitting with time
+    - [x] 9.6. Vertex finding with time
+    - [x] 9.7. Vertex fitting with time
+    - [x] 9.8. Summary and outlook
+  - [x] 10. Summary of developments
+    - [x] Into text
+    - [x] 10.1. Shortcomings
+    - [x] 10.2. Proposals for future developments
+- [x] III. Performance
+  - [ ] Intro text
+  - [x] 11. OpenDataDetector tracking performance with Acts
+    - [x] Intro text
+    - [x] 11.1. Track finding
+      - [x] 11.1.1. Seeding
+      - [x] 11.1.2. Combinatorial Kalman Filter
+    - [x] 11.2. Ambiguity resolution
+    - [x] 11.3. Track fitting
+    - [x] 11.4. Vertexing
   - [ ] 12. ITk tracking performance with Acts
     - [ ] Intro text
 - [ ] IV. Conclusion and Outlook
