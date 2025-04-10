@@ -1,4 +1,4 @@
-This chapter presents an extensive tracking performance study with the OpenDataDetector (ODD) using Acts and its Examples. Performance results are obtained for all algorithms of the tracking chain, from seeding to vertexing, with particular focus on track finding and fitting. The performance is evaluated using various metrics, including efficiency, fake rate, and resolutions and pulls of estimated parameters. The results are presented for different single particle samples ($\mu$, $\pi$, $e$) and for \ttbar events with different pileup scenarios. Reconstructed quantities are compared to the truth information to assess the quality of the reconstruction.
+This chapter presents an extensive tracking performance study with the OpenDataDetector (ODD) using Acts and its Examples. Performance results are obtained for all algorithms of the tracking chain, from seeding to vertexing, with particular focus on track finding and fitting. The performance is evaluated using various metrics, including efficiency, fake rate, and resolutions and pulls of estimated track and vertex parameters. The results are presented for different single particle samples ($\mu$, $\pi$, $e$) and for \ttbar events with different pileup scenarios. Reconstructed quantities are compared to the truth information to assess the quality of the reconstruction.
 
 A subset of this study has already been presented at the 2023 Connecting the Dots (CTD) conference \cite{ctd-acts-odd}. Due to previous limitations of the track finding algorithm, the CTD study only considered truth-based track seeding. This gap is filled here by including the performance of the triplet seeding algorithm and the improved version of the track finding algorithm.
 
@@ -23,7 +23,7 @@ Particles and hits are stored in ROOT \cite{root} files and are later consumed b
 
 \section{Reconstruction chain and cuts}
 
-The event reconstruction is implemented on top of the existing components in Acts Examples. The reconstruction chain consists of the following steps: Truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and vertexing. The individual steps and their performance are described in the following sections. It should be noted that the simulation and reconstruction use the same magnetic field, material and alignment.
+The event reconstruction is implemented on top of the existing components in Acts Examples. The reconstruction chain consists of the following steps: Truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and vertexing. The individual steps and their performance are described in the following sections. It should be noted that the simulation and reconstruction use the same magnetic field, material, alignment and conditions.
 
 Acts Examples provides different truth based algorithms for track seeding, track finding, vertex seeding, and vertex finding. These algorithms allow to evaluate the performance of individual algorithms under ideal conditions. Truth-based algorithms were used during this study to compare the performance of the reconstruction chain with and without truth information.
 
@@ -50,7 +50,7 @@ After objects have been reconstructed, truth information is used to match the re
 \begin{itemize}
     \item 100\% of the measurements forming a seed must be matched to the same truth particle
     \item 50\% of the measurements forming a track must be matched to the same truth particle
-    \item 50\% of the measurements of the truth particle must be covered by the track (double matching)
+    \item 50\% of the measurements of the truth particle must be covered by the track (called \textit{double matching})
     \item 70\% of the track weight must be matched to truth particles that come from the same interaction
 \end{itemize}
 
