@@ -178,7 +178,14 @@ Alternatively to the KF, a global fit can be used. This can be done by minimizin
 
 \subsubsection{Kalman filter}
 
-The Kalman filter (KF) is an iterative algorithm that estimates the state of a linear dynamic system from a series of measurements with gaussian noise. The KF consists of two steps: prediction and update. In the prediction step, the state and its uncertainty are extrapolated based on the previous state and the model of the system. In the update step, the predicted state is updated with a measurement and its uncertainty. The KF is optimal for linear systems and gaussian noise. It is widely used in tracking applications, as it can be used to estimate the track parameters and their uncertainties.
+The Kalman filter (KF) is an iterative algorithm that estimates the state of a linear dynamic system from a series of measurements with gaussian noise. The KF consists of two steps: prediction and update. In the prediction step, the state and its uncertainty are extrapolated based on the previous state and the model of the system. In the update step, the predicted state is updated with a measurement and its uncertainty. This is illustrated in Figure \ref{fig:intro/reco/kalman}. The KF is optimal for linear systems and gaussian noise. It is widely used in tracking applications, as it can be used to estimate the track parameters and their uncertainties.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{parts/1_introduction/02_reconstruction-introduction/figures/kalman.pdf}
+    \caption{Illustration of the KF forming a filtered state (green) based on measurements (orange) and prediction (blue). Gracefully taken from \textcite{gessinger-thesis}.}
+    \label{fig:intro/reco/kalman}
+\end{figure}
 
 A powerful feature of the KF is that the state can be not directly observable, also called hidden. In tracking, usually only the local position on a sensor is observed, while direction and curvature cannot be directly observed. The KF can be used to estimate these parameters even though they are hidden.
 
@@ -224,11 +231,12 @@ The final filtered state and covariance are optimal as they contain information 
 A $\chi^2$ value can be computed between measurements and predicted, filtered, or smoothed states:
 
 \begin{align}
-    \mathbf{r} = \mathbf{m}_k - \mathbf{H}_k \mathbf{x} \\
-    \chi^2 = \mathbf{r}^\mathrm{T} \mathbf{C}^{-1} \mathbf{r}
+    \mathbf{r}_k = \mathbf{m}_k - \mathbf{H}_k \mathbf{x}_k \\
+    \mathbf{S}_k = \mathbf{H}_k \mathbf{C}_k \mathbf{H}_k^\mathrm{T} + \mathbf{R}_k \\
+    \chi^2_k = \mathbf{r}_k^\mathrm{T} \mathbf{S}_k^{-1} \mathbf{r}_k
 \end{align}
 
-with the appropriate state vector $\mathbf{x}$, its covariance $C$, and the residual $\mathbf{r}$. The $\chi^2$ value can be used to filter outliers or select measurements.
+with the appropriate state vector $\mathbf{x}_k$, its covariance $\mathbf{C}_k$, the residual $\mathbf{r}_k$, and the residual covariance $\mathbf{S}_k$. The $\chi^2$ value can be used to filter outliers or select measurements.
 
 \subsection{Primary vertexing}
 
