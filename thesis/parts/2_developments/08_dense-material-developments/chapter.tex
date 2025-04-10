@@ -25,7 +25,7 @@ Continuous energy loss affects the trajectory of a particle and needs to be trea
 
 with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, the magnetic field $\mathbf{B}$, the cartesian position $\mathbf{r}$, the rest frame time $t$, the path length $s$, the absolute momentum $p$, the energy loss rate $g$, the mass $m$, and the charge $q$.
 
-The dependent variables to be integrated are chosen as $\mathbf{y} = (\mathbf{r}^T \; t \; \Lambda)^T$ with their first derivatives $\mathbf{y}' = (\mathbf{T}^T \; \frac{dt}{ds} \; \lambda)^T$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nyström method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
+The dependent variables to be integrated are chosen as $\mathbf{y} = (\mathbf{r}^\mathrm{T} \; t \; \Lambda)^\mathrm{T}$ with their first derivatives $\mathbf{y}' = (\mathbf{T}^\mathrm{T} \; \frac{dt}{ds} \; \lambda)^\mathrm{T}$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nyström method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
 
 The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions \cite{pub-2008-003} :
 
@@ -187,7 +187,7 @@ To overcome this issue, the problem is decomposed and the additional covariance 
 The bound covariance can then be written as
 
 \begin{equation}
-    \mathbf{\Sigma}_\text{final} = \mathbf{J}_{\text{b\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}_{\text{b\textrightarrow b}}^T + \mathbf{J}_{\text{f\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{additional} \cdot \mathbf{J}_{\text{f\textrightarrow b}}^T
+    \mathbf{\Sigma}_\text{final} = \mathbf{J}_{\text{b\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}_{\text{b\textrightarrow b}}^\mathrm{T} + \mathbf{J}_{\text{f\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{additional} \cdot \mathbf{J}_{\text{f\textrightarrow b}}^\mathrm{T}
 \end{equation}
 
 with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and the free to bound Jacobian $\mathbf{J}_{\text{f\textrightarrow b}}$. The additional covariance can be written as
@@ -202,7 +202,7 @@ with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and th
         \end{pmatrix}
 \end{equation}
 
-with the projector $\mathbf{P} = \mathbf{I} - \mathbf{T} \cdot \mathbf{T}^T$.
+with the projector $\mathbf{P} = \mathbf{I} - \mathbf{T} \cdot \mathbf{T}^\mathrm{T}$.
 
 \section{Toy Model}
 

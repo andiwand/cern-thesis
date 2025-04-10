@@ -34,11 +34,11 @@ The choice of measuring length in millimeters has direct consequences for the ti
 Track parameters describe the observable state of a track at a given point in space and/or time. This includes the position, time, direction, and charge over momentum. There are two kinds of track parameters in Acts: bound parameters and free parameters. Bound track parameters are expressed with a local position at a given surface, a direction with two spherical coordinate angles, while free track parameters are expressed with a global cartesian position and a normalized direction vector.
 
 \begin{equation}
-    \mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^T
+    \mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^\mathrm{T}
 \end{equation}
 
 \begin{equation}
-    \mathbf{x}_\text{global} = \left(g_0, g_1, g_2, t, d_0, d_1, d_2, q/p\right)^T
+    \mathbf{x}_\text{global} = \left(g_0, g_1, g_2, t, d_0, d_1, d_2, q/p\right)^\mathrm{T}
 \end{equation}
 
 The azimuthal $\phi$ should be within $[-\pi, \pi)$, but values outside this range are also accepted as they uniquely map to a valid value in the range. The polar angle $\theta$ has to be within $[0, \pi]$, while $0$ and $\pi$ should be avoided as they correspond to the poles of the spherical coordinate system. The charge over momentum parameter $q/p$ captures the curvature of the trajectory given the local magnetic field. This choice can be motivated by the equations of motion for a free particle in a magnetic field. The charge is signed and the momentum is the magnitude of the momentum vector. Using the absolute momentum magnitude over the traverse momentum magnitude is more general given an arbitraty magnetic field. To extract the momentum from $q/p$, one has to assume an absolute charge of the particle.

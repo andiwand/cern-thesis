@@ -27,7 +27,7 @@ The \texttt{Propagator} was modified to allow for the creation of a \texttt{Prop
 
 \section{A new measurement projection mechanism}
 
-Measurement projection is a mechanism in Acts to allow comparing predicted track parameters to measurements in a generic way. In Acts, measurements are represented as a subset of bound track parameters, which are defined as $\mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^T$. This is a simple and powerful abstraction which allows to represent any combination of measurement dimensions.
+Measurement projection is a mechanism in Acts to allow comparing predicted track parameters to measurements in a generic way. In Acts, measurements are represented as a subset of bound track parameters, which are defined as $\mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^\mathrm{T}$. This is a simple and powerful abstraction which allows to represent any combination of measurement dimensions.
 
 This projection used to be a matrix multiplication of the track parameters with a projection matrix. The projection matrix is provided by the measurement, along with the measurement parameters and covariance. During optimizations on the track finding component it became clear that this implementation has overhead due to the matrix multiplication.
 

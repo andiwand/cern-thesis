@@ -64,7 +64,7 @@ The intermediate steps $k_i$ are defined as:
     \label{eq:intro/reco/rkn-steps}
 \end{align}
 
-with $\mathbf{y}_n = \left( \mathbf{r}^T \, t \right)^T$, $\mathbf{y}^{\prime}_n = \left( \mathbf{T}^T \, \frac{dt}{ds} \right)^T$, and the current path length $t_n = s$. The differential equation $\mathbf{f}$ is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}.
+with $\mathbf{y}_n = \left( \mathbf{r}^\mathrm{T} \, t \right)^\mathrm{T}$, $\mathbf{y}^{\prime}_n = \left( \mathbf{T}^\mathrm{T} \, \frac{dt}{ds} \right)^\mathrm{T}$, and the current path length $t_n = s$. The differential equation $\mathbf{f}$ is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}.
 
 The global error of the fourth-order RKN method is of order $\mathcal{O}(h^4)$, while the local error is of order $\mathcal{O}(h^5)$. An adaptive step size can be used to improve the performance of the RKN method, which is further discussed in Section \ref{sec:dev/stepper/adaptive-step-size}.
 
@@ -77,6 +77,7 @@ Track parameters can be bound to a surface or free. Bound track parameters are d
 Track parameterization is ultimately a choice. There is no single best parameterization for all applications. Experiments will use a parameterization that is best suited for their specific needs. Collider experiments are usually symmetric with respect to the beamline and use spherical and/or cylindrical coordinate systems to leverage that. If the magnetic field aligns with the beam axis, curvature only affects the transverse plane (also called bending plane), which can be reflected in the parameterization.
 
 \section{Jacobian and covariance transport}
+\label{sec:intro/reco/jac-transport}
 
 In tracking, covariance transport is the process of propagating track parameter uncertainties along the trajectory. It is crucial for some reconstruction algorithms like the Kalman filter based track fitting. Apart from that, the track parameter covariance can be used for physics and validation purposes.
 
@@ -91,7 +92,7 @@ An additional term is included to handle path length uncertainties. This can be 
 The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters. This is done by multiplying the Jacobian matrix with the covariance.
 
 \begin{equation}
-    \mathbf{\Sigma}_{\text{new}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^T
+    \mathbf{\Sigma}_{\text{new}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^\mathrm{T}
 \end{equation}
 
 with the covariance on the previous surface $\mathbf{\Sigma}_{\text{previous}}$, and the covariance on the new surface $\mathbf{\Sigma}_{\text{new}}$.
@@ -171,20 +172,63 @@ One handle on track ambiguity is the number of shared measurements between track
 
 \subsection{Track fitting}
 
-After all measurements that belong to a track have been identified, the track can be fitted to these measurements and the impact parameters can be estimated. In case of track finding with a CKF, this is already done simultaneously with the finding. Different algorithms exist to fit tracks to measurements. The most common one is the Kalman filter (KF), which is a recursive algorithm that uses one measurement at a time to update the local track parameters. The KF is optimal for linear systems and gaussian noise. This is not the case for electrons, which are subject to bremsstrahlung which is highly non-gaussian. In this case a Gaussian-sum filter (GSF) can be used, which can be thought of as an extension of the KF.
+After all measurements that belong to a track have been identified, the track can be fitted to these measurements and the impact parameters can be estimated. In case of track finding with a CKF, this is already done simultaneously with the finding. Different algorithms exist to fit tracks to measurements. The most common one is the Kalman filter (KF) \cite{fruehwirth}, which is a recursive algorithm that uses one measurement at a time to update the local track parameters. The KF is optimal for linear systems and gaussian noise. This is not the case for electrons, which are subject to bremsstrahlung which is highly non-gaussian. In this case a Gaussian-sum filter (GSF) \cite{fruehwirth-gsf} can be used, which can be thought of as an extension of the KF.
 
 Alternatively to the KF, a global fit can be used. This can be done by minimizing the $\chi^2$ of the track parameters with respect to all measurements. The global fit is not recursive and requires all measurements to be available at once. It is usually slower than the KF but can be more accurate in some cases.
 
 \subsubsection{Kalman filter}
 
-The Kalman filter (KF) is a recursive algorithm that uses one measurement at a time to update the local track parameters. It is optimal for linear systems and gaussian noise.
+The Kalman filter (KF) is an iterative algorithm that estimates the state of a linear dynamic system from a series of measurements with gaussian noise. The KF consists of two steps: prediction and update. In the prediction step, the state and its uncertainty are extrapolated based on the previous state and the model of the system. In the update step, the predicted state is updated with a measurement and its uncertainty. The KF is optimal for linear systems and gaussian noise. It is widely used in tracking applications, as it can be used to estimate the track parameters and their uncertainties.
 
-\begin{itemize}
-    \color{red}
-    \item formalism
-\end{itemize}
+A powerful feature of the KF is that the state can be not directly observable, also called hidden. In tracking, usually only the local position on a sensor is observed, while direction and curvature cannot be directly observed. The KF can be used to estimate these parameters even though they are hidden.
 
-One should note that the filtered covariance matrix is always smaller than the predicted covariance matrix. For this reason, the initial covariance matrix has to be inflated to avoid biasing the filter and to estimate the final uncertainties just from the measurement and process noise.
+The evolution of the state vector is described by
+
+\begin{equation}
+    \mathbf{x}_{k} = \mathbf{F}_{k-1} \mathbf{x}_{k-1} + \mathbf{w}_{k-1}
+\end{equation}
+
+with the state vector $\mathbf{x}_k$, the state transition matrix $\mathbf{F}_k$, and the process noise $\mathbf{w}_k$. The process noise is assumed to be gaussian with zero mean and a covariance matrix $\mathbf{Q}_k$.
+
+For tracking purposes, the state transition matrix $\mathbf{F}_k$ can be obtained by the Jacobian transport matrix from the propagation, as described in Section \ref{sec:intro/reco/jac-transport}.
+
+A measurement at step $k$ is described by
+
+\begin{equation}
+    \mathbf{m}_k = \mathbf{H}_k \mathbf{x}_k + \mathbf{\epsilon}_k
+\end{equation}
+
+with the measurement vector $\mathbf{m}_k$, the measurement matrix $\mathbf{H}_k$, and the measurement noise $\mathbf{\epsilon}_k$. The measurement noise is also assumed to be gaussian with zero mean and a covariance matrix $\mathbf{R}_k$.
+
+The KF evolves through two steps: predition and update. In the prediction step, the state and its covariance are extrapolated based on the previous state and the model of the system:
+
+\begin{align}
+    \mathbf{x}_{k|k-1} &= \mathbf{F}_{k-1} \mathbf{x}_{k-1} \\
+    \mathbf{C}_{k|k-1} &= \mathbf{F}_{k-1} \mathbf{C}_{k-1|k-1} \mathbf{F}_{k-1}^\mathrm{T} + \mathbf{Q}_{k-1}
+\end{align}
+
+An updated state is formed by combining the predicted state and the measurement:
+
+\begin{align}
+    \mathbf{x}_{k|k} &= \mathbf{x}_{k|k-1} + \mathbf{K}_k \left( \mathbf{m}_k - \mathbf{H}_k \mathbf{x}_{k|k-1} \right) \\
+    \mathbf{C}_{k|k} &= \mathbf{F}_{k-1} \mathbf{C}_{k|k-1} \mathbf{F}_{k-1}^\mathrm{T} + \mathbf{Q}_{k-1} \\
+    \mathbf{K}_k &= \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} \left( \mathbf{H}_k \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} + \mathbf{R}_k \right)^{-1}
+\end{align}
+
+with the Kalman gain $\mathbf{K}_k$, the predicted state $\mathbf{x}_{k|k-1}$, the predicted covariance $\mathbf{C}_{k|k-1}$, the updated state $\mathbf{x}_{k|k}$, and the updated covariance $\mathbf{C}_{k|k}$.
+
+One should note that the filtered covariance matrix $\mathbf{C}_{k|k}$ is always smaller than the predicted covariance matrix $\mathbf{C}_{k|k-1}$. For this reason, the initial covariance matrix $\mathbf{C}_0$ has to be inflated to avoid biasing the filter and to estimate the final uncertainties just from the measurement and process noise.
+
+The final filtered state and covariance are optimal as they contain information from all the available measurements. For tracking purposes it is important to obtain optimal parameters at the interaction point, and sometimes even at intermediate states. This can be achieved with a smoother, or by running the KF a second time in the reverse direction. A common smoother is the Rauch-Tung-Striebel (RTS) smoother, which is a fixed-interval smoother and operates in state space dimensions.
+
+A $\chi^2$ value can be computed between measurements and predicted, filtered, or smoothed states:
+
+\begin{align}
+    \mathbf{r} = \mathbf{m}_k - \mathbf{H}_k \mathbf{x} \\
+    \chi^2 = \mathbf{r}^\mathrm{T} \mathbf{C}^{-1} \mathbf{r}
+\end{align}
+
+with the appropriate state vector $\mathbf{x}$, its covariance $C$, and the residual $\mathbf{r}$. The $\chi^2$ value can be used to filter outliers or select measurements.
 
 \subsection{Primary vertexing}
 
@@ -195,4 +239,4 @@ One should note that the filtered covariance matrix is always smaller than the p
     \label{fig:intro/reco/vertexing}
 \end{figure}
 
-Vertexing is the process of locating the point where particles from a single interactions were produced. In case of primary vertexing, the reconstruction of vertices from the actual primary collisions, this is usually done with the impact parameters of fitted tracks. Figure \ref{fig:intro/reco/vertexing} illustrates the difference between primary vertices and secondary vertices. Similar to tracking, vertexing is usually done in a sequence of steps: seeding, finding, and fitting. Vertex seeding identifies regions of interest, usually based on track density. The vertex finding then uses the seeds to find tracks that are compatible with the vertex seed. The vertex fitting then uses the tracks to fit the vertex position. Simultaneously, the track parameters can be fitted to the vertex, improving the impact parameter resolution further. Common vertex fitters are Kalman-based fitters \cite{fruehwrith} and the Billoir fitter \cite{billoir}.
+Vertexing is the process of locating the point where particles from a single interactions were produced. In case of primary vertexing, the reconstruction of vertices from the actual primary collisions, this is usually done with the impact parameters of fitted tracks. Figure \ref{fig:intro/reco/vertexing} illustrates the difference between primary vertices and secondary vertices. Similar to tracking, vertexing is usually done in a sequence of steps: seeding, finding, and fitting. Vertex seeding identifies regions of interest, usually based on track density. The vertex finding then uses the seeds to find tracks that are compatible with the vertex seed. The vertex fitting then uses the tracks to fit the vertex position. Simultaneously, the track parameters can be fitted to the vertex, improving the impact parameter resolution further. Common vertex fitters are Kalman-based fitters \cite{fruehwirth} and the Billoir fitter \cite{billoir}.
