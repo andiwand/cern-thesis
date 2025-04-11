@@ -59,7 +59,7 @@ for i, pu, aperf, fperf in zip(range(4), pus, ambi_perf, finding_perf):
     finding_eff_vs_eta = TH1(fperf.Get("trackeff_vs_eta"), xrange=(-3, 3))
 
     ambi_eff_vs_eta.errorbar(
-        ax, label=f"PU {pu}", marker=get_marker(i), linestyle="", color=get_color(i)
+        ax, label=f"<$\\mu$> = {pu}", marker=get_marker(i), linestyle="", color=get_color(i)
     )
     finding_eff_vs_eta.errorbar(
         ax, marker=get_marker(i), linestyle="", color=f"C{i}", alpha=0.5
