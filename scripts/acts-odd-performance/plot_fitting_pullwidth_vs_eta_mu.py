@@ -43,7 +43,7 @@ for i, ax, param, ylabel in zip(range(6), axs, params, ylabels):
     ax.set_xlim(-3, 3)
 
     if i == 5:
-        ax.set_xlabel(r"$\eta$")
+        ax.set_xlabel(r"true $\eta$")
     ax.set_ylabel(ylabel)
 
     for j, pt, perf in zip(range(3), pts, fitting_perf):

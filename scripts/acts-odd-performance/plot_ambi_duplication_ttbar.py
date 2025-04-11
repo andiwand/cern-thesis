@@ -47,8 +47,8 @@ finding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in finding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"$\eta$")
-ax.set_ylabel("Duplicates")
+ax.set_xlabel(r"true $\eta$")
+ax.set_ylabel("Average duplication")
 
 ax.set_xlim(-3, 3)
 ax.set_yscale("log")

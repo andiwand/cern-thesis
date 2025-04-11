@@ -62,8 +62,9 @@ for input_type, inputs_list in inputs.items():
         results[input_type].append(
             {
                 "pu": pu,
-                "recoVertexContamination": contamination.mean(),
-                "recoVertexContamination_err": contamination.std(),
+                "recoVertexContamination": contamination.quantile(0.5),
+                "recoVertexContamination_err_low": contamination.quantile(0.5) - contamination.quantile(0.16),
+                "recoVertexContamination_err_high": contamination.quantile(0.84) - contamination.quantile(0.5),
             }
         )
 
@@ -73,7 +74,7 @@ for i, input_type in enumerate(inputs.keys()):
     ax.errorbar(
         data["pu"],
         data["recoVertexContamination"],
-        data["recoVertexContamination_err"],
+        yerr=(data["recoVertexContamination_err_low"], data["recoVertexContamination_err_high"]),
         label=f"{input_type}",
         marker=get_marker(i),
         linestyle="",
@@ -92,7 +93,7 @@ atlasify.atlasify(
     subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV",
 )
 
-ax.set_xlim(0, 200)
+ax.set_xlim(-5, 205)
 ylim = ax.get_ylim()
 ax.set_ylim(0, ylim[1])
 

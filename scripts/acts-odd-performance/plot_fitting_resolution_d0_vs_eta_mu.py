@@ -34,7 +34,7 @@ fitting_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in fitting_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"$\eta$")
+ax.set_xlabel(r"true $\eta$")
 ax.set_ylabel(r"$\sigma_{d_0}$ [mm]")
 
 ax.set_xlim(-3, 3)

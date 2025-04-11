@@ -26,7 +26,7 @@ seeding_perf = ROOT.TFile.Open(args.seeding_perf.absolute().as_posix())
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"$\eta$")
+ax.set_xlabel(r"true $\eta$")
 ax.set_ylabel("Average duplication")
 
 ax.set_xlim(-3, 3)

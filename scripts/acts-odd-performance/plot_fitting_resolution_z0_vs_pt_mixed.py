@@ -30,7 +30,7 @@ fitting_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in fitting_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"$p_T$ [GeV]")
+ax.set_xlabel(r"true $p_T$ [GeV]")
 ax.set_ylabel(r"$\sigma_{z_0}$ [mm]")
 
 ax.set_xlim(0, 100)
@@ -47,7 +47,7 @@ atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0\nsingle particles, <$\\mu$> = 0",
+    subtext="Acts v40.0.0\nsingle particles, <$\\mu$> = 0, $p_T$ = 10 GeV",
 )
 
 ylim = ax.get_ylim()

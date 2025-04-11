@@ -30,7 +30,7 @@ finding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in finding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"$\eta$")
+ax.set_xlabel(r"true $\eta$")
 ax.set_ylabel("Technical efficiency")
 
 ax.set_xlim(-3, 3)
@@ -49,7 +49,7 @@ atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0\nsingle particles, <$\\mu$> = 0",
+    subtext="Acts v40.0.0\nsingle particles, <$\\mu$> = 0, $p_T$ = 10 GeV",
 )
 
 fig.tight_layout()

@@ -34,7 +34,7 @@ finding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in finding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"$\eta$")
+ax.set_xlabel(r"true $\eta$")
 ax.set_ylabel("Technical efficiency")
 
 ax.set_xlim(-3, 3)
