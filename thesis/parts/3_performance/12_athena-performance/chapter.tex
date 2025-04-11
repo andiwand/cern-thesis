@@ -1,11 +1,54 @@
 \begin{itemize}
     \color{red}
-    \item describe "Acts based default chain"
-    \item mention implications for online and offline / technology choice
-    \item what do we want to show here?
+    \item two applications: HLT and offline
+    \item mention technology choice
+\end{itemize}
+
+\section{Acts-based track reconstruction chain}
+
+\begin{itemize}
+    \color{red}
+    \item reconstruction steps
     \begin{itemize}
-        \item CPU performance evolution and description of changes
-        \item finding performance: efficiency, fake rate, duplication rate
-        \item fitting performance: IP resolution
+        \item clustering for pixels and strips
+        \item spacepoints formation for pixels and strips
+        \item seeding for pixels and strips
+        \item track finding for pixels and strips
+        \item ambiguity resolution
     \end{itemize}
+    \item validation against legacy chain
+    \item what is the legacy chain; tdr addendum
+\end{itemize}
+
+\section{CPU performance and optimizations}
+
+\begin{itemize}
+    \color{red}
+    \item in parts application of optimizations done in ACTS; ref other chapters/sections
+    \item this is basically the note noemi wrote
+    \item show CPU performance evolution
+\end{itemize}
+
+\section{Physics performance}
+
+\begin{itemize}
+    \color{red}
+    \item only if we are brave
+    \item single particle efficiency, fake rate, duplication rate, resolution, pulls
+    \item ttbar efficiency, fake rate, duplication rate, pileup dependence
+\end{itemize}
+
+\section{Summary, conclusion and outlook}
+
+\begin{itemize}
+    \color{red}
+    \item a lot of progress has been made
+    \item acts based chain is very close to legacy chain
+    \item seeding seems to be the main cpu bottleneck due to high fake rate
+    \item what is missing?
+    \begin{itemize}
+        \item single muon efficiency
+        \item electron reconstruction
+    \end{itemize}
+    \item material map might need optimization
 \end{itemize}

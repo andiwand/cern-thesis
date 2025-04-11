@@ -6,7 +6,7 @@ Acts provides a Combinatorial Kalman Filter (CKF) implementation which can be us
 
 While Acts already had a working prototype implementation for the CKF, it has been effectively rewritten during the work on this thesis to improve its performance, flexibility, and maintainability. The new implementation and the most important changes are presented in this chapter. First, the CKF algorithm and its implementation is described in detail. Then, the refactor of the CKF into a track finding component is discussed. The branch stopper extension is presented which allows to stop the track search early. Modeling of branches with the track EDM is discussed and the branch finalization is explained. Two techniques to improve the track finding performance are presented: seed deduplication and stay-on-seed strategy. A two-way track finding strategy is introduced which allows to recover all measurements independent from the seed position. Finally, the chapter is concluded with a discussion of the initial covariance and the shortcomings of the CKF implementation.
 
-\section{The CombinatorialKalmanFilter}
+\section{The \texttt{CombinatorialKalmanFilter}}
 
 \input{parts/2_developments/07_trackfinding-developments/figures/ckf_flow.tex}
 

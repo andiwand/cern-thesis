@@ -14,13 +14,14 @@
 
 ## current
 
-- [ ] get intro done
+- [ ] get intro part done
+- [ ] get ITk perf chapter done
 - [ ] what is a ttbar event? where to put this?
 - [ ] what is pileup? where to put this?
 - [ ] mention traccc / detray? -> acts intro
 - [ ] what is a particle gun? -> acts intro?
-- [ ] define ITk performance outline
-  - rename / focus on track finding using CKF
+- [ ] what is eta?
+- [ ] track parameterization illustration? -> acts intro
 - [ ] line break after hyphen?
 - [ ] class/function name formatting
 - [ ] ToC for chapters?
@@ -44,12 +45,12 @@
   - [ ] 1. General introduction
     - [ ] Into text
     - [ ] 1.1. Motivation
-    - [ ] 1.2. High Energy Physics
+    - [ ] 1.2. High-energy physics
     - [ ] 1.3. The Standard Model
       - [ ] 1.3.1. Beyond the Standard Model
     - [ ] 1.4. CERN and the Large Hadron Collider
-    - [ ] 1.5. The ATLAS Experiment
-      - [ ] 1.5.1. The ATLAS Detector
+    - [ ] 1.5. The ATLAS experiment
+      - [ ] 1.5.1. The ATLAS detector
       - [ ] 1.5.2. Phase-2 Upgrade
   - [x] 2. Reconstruction of tracks and primary vertices
     - [x] Into text
@@ -72,13 +73,11 @@
     - [x] 3.7. Plugins
     - [x] 3.8. The Examples framework
     - [x] 3.9. The OpenDataDetector
-    - [ ] 3.10. Tracking on Accelerators with traccc and detray
 - [x] II. Developments
   - [ ] Intro text
   - [x] 4. General deveopments of Acts
     - [x] Into text
     - [x] 4.1. Propagator developments
-      - [x] 4.1.1. An alternative steering mechanism
     - [x] 4.2. A new measurement projection mechanism
     - [x] 4.3. Developments on the Examples framework
     - [x] 4.4. Implementation of GreedyAmbiguityResolution
@@ -95,32 +94,33 @@
   - [x] 6. Navigator developments
     - [x] Into text
     - [x] 6.1. Navigation subtleties and edge cases
-    - [x] 6.2. A streamlined Navigation Model for Acts
-    - [x] 6.3. Robust Intersection Handling for Cylinders
+    - [x] 6.2. A streamlined navigation model for Acts
+    - [x] 6.3. Robust intersection handling for cylinders
     - [x] 6.4. Remove path limit and overstep limit
     - [x] 6.5. Decoupling from the stepper
-    - [x] 6.6. Direct navigator
-    - [x] 6.7. Try-all navigators
+    - [x] 6.6. Deveopments on the DirectNavigator
+    - [x] 6.7. Implementation of try-all navigators
     - [x] 6.8. Conceptualized solution for surface ambiguity
   - [x] 7. Track finding developments
     - [x] Into text
-    - [x] 7.1. Vector track container backend
-    - [x] 7.2. Two way track finding
-    - [x] 7.3. CKF as a component
-    - [x] 7.4. Extrapolation
-    - [x] 7.5. Measurement selector
-    - [x] 7.6. Branch stopper
-    - [x] 7.7. Track container for branches
-    - [x] 7.8. Branch finalization
+    - [x] 7.1. The CombinatorialKalmanFilter
+    - [x] 7.2. CKF as a component
+    - [x] 7.3. Branch stopper
+    - [x] 7.4. Track container for branches
+    - [x] 7.5. Branch finalization
+    - [x] 7.6. Seed deduplication
+    - [x] 7.7. Stay-on-seed strategy
+    - [x] 7.8. Two-way track finding
     - [x] 7.9. Initial covariance
+    - [x] 7.10 Shortcomings
   - [x] 8. Tracking with dense material
     - [x] Intro text
-    - [x] 8.1. Motivation
+    - [x] 8.1. Modified equations of motion
     - [x] 8.2. Covariance transport through thick scatterers
     - [x] 8.3. Toy Model
     - [x] 8.4. Baseline with Geant4
     - [x] 8.5. First attempts with EigenStepper
-    - [x] 8.6. SympyStepper
+    - [x] 8.6. Final implementation with SympyStepper
     - [x] 8.7. Performance
   - [x] 9. Tracking with time information
     - [x] Intro text
@@ -129,7 +129,7 @@
     - [x] 9.3. Spacepoints with time
     - [x] 9.4. Seeding with time
     - [x] 9.5. Track finding and fitting with time
-    - [x] 9.6. Vertex finding with time
+    - [x] 9.6. Primary vertex finding with time
     - [x] 9.7. Vertex fitting with time
     - [x] 9.8. Summary and outlook
   - [x] 10. Summary of developments
@@ -140,14 +140,21 @@
   - [ ] Intro text
   - [x] 11. OpenDataDetector tracking performance with Acts
     - [x] Intro text
-    - [x] 11.1. Track finding
-      - [x] 11.1.1. Seeding
-      - [x] 11.1.2. Combinatorial Kalman Filter
-    - [x] 11.2. Ambiguity resolution
-    - [x] 11.3. Track fitting
-    - [x] 11.4. Vertexing
+    - [x] 11.1. Event generation and simulation
+    - [x] 11.2. Reconstruction chain and cuts
+    - [x] 11.3. Seeding performance
+    - [x] 11.4. Track finding performance
+    - [x] 11.5. Ambiguity resolution performance
+    - [x] 11.6. Track refitting performance
+    - [x] 11.7. Vertex fitting performance
+    - [x] 11.8. Computational performance
+    - [x] 11.9. Summary, conclusion and outlook
   - [ ] 12. ITk tracking performance with Acts
     - [ ] Intro text
+    - [ ] 12.1. Acts-based track reconstruction chain
+    - [ ] 12.2. CPU performance and optimizations
+    - [ ] 12.3. Physics performance
+    - [ ] 12.4. Summary, conclusion and outlook
 - [ ] IV. Conclusion and Outlook
   - [ ] 13. Conclusion
   - [ ] 14. Outlook
