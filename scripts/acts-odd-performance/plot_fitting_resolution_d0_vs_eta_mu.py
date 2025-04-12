@@ -52,6 +52,7 @@ atlasify.atlasify(
     brand="ODD",
     atlas="Simulation",
     subtext="Acts v40.0.0\nsingle muons, <$\\mu$> = 0",
+    enlarge=1.4,
 )
 
 ylim = ax.get_ylim()

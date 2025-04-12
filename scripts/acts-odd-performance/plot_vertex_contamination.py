@@ -3,12 +3,12 @@
 import argparse
 from pathlib import Path
 import uproot
-import pandas as pd
 import awkward as ak
 import matplotlib.pyplot as plt
 import atlasify
+import matplotlib.patches as mpatches
 
-from mycommon1.plots import get_color, get_marker
+from mycommon1.plots import get_color
 
 
 columns = [
@@ -62,26 +62,43 @@ for input_type, inputs_list in inputs.items():
         results[input_type].append(
             {
                 "pu": pu,
-                "recoVertexContamination": contamination.quantile(0.5),
-                "recoVertexContamination_err_low": contamination.quantile(0.5) - contamination.quantile(0.16),
-                "recoVertexContamination_err_high": contamination.quantile(0.84) - contamination.quantile(0.5),
+                "contaminations": contamination.values,
             }
         )
 
 for i, input_type in enumerate(inputs.keys()):
-    data = pd.DataFrame(results[input_type])
+    for result in results[input_type]:
+        pu = result["pu"]
+        contamination = result["contaminations"]
 
-    ax.errorbar(
-        data["pu"],
-        data["recoVertexContamination"],
-        yerr=(data["recoVertexContamination_err_low"], data["recoVertexContamination_err_high"]),
-        label=f"{input_type}",
-        marker=get_marker(i),
-        linestyle="",
-        color=get_color(i),
-    )
+        # make violin plots side by side
+        violin_parts = ax.violinplot(
+            [contamination],
+            positions=[pu],
+            widths=20,
+            side="low" if i == 0 else "high",
+            showmeans=True,
+            showmedians=True,
+            showextrema=True,
+        )
 
-ax.legend()
+        for partname in ["cbars", "cmins", "cmaxes", "cmeans", "cmedians"]:
+            if partname not in violin_parts:
+                continue
+            vp = violin_parts[partname]
+            vp.set_edgecolor(get_color(i))
+            vp.set_linewidth(1)
+        for vp in violin_parts["bodies"]:
+            vp.set_facecolor(get_color(i))
+            vp.set_edgecolor(get_color(i))
+            vp.set_linewidth(1)
+            vp.set_alpha(0.5)
+
+labels = [
+    (mpatches.Patch(color=get_color(0),alpha=0.5), "without time"),
+    (mpatches.Patch(color=get_color(1),alpha=0.5), "with time"),
+]
+ax.legend(*zip(*labels))
 
 ax.set_xlabel(r"$\langle \mu \rangle$")
 ax.set_ylabel("Vertex contamination")
@@ -93,7 +110,7 @@ atlasify.atlasify(
     subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV",
 )
 
-ax.set_xlim(-5, 205)
+ax.set_xlim(-15, 215)
 ylim = ax.get_ylim()
 ax.set_ylim(0, ylim[1])
 

@@ -48,6 +48,7 @@ atlasify.atlasify(
     brand="ODD",
     atlas="Simulation",
     subtext="Acts v40.0.0\nsingle particles, <$\\mu$> = 0, $p_T$ = 10 GeV",
+    enlarge=1.4,
 )
 
 ylim = ax.get_ylim()

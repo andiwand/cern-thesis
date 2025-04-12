@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import atlasify
 
 from mycommon1.plots import get_color, get_marker
+from mycommon2.stats import clopper_pearson
 
 
 columns = [
@@ -58,23 +59,31 @@ for input_type, inputs_list in inputs.items():
         # filter for first primary vertex which is the HS vertex by design
         data = data[(data["vertex_primary"] == 1) & (data["vertex_secondary"] == 0)]
 
+        eff, eff_err_upper, eff_err_lower = clopper_pearson(data["nCleanVtx"].sum(), data["nVtxReconstructable"].sum())
+
         results[input_type].append(
             {
                 "pu": pu,
-                "n_true": data["nTrueVtx"].mean(),
-                "n_reconstructable": data["nVtxReconstructable"].mean(),
-                "n_clean": data["nCleanVtx"].mean(),
-                "n_clean_err": data["nCleanVtx"].std(),
+                "eff": eff,
+                "eff_err_low": eff - eff_err_lower,
+                "eff_err_high": eff_err_upper - eff,
             }
         )
+
+ax.set_xlabel(r"$\langle \mu \rangle$")
+ax.set_ylabel("Technical efficiency")
+
+ax.set_xlim(-5, 205)
+
+ax.hlines(1, -5, 205, linestyles="--", color="gray")
 
 for i, input_type in enumerate(inputs.keys()):
     data = pd.DataFrame(results[input_type])
 
     ax.errorbar(
         data["pu"],
-        data["n_clean"],
-        data["n_clean_err"],
+        data["eff"],
+        yerr=(data["eff_err_low"], data["eff_err_high"]),
         label=f"{input_type}",
         marker=get_marker(i),
         linestyle="",
@@ -83,19 +92,13 @@ for i, input_type in enumerate(inputs.keys()):
 
 ax.legend()
 
-ax.set_xlabel(r"$\langle \mu \rangle$")
-ax.set_ylabel("Clean vertices")
-
 atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
     subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV",
+    enlarge=1.4,
 )
-
-ax.set_xlim(-5, 205)
-ylim = ax.get_ylim()
-ax.set_ylim(-5, ylim[1])
 
 fig.tight_layout()
 

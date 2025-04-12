@@ -2,6 +2,7 @@ import math
 import numpy as np
 import scipy.stats
 import scipy.optimize
+from collections.abc import Iterable
 
 
 def robust_mean(data):
@@ -80,7 +81,10 @@ def clopper_pearson(k, n, alpha=0.32):
         scipy.stats.beta.ppf(1 - alpha / 2, k + 1, n - k), np.zeros_like(p)
     )
     p_lower = np.minimum(scipy.stats.beta.ppf(alpha / 2, k, n - k + 1), np.ones_like(p))
-    p_lower[p == 1.0], p_upper[p == 1.0] = 1.0, 1.0
+    if isinstance(p, Iterable):
+        p_lower[p == 1.0], p_upper[p == 1.0] = 1.0, 1.0
+    elif p == 1.0:
+        p_lower, p_upper = 1.0, 1.0
     return p, p_upper, p_lower
 
 

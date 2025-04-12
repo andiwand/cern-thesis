@@ -39,6 +39,7 @@ atlasify.atlasify(
     brand="ODD",
     atlas="Simulation",
     subtext="Acts v40.0.0\nsingle muons, <$\\mu$> = 0, $p_T$ = 1 GeV",
+    enlarge=1.4,
 )
 
 fig.tight_layout()
