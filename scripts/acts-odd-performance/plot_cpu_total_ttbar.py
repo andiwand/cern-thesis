@@ -59,6 +59,8 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.set_xlabel(r"$\langle \mu \rangle$")
 ax.set_ylabel("Rel. CPU time")
 
+ax.set_xlim(-2, 202)
+
 ax.plot(
     pus,
     totals_rel,
@@ -72,7 +74,7 @@ if True:
     # dashed line with linear extrapolation point 0 and 30
     k = (totals_rel[1] - totals_rel[0]) / (30 - 0)
     b = totals_rel[0] - k * 0
-    xs = [0, 200]
+    xs = [0, ax.get_xlim()[1]]
     ys = [k * x + b for x in xs]
     ax.plot(
         xs,
@@ -80,7 +82,7 @@ if True:
         linestyle="--",
         color="grey",
         label=f"Linear k={k:.2f}",
-        zorder=-1,
+        zorder=-10,
     )
 
 ax.legend()
@@ -92,9 +94,8 @@ atlasify.atlasify(
     subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV",
 )
 
-ax.set_xlim(0, 200)
 ylim = ax.get_ylim()
-ax.set_ylim(0, ylim[1])
+ax.set_ylim(ylim[1] * -0.01, ylim[1])
 
 fig.tight_layout()
 

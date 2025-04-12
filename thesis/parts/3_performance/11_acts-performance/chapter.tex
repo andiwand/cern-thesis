@@ -6,7 +6,7 @@ The chapter is structured as follows: first, the simulation setup is described a
 
 \section{Event generation and simulation}
 
-Acts Examples offer different methods for event generation, simulation, and digitization. Event generation can be done with a particle gun or with Pythia8 \cite{pythia8}. In this study, the particle gun is used to generate single $\mu$, $\pi$, and $e$ to estimate the reconstruction performance under ideal conditions. Pythia8 is used to generate \ttbar events with different pileup scenarios, which are more realistic and closer to the conditions in a real hadron collider experiment. Both event simulators, Fatras (see Section \ref{sec:intro/acts/fatras}) and Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016}, are used to simulate the passage of the generated particles through the detector. This allows to cross-check the reconstruction results and can help to identify potential issues in the simulation or reconstruction chain. For instance, Fatras uses the same material model as the reconstruction, which provides optimal conditions in terms of material handling.
+Acts Examples offer different methods for event generation, simulation, and digitization. Event generation can be done with a particle gun or with Pythia8 \cite{pythia8}. In this study, a particle gun is used to generate single $\mu$, $\pi$, and $e$ to estimate the reconstruction performance under ideal conditions. Pythia8 is used to generate \ttbar events with different pileup scenarios, which are more realistic and closer to the conditions in a real hadron collider experiment. Both event simulators, Fatras (see Section \ref{sec:intro/acts/fatras}) and Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016}, are used to simulate the passage of the generated particles through the detector. This allows to cross-check the reconstruction results and can help to identify potential issues in the simulation or reconstruction chain. For instance, Fatras uses the same material model as the reconstruction, which provides optimal conditions in terms of material handling.
 
 Simulated hits coresponding to energy deposits in sensitive detectors undergo a digitization process to mimic the behavior of detector electronics and to produce read out signals.
 
@@ -16,8 +16,8 @@ The OpenDataDetector is used as a detector in optimal conditions: perfect alignm
 
 The following events have been simulated and form the basis for the performance study:
 \begin{itemize}
-    \item 100k single $\mu$, $\pi$, $e$ with random charge, $p_T$ of 1, 10, and 100 GeV, uniform $\eta$ between -3 and 3, and uniform $\phi$, generated with the particle gun
-    \item 100k single $\mu$, $\pi$, $e$ with random charge, exponentially distributed $p_T$ between 1 and 100 GeV, uniform $\eta$ between -3 and 3, and uniform $\phi$, generated with the particle gun
+    \item 100k single $\mu$, $\pi$, $e$ for each $p_T \in \{1,10,100\}$ GeV, with random charge, uniform $\eta \in [-3,3]$, and uniform $\phi$, generated with a particle gun
+    \item 100k single $\mu$, $\pi$, $e$ with exponentially distributed $p_T \in [1,100]$ GeV, random charge, uniform $\eta \in [-3,3]$, and uniform $\phi$, generated with a particle gun
     \item 1k \ttbar events with 200 pileup interactions, generated with Pythia8
     \item using Fatras and Geant4 for event simulation
     \item using smeared digitization
@@ -36,9 +36,9 @@ Since the ODD provides time information in the pixel system, the reconstruction 
 Before measuring the performance of the reconstruction chain, a choice of cuts is made to select the particles and measurements that are used for the performance evaluation. The following truth cuts are applied to the simulated particles:
 
 \begin{itemize}
-    \item $p_T \ge 1 \text{GeV}$
-    \item $|\eta| < 3.0$
-    \item $q \ne 0$
+    \item true $p_T \ge 1 \text{GeV}$
+    \item true $|\eta| < 3.0$
+    \item true $q \ne 0$
     \item measurements $\ge 6$
     \item measurements in pixels $\ge 3$
 \end{itemize}
@@ -281,7 +281,7 @@ This study uses the \texttt{TruthVertexSeeder} for the AMVF. It uses truth infor
     \label{fig:perf/odd/vertex-efficiency}
 \end{figure}
 
-Figure \ref{fig:perf/odd/vertex-efficiency} shows the technical clean vertex efficiency as a function of pileup $\langle \mu \rangle$ for \ttbar events with and without using the time dimension. With increasing pileup, the gap between efficiency with and without time dimension increases. This suggests that the time dimension is beneficial for the vertexing algorithm, as it allows to better separate vertices. The clean vertex efficiency is about 60\% higher for $\langle \mu \rangle=200$ with time than without. The decreasing efficiency with increasing pileup is due to merging of vertices.
+Figure \ref{fig:perf/odd/vertex-efficiency} shows the technical clean vertex efficiency as a function of pileup $\langle \mu \rangle$ for \ttbar events with and without using the time dimension. With increasing pileup, the gap between efficiency with and without time dimension increases. This suggests that the time dimension is beneficial for the vertexing algorithm, as it allows to better separate vertices. The clean vertex efficiency is about 60\% higher for $\langle \mu \rangle=200$ with time than without. The decreasing efficiency with increasing pileup is due to vertex merging.
 
 \begin{figure}[h!]
     \centering
