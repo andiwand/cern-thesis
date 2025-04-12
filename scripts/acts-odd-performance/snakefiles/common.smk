@@ -20,7 +20,7 @@ def get_sim_threads(wildcards):
     return 1
 
 def get_reco_threads(wildcards):
-    return 1
+    return 8
 
 def get_sim_mem_mb(wildcards):
     event_sim_label = wildcards.event_sim_label

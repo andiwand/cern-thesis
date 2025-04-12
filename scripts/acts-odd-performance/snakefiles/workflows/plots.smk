@@ -5,7 +5,7 @@ rule all_plots:
         "plots/acts-odd-performance/detector_material.pdf",
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/detector_efficiency_mixed.pdf", sim_label=SIM_LABELS, seeding_label=SEEDING_LABELS),
 
-        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_duplication.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
+        expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_redundancy.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_mu.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_mixed.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
         expand("plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_ttbar.pdf", sim_label=SIM_LABELS, seeding_label=["truth-estimated", "triplet"]),
@@ -64,12 +64,12 @@ rule plot_detector_efficiency_mixed:
         python {input.script} {input.reco_particles} {input.sim_particles} --output {output}
         """
 
-rule plot_seeding_duplication:
+rule plot_seeding_redundancy:
     input:
-        script = "scripts/acts-odd-performance/plot_seeding_duplication.py",
+        script = "scripts/acts-odd-performance/plot_seeding_redundancy.py",
         reco = "data/acts-odd-performance/reco/1mu-pt1GeV_{sim_label}_{seeding_label}/performance_seeding.root",
     output:
-        "plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_duplication.pdf",
+        "plots/acts-odd-performance/{sim_label}_{seeding_label}/seeding_redundancy.pdf",
     shell:
         """
         python {input.script} {input.reco} --output {output}

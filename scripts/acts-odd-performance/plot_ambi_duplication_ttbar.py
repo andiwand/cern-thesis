@@ -47,15 +47,15 @@ finding_perf = [ROOT.TFile.Open(p.absolute().as_posix()) for p in finding_perf]
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-ax.set_xlabel(r"true $\eta$")
-ax.set_ylabel("Average duplication")
+ax.set_xlabel(r"reconstructed $\eta$")
+ax.set_ylabel("Duplication ratio")
 
 ax.set_xlim(-3, 3)
 ax.set_yscale("log")
 
 for i, pu, aperf, fperf in zip(range(4), pus, ambi_perf, finding_perf):
-    ambi_eff_vs_eta = TH1(aperf.Get("nDuplicated_vs_eta"), xrange=(-3, 3))
-    finding_eff_vs_eta = TH1(fperf.Get("nDuplicated_vs_eta"), xrange=(-3, 3))
+    ambi_eff_vs_eta = TH1(aperf.Get("duplicationRate_vs_eta"), xrange=(-3, 3))
+    finding_eff_vs_eta = TH1(fperf.Get("duplicationRate_vs_eta"), xrange=(-3, 3))
 
     ambi_eff_vs_eta.errorbar(
         ax, label=f"<$\\mu$> = {pu}", marker=get_marker(i), linestyle="", color=get_color(i)
