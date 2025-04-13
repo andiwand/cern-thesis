@@ -1,0 +1,30 @@
+rule all_4d_tracking:
+    input:
+        "plots/4d-tracking/ttbar-pu200-event-display.pdf",
+        "plots/4d-tracking/ttbar-pu200-grid-density.pdf",
+
+rule plot_ttbar_pu200_event_display:
+    input:
+        script = "scripts/4d-tracking/plot_event.py",
+        particles = "data/4d-tracking/ttbar-pu200-particles.root",
+        vertices = "data/4d-tracking/ttbar-pu200-vertices.root",
+    output:
+        "plots/4d-tracking/ttbar-pu200-event-display.pdf",
+    shell:
+        """
+        python {input.script} --particles {input.particles} --vertices {input.vertices} --output {output}
+        """
+
+rule odd_layout:
+    input:
+        script = "scripts/4d-tracking/plot_grid.py",
+        particles = "data/4d-tracking/ttbar-pu200-particles.root",
+        vertices = "data/4d-tracking/ttbar-pu200-vertices.root",
+        grid_1d = "data/4d-tracking/grid-density/grid-1d.csv",
+        grid_2d = "data/4d-tracking/grid-density/grid-2d.csv",
+    output:
+        "plots/4d-tracking/ttbar-pu200-grid-density.pdf",
+    shell:
+        """
+        python {input.script} --particles {input.particles} --vertices {input.vertices} --grid-1d {input.grid_1d} --grid-2d {input.grid_2d} --output {output}
+        """

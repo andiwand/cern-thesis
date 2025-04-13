@@ -111,7 +111,7 @@ for i in range(2):
     axs[i, 1].set_ylim(-10, 10)
 
     axs[1, i].set_xlabel("z [mm]")
-    axs[i, 0].set_ylabel("R * sign(x) [mm]")
+    axs[i, 0].set_ylabel("R $\\cdot$ sign(x) [mm]")
 
 fig.tight_layout()
 

@@ -60,8 +60,7 @@ vertices = vertices[(vertices["vertex_secondary"] == 0)]
 grid1d = pd.read_csv(args.grid_1d)
 grid2d = pd.read_csv(args.grid_2d)
 
-fig = plt.figure(figsize=(8, 4))
-axs = fig.subplots(2, 1, sharex=True, gridspec_kw={"height_ratios": [1, 10]})
+fig, axs = plt.subplots(2, 1, figsize=(8, 4), sharex=True, gridspec_kw={"height_ratios": [1, 10]})
 
 axs[0].hist2d(
     grid1d["z"],
@@ -92,16 +91,14 @@ axs[1].set_xlabel("z [mm]")
 axs[1].set_ylabel("t [mm]")
 axs[1].legend(loc="upper right", labelcolor='white', edgecolor='white', fancybox=True, framealpha=0.5)
 
-fig.subplots_adjust(right=0.8)
-cbar_ax = fig.add_axes([0.84, 0.11, 0.04, 0.77])
+fig.subplots_adjust(left=0.1, bottom=0.12, right=0.88, top=0.95)
+cbar_ax = fig.add_axes([0.91, 0.12, 0.04, 0.83])
 cbar = fig.colorbar(im, cax=cbar_ax)
 cbar.set_ticks([])
 cbar.set_label("Track density [a.u.]")
 
 axs[0].set_xlim(-200, 200)
 axs[1].set_xlim(-200, 200)
-
-fig.tight_layout()
 
 if args.output is not None:
     fig.savefig(args.output)
