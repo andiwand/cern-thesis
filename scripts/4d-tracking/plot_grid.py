@@ -9,6 +9,9 @@ import matplotlib.colors as mcolors
 import numpy as np
 import uproot as up
 import awkward as ak
+import atlasify
+
+from mycommon1.plots import get_color
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -62,43 +65,76 @@ grid2d = pd.read_csv(args.grid_2d)
 
 fig, axs = plt.subplots(2, 1, figsize=(8, 4), sharex=True, gridspec_kw={"height_ratios": [1, 10]})
 
+# axs[0].set_title("Track density with $z_0$")
+axs[0].get_yaxis().set_visible(False)
+# axs[0].set_xlabel("z [mm]")
+
+# axs[1].set_title("Track density with $z_0$ and $t_0$")
+
+axs[1].set_xlabel("z [mm]")
+axs[1].set_ylabel("t [mm]")
+
+axs[0].set_aspect("auto")
+axs[1].set_aspect("auto")
+
+axs[0].set_xlim(-200, 200)
+axs[1].set_xlim(-200, 200)
+
 axs[0].hist2d(
     grid1d["z"],
     grid1d["t"],
     weights=grid1d["density"],
     norm=mcolors.PowerNorm(0.1),
+    cmap=plt.cm.Blues,
+    cmin=1,
     bins=(500, 1),
     range=((-200, 200), (-10, 10)),
 )
 axs[0].scatter(vertices["vz"], np.zeros(len(vertices)), s=1, c="red", label="truth")
-axs[0].set_aspect("auto")
-# axs[0].set_title("Track density with $z_0$")
-axs[0].get_yaxis().set_visible(False)
-# axs[0].set_xlabel("z [mm]")
 
 counts, xedges, yedges, im = axs[1].hist2d(
     grid2d["z"],
     grid2d["t"],
     weights=grid2d["density"],
     norm=mcolors.PowerNorm(0.1),
+    cmap=plt.cm.Blues,
+    cmin=3,
     bins=(200, 100),
     range=((-200, 200), (-4000, 4000)),
 )
-axs[1].scatter(vertices["vz"], vertices["vt"], s=1, c="red", label="Truth vertices")
-axs[1].set_aspect("auto")
-# axs[1].set_title("Track density with $z_0$ and $t_0$")
-axs[1].set_xlabel("z [mm]")
-axs[1].set_ylabel("t [mm]")
-axs[1].legend(loc="upper right", labelcolor='white', edgecolor='white', fancybox=True, framealpha=0.5)
+axs[1].scatter(
+    vertices["vz"],
+    vertices["vt"],
+    s=1,
+    c="red",
+    #label="Truth vertices",
+)
+"""
+axs[1].legend(
+    loc="upper right",
+    #labelcolor="white",
+    #edgecolor="white",
+    fancybox=True,
+    framealpha=0.5,
+)
+"""
 
-fig.subplots_adjust(left=0.1, bottom=0.12, right=0.88, top=0.95)
-cbar_ax = fig.add_axes([0.91, 0.12, 0.04, 0.83])
+atlasify.atlasify(
+    axes=axs[0],
+    outside=True,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV, <$\\mu$> = 200",
+    offset=18,
+)
+atlasify.atlasify(axes=axs[1], outside=True, atlas=False, offset=0)
+
+cbar_ax = fig.add_axes([0.91, 0.12, 0.04, 0.63])
 cbar = fig.colorbar(im, cax=cbar_ax)
 cbar.set_ticks([])
 cbar.set_label("Track density [a.u.]")
 
-axs[0].set_xlim(-200, 200)
-axs[1].set_xlim(-200, 200)
+fig.subplots_adjust(left=0.1, bottom=0.12, right=0.88, top=0.75)
 
 if args.output is not None:
     fig.savefig(args.output)

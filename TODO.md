@@ -16,6 +16,7 @@
 
 - [ ] get intro part done
 - [ ] get ITk perf chapter done
+- [ ] atlasify chapter 8 plots; put ratio plots on top of each other
 - [ ] what is a ttbar event? where to put this?
 - [ ] what is pileup? where to put this?
 - [ ] mention traccc / detray? -> acts intro

@@ -56,7 +56,7 @@ fig, axs = plt.subplots(
 )
 
 # fig.suptitle("Relative energy loss of muons passing Fe")
-fig.supylabel("Energy loss / Acts")
+fig.supylabel("Energy loss ratio")
 
 for i, ax, label, g4_input, acts_input in zip(
     range(3), axs, labels, args.g4_input, args.acts_input

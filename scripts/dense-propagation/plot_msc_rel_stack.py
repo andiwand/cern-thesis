@@ -53,7 +53,7 @@ fig, axs = plt.subplots(
 )
 
 # fig.suptitle("Relative positional uncertainty of muons passing Fe")
-fig.supylabel("$\Delta$ position / Acts")
+fig.supylabel("$\Delta$ position ratio")
 
 for i, ax, label, g4_input, acts_input in zip(
     range(3), axs, labels, args.g4_input, args.acts_input

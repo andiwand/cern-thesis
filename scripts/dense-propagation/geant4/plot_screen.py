@@ -144,7 +144,9 @@ for i, file, axs_cols, momentum, x_range, e_range in zip(
 
     axs_cols[1].legend(loc="lower right")
 
-fig.colorbar(h2d[3], ax=axs.ravel().tolist(), label="hits")
+cbar = fig.colorbar(h2d[3], ax=axs.ravel().tolist())
+cbar.set_ticks([])
+cbar.set_label("Hits")
 
 fig.tight_layout()
 

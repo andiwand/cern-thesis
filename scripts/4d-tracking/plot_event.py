@@ -9,6 +9,7 @@ import awkward as ak
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import atlasify
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -112,6 +113,18 @@ for i in range(2):
 
     axs[1, i].set_xlabel("z [mm]")
     axs[i, 0].set_ylabel("R $\\cdot$ sign(x) [mm]")
+
+atlasify.atlasify(
+    axes=axs[0, 0],
+    outside=True,
+    brand="ODD",
+    atlas="Simulation",
+    subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV, <$\\mu$> = 200",
+    offset=18,
+)
+atlasify.atlasify(axes=axs[0, 1], outside=True, atlas=False, offset=0)
+atlasify.atlasify(axes=axs[1, 0], outside=True, atlas=False, offset=0)
+atlasify.atlasify(axes=axs[1, 1], outside=True, atlas=False, offset=0)
 
 fig.tight_layout()
 
