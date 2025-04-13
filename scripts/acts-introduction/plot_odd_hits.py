@@ -111,12 +111,13 @@ ax.step(
 ax.legend()
 cbar = fig.colorbar(im, ax=ax)
 cbar.set_ticks([])
+cbar.set_label("Density [a.u.]")
 
 atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0",
+    subtext="Acts v40.0.0\nsingle muons, <$\\mu$> = 0, $p_T$ = 100 GeV",
     enlarge=1.2,
 )
 

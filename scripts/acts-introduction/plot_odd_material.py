@@ -10,7 +10,7 @@ import atlasify
 
 parser = argparse.ArgumentParser()
 parser.add_argument("x", choices=["phi", "eta"])
-parser.add_argument("y", choices=["l0", "x0"])
+parser.add_argument("y", choices=["x0", "l0"])
 parser.add_argument("input", type=Path, help="Material composition file")
 parser.add_argument(
     "--output",

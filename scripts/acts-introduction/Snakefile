@@ -1,0 +1,37 @@
+rule all_acts_introduction:
+    input:
+        "plots/acts-introduction/odd_hits.pdf",
+        "plots/acts-introduction/odd_layout.pdf",
+        expand("plots/acts-introduction/odd_material_{y}_{x}.pdf", x=["phi", "eta"], y=["x0", "l0"]),
+
+rule odd_hits:
+    input:
+        script = "scripts/acts-introduction/plot_odd_hits.py",
+        particles = "data/acts-odd-performance/sim/1mu-pt100GeV_geant4/particles_simulation.root",
+    output:
+        "plots/acts-introduction/odd_hits.pdf",
+    shell:
+        """
+        python {input.script} {input.particles} --output {output}
+        """
+
+rule odd_layout:
+    input:
+        script = "scripts/acts-introduction/plot_odd_layout.py",
+    output:
+        "plots/acts-introduction/odd_layout.pdf",
+    shell:
+        """
+        python {input.script} --output {output}
+        """
+
+rule odd_material:
+    input:
+        script = "scripts/acts-introduction/plot_odd_material.py",
+        material = "data/acts-odd-performance/scan/geant4_big/material_composition.root",
+    output:
+        "plots/acts-introduction/odd_material_{y}_{x}.pdf",
+    shell:
+        """
+        python {input.script} {wildcards.x} {wildcards.y} {input.material} --output {output}
+        """
