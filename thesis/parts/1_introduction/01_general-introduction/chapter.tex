@@ -1,111 +1,93 @@
-\begin{itemize}
-    \color{red}
-    \item this is a technical thesis
-    \item walk through the thesis chapters
-    \item walk through the introduction sections
-    \item other stuff?
-    \item general motivation?
-    \item what is a ttbar event?
-    \begin{itemize}
-        \item pythia doc could be useful here
-    \end{itemize}
-\end{itemize}
+This thesis is divided into three main parts: introduction, developments, and performance. The first part provides a general introduction to the field of high-energy physics, the reconstruction of tracks and primary vertices, and Acts --- a common tracking software. The second part focuses on the developments made to Acts, including general developments, stepper and navigator developments, track finding developments, tracking in dense material, and tracking with time information. The third part presents the tracking performance of the OpenDataDetector with Acts and the performance of the Acts-based track reconstruction for ATLAS ITk.
+
+This chapter starts with a motivation for the work presented in this thesis. It provides a brief overview of high-energy physics, the Standard Model of particle physics, and the Large Hadron Collider (LHC) at CERN. The chapter also introduces the ATLAS experiment and its Phase-2 upgrade.
 
 \section{Motivation}
 
-\begin{itemize}
-    \color{red}
-    \item HL-LHC and pileup challenge
-    \item show projected compute resources plot
-    \item compute budget is finite and allocated for an array of other tasks
-    \item need for efficient algorithms
-    \item aggressive R\&D program
-\end{itemize}
+The high-luminosity upgrade of the Large Hadron Collider (LHC) will substantially increase its luminosity, leading to a greater number of collisions per bunch crossing. The HL-LHC is expected to reach an instantaneous luminosity of up to $7.5 \times 10^{34} \, \text{cm}^{-2}\text{s}^{-1}$, resulting in an average of 200 simultaneous proton-proton interactions per bunch crossing, commonly referred to as \textit{pileup}. Pileup denotes additional interactions occurring in the same bunch crossing as the primary collision of interest. This elevated pileup environment poses a major challenge for the ATLAS experiment, as it complicates the reconstruction of particle tracks and the identification of individual collision events.
+
+To meet the challenges posed by high pileup conditions, the ATLAS collaboration has launched a major upgrade program, including the complete replacement of the inner detector with a new all-silicon tracking system, the Inner Tracker (ITk). In parallel, the reconstruction software must also be enhanced to cope with the increased data complexity. For track reconstruction, the ATLAS collaboration has adopted the Acts (a common tracking software) toolkit --- a community-driven project that provides experiment-independent tracking algorithms written in modern C++ \cite{acts-2022}. By leveraging Acts, ATLAS benefits from state-of-the-art developments in tracking algorithms and software architecture, while ensuring flexibility and adaptability for future requirements.
+
+This thesis contributes to the ongoing effort of improving Acts and its performance to the HL-LHC conditions, and to integrate it into the ATLAS tracking software.
 
 \section{High-energy physics}
 
-\begin{itemize}
-    \color{red}
-    \item what is HEP
-    \item very brief history
-    \item special relativity
-\end{itemize}
+High-energy physics (HEP), or particle physics, is the branch of physics that studies the fundamental particles of the universe and their interactions. It is a field that has evolved significantly over the past century, driven by advancements in experimental techniques and theoretical frameworks.
 
-\section{The Standard Model}
+The high-energy limit allows physicists to probe the laws of nature with controlled particle beams. These beams are produced by particle accelerators, which accelerate charged particles and collide them with other particles. The resulting interactions produce a wide variety of particles, which can be detected and analyzed to get an insight into the fundamental forces and particles that govern the universe.
 
-\begin{itemize}
-    \color{red}
-    \item nice picture from wikipedia
-    \item brief summary of the standard model
-    \begin{itemize}
-        \item what particles does it describe and how can they be grouped
-        \item what are quantum fields and how do they compare to classical fields
-        \item what are the fundamental forces and how are they described
-        \item what are the symmetries of the standard model
-        \item what is the Higgs mechanism and how does it give mass to particles
-    \end{itemize}
-\end{itemize}
+HEP seeks to answer some of the most profound questions about the nature of matter, energy, space, and time. The field of HEP is governed by the principles of special relativity and quantum mechanics, which provide a framework for understanding the behavior of particles at high energies. The study of HEP has led to the development of the Standard Model, a theoretical framework that describes the electromagnetic, weak, and strong nuclear interactions.
+
+\section{The Standard Model of particle physics}
+
+The Standard Model of particle physics is a theoretical framework that describes all currently known fundamental particles and their interactions. It is based on the principles of quantum field theory and incorporates the electromagnetic, weak, and strong nuclear forces. The Standard Model has been remarkably successful in explaining a wide range of experimental results and has become the cornerstone of modern particle physics.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{parts/1_introduction/01_general-introduction/figures/standard_model.pdf}
+    \caption{Standard model of elementary particles: the 12 fundamental fermions and 5 fundamental bosons. The faint areas in the background indicate which bosons (red) couple to which fermions (purple and green). The masses are subject to periodic reevaluation and should be looked up at the Particle Data Group \cite{pdg2024} website \cite{pdg-website}. Gracefully adapted from Wikimedia.}
+    \label{fig:intro/general/standard-model}
+\end{figure}
+
+Figure \ref{fig:intro/general/standard-model} shows the fundamental particles of the Standard Model. The particles are grouped into fermions and bosons. Fermions are the building blocks of matter and are divided into quarks and leptons. Bosons are force carriers that mediate the fundamental interactions between particles.
+
+The latest addition to the Standard Model is the Higgs boson, which was discovered at CERN's Large Hadron Collider (LHC) in 2012. The Higgs boson is responsible for giving mass to other particles through the Higgs mechanism, a process that explains how particles acquire mass without violating the principles of quantum field theory.
 
 \subsection{Beyond the Standard Model}
 
+Even though the Standard Model has been remarkably successful in explaining a wide range of experimental results, it is clear that it is incomplete. There are several open questions and limitations that suggest the need for a more comprehensive framework. Some of the key limitations of the Standard Model include:
+
 \begin{itemize}
-    \color{red}
-    \item what are the limitations of the standard model
-    \begin{itemize}
-        \item gravity is not included
-        \item what is the hierarchy problem
-    \end{itemize}
-    \item mention some popular BSM theories
-    \begin{itemize}
-        \item supersymmetry
-    \end{itemize}
+    \item The Standard Model does not include a quantum theory of gravity.
+    \item The hierarchy problem, which questions why the Higgs boson mass is so much smaller than the Planck mass, remains unresolved.
+    \item The Standard Model does not account for dark matter and dark energy, which make up a significant portion of the universe's mass-energy content.
+    \item The observed matter-antimatter asymmetry in the universe is not explained by the Standard Model.
 \end{itemize}
+
+These limitations have led physicists to explore various theories beyond the Standard Model (BSM) that aim to address these open questions and provide a more complete understanding of the fundamental forces and particles in the universe. Some of the most popular BSM theories include supersymmetry, string theory, and extra dimensions. These theories propose new particles, interactions, and symmetries that could help explain the limitations of the Standard Model and provide insights into the nature of the universe. However, to this day, no experimental evidence has been found to support these theories, and they remain speculative.
 
 \section{CERN and the Large Hadron Collider}
 
-\begin{itemize}
-    \color{red}
-    \item what is CERN
-    \item brief history of CERN
-    \item LHC
-    \begin{itemize}
-        \item ring + 4 detectors
-        \item schedule
-    \end{itemize}
-    \item HL-LHC
-\end{itemize}
+CERN, the European Organization for Nuclear Research, is a world-leading research facility located near Geneva, Switzerland. Since its founding in 1954, CERN has been at the forefront of particle physics, with the mission of deepening our understanding of the fundamental particles and forces that shape the universe.
+
+Over the decades, CERN has been instrumental in numerous groundbreaking discoveries, including the W and Z bosons, and most famously, the Higgs boson.
+
+These achievements have been made possible through the development and construction of increasingly powerful particle accelerators, capable of colliding particles at unprecedented energies. Higher energies allow physicists to probe smaller distances, making it possible to explore the fundamental building blocks of matter with greater precision. The most renowned of these accelerators is the Large Hadron Collider (LHC), the world's largest and most powerful particle accelerator, located underground along the Franco-Swiss border.
+
+The LHC is a circular accelerator with a circumference of 27 km, designed to collide protons and heavy ions at energies of up to 14 TeV. It features four main detectors: ATLAS, CMS, LHCb, and ALICE. Each tailored to explore different aspects of particle physics. Since beginning operations in 2008, the LHC has undergone multiple runs and upgrade phases. The current phase, Run 3, started in 2022 and is part of an ongoing program expected to extend until 2038.
+
+A major upgrade is planned for 2026, when the LHC will enter its High-Luminosity phase (HL-LHC). This next-generation upgrade will increase the collider's luminosity by up to a factor of ten, significantly boosting the number of particle collisions. This enhancement will greatly expand the potential for new discoveries and deepen our understanding of fundamental physics.
 
 \section{The ATLAS experiment}
 
-\begin{itemize}
-    \color{red}
-    \item collaboration
-    \begin{itemize}
-        \item how many people
-        \item how many countries
-        \item how many institutions
-        \item how many papers
-    \end{itemize}
-\end{itemize}
+The ATLAS experiment is one of the two general-purpose detectors operating at the LHC, designed to investigate a broad spectrum of physics phenomena. Its objectives include the search for new particles, detailed studies of the Higgs boson, and probing the fundamental forces and interactions that govern the universe. The ATLAS collaboration comprises thousands of scientists, engineers, and technicians from institutions across the globe, reflecting a diverse and international scientific community.
 
 \subsection{The ATLAS detector}
 
+% https://atlas.cern/Discover/Detector/Inner-Detector
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{parts/1_introduction/01_general-introduction/figures/atlas_detector.jpg}
+    \caption{Computer generated image of the whole ATLAS detector \cite{atlas-detector}.}
+    \label{fig:intro/general/atlas-detector}
+\end{figure}
+
+The ATLAS detector is a complex and sophisticated instrument designed to capture and analyze the particles produced in high-energy collisions at the LHC. Figure \ref{fig:intro/general/atlas-detector} shows a computer-generated image of the entire ATLAS detector. It consists of several subsystems, each with a specific function, working together to provide a comprehensive understanding of the collision events. The main components of the ATLAS detector include:
+
 \begin{itemize}
-    \color{red}
-    \item brief introduction to ATLAS
-    \item subdetectors and their purpose
+    \item The inner detector (ID), which tracks charged particles and measures their trajectory and momentum.
+    \item The electromagnetic calorimeter (ECal), which measures the energy of electrons and photons.
+    \item The hadronic calorimeter (HCal), which measures the energy of hadrons.
+    \item The muon spectrometer (MS), which tracks muons and measures their trajectory and momentum.
 \end{itemize}
+
+From the center outwards, the ATLAS detector is composed of the following main components: the inner detector (ID) with three subsystems: pixel detector, semiconductor tracker (SCT), and transition radiation tracker (TRT); the electromagnetic calorimeter (ECal); the hadronic calorimeter (HCal); and the muon spectrometer (MS). The ID is surrounded by a solenoid magnet that provides a magnetic field to measure the momentum of charged particles. The MS is surrouned by a toroidal magnet that provides an additional magnetic field to measure the momentum of passing muons.
+
+Collisions happen in the center of the detector, and the particles produced in these collisions travel outward through the various detector components. Each component is designed to measure specific properties of the particles, such as their energy and momentum. The detector is highly symmetrical along the beam axis and provides nearly complete solid-angle coverage, enabling the detection of particles emitted in almost all directions.
+
+During the upgrade periods of the LHC, the ATLAS detector undergoes significant modifications and improvements to enhance its performance and capabilities. These upgrades are essential to keep pace with the increasing luminosity and complexity of the collision events. But also to replace components that have been damaged by radiation over time. The next major upgrade is the Phase-2 upgrade, scheduled after the end of Run 3 in 2026.
 
 \subsection{Phase-2 Upgrade}
 
-\begin{itemize}
-    \color{red}
-    \item why is the upgrade needed
-    \begin{itemize}
-        \item higher luminosity
-        \item higher pileup
-        \item radiation damage
-        \item new physics
-    \end{itemize}
-    \item what are the main changes
-\end{itemize}
+The high luminosity upgrade, also called Phase-2 upgrade, will significantly increase the luminosity of the LHC, which results in up to 200 pileup collisions per bunch crossing. In order to cope with this increase in pileup, the ATLAS detector will undergo a major upgrade. The inner detector will be replaced by a new full-silicon tracking detector, the ITk. Apart from this, the high granularity timing detector (HGTD) will be added to the forward region of the detector. The HGTD will provide precise timing information to help mitigate the effects of pileup and improve the overall performance of the ATLAS detector.
