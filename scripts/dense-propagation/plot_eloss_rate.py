@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats
+import atlasify
 
 from common import (
+    material_label,
     read_g4_data,
     read_acts_data,
     make_g4_eloss_stats,
@@ -24,21 +26,28 @@ base_dir = Path(__file__).parent.parent.parent
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
+    "material",
+    type=str,
+    choices=["fe", "lar"],
+)
+parser.add_argument(
+    "thickness",
+    type=int,
+    help="Thickness in mm",
+)
+parser.add_argument(
     "--g4-input",
     type=Path,
-    default=f"{base_dir}/data/dense-propagation/geant4/logscale_mom_fe_100mm.root",
     help="Path to Geant4 input file",
 )
 parser.add_argument(
     "--acts-input",
     type=Path,
-    default=f"{base_dir}/data/dense-propagation/acts/eloss_fe.csv",
     help="Path to Acts input file",
 )
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/dense-propagation/eloss_rate_cmp.pdf",
     help="Path to output file",
 )
 parser.add_argument("--show", action="store_true", help="Show plot")
@@ -56,6 +65,9 @@ fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 # ax.set_title("Energy loss of muons in 100 mm Fe")
 ax.set_xlabel("Initial momentum [GeV]")
 ax.set_ylabel("Energy loss [GeV/mm]")
+
+ax.set_xscale("log")
+ax.set_yscale("log")
 
 log_range = (np.log10(args.e_range[0]), np.log10(args.e_range[1]))
 edges = 10 ** np.linspace(log_range[0], log_range[1], args.bins)
@@ -198,10 +210,17 @@ if args.acts_input is not None:
     # ax.plot(mid, acts_total_mean, marker="^", linestyle="", label="Acts")
     # ax.plot(mid, acts_bethe, label="Acts bethe")
 
-ax.set_xscale("log")
-ax.set_yscale("log")
-
 ax.legend()
+
+atlasify.atlasify(
+    axes=ax,
+    brand="Acts",
+    atlas="Simulation",
+    subtext=f"Acts v40.0.0\nsingle muons in {args.thickness} mm of {material_label(args.material)}",
+)
+
+ylim = ax.get_ylim()
+ax.set_ylim(ylim[0], ylim[1] * 1.5)
 
 fig.tight_layout()
 

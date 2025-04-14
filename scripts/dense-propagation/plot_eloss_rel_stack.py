@@ -4,41 +4,38 @@
 import argparse
 from pathlib import Path
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import scipy.stats
+import atlasify
 
-from common import read_g4_data, make_g4_eloss_stats, read_acts_data, stat_mean
-from common import fit_landau, fwhm_landau, fwhm_to_std
+from common import material_label, read_g4_data, make_g4_eloss_stats, read_acts_data, stat_mean
+
+from mycommon1.plots import get_color, get_marker
 
 
 base_dir = Path(__file__).parent.parent.parent
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
+    "material",
+    type=str,
+    choices=["fe", "lar"],
+)
+parser.add_argument(
     "--g4-input",
     nargs=3,
     type=Path,
-    default=[
-        f"{base_dir}/data/dense-propagation/geant4/logscale_mom_fe_{t}mm.root"
-        for t in [10, 100, 1000]
-    ],
     help="Path to Geant4 input file",
 )
 parser.add_argument(
     "--acts-input",
     nargs=3,
     type=Path,
-    default=[
-        f"{base_dir}/data/dense-propagation/acts/msc_eloss_fe_{t}mm.csv"
-        for t in [10, 100, 1000]
-    ],
     help="Path to Acts input file",
 )
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/dense-propagation/eloss_cmp_rel_stack.pdf",
     help="Path to output file",
 )
 parser.add_argument("--show", action="store_true", help="Show plot")
@@ -51,23 +48,24 @@ args = parser.parse_args()
 
 labels = ["10 mm", "100 mm", "1000 mm"]
 
-fig, axs = plt.subplots(
-    3, 1, figsize=(8, 4), sharex=True, sharey=True, gridspec_kw={"hspace": 0.0}
-)
+fig, ax = plt.subplots(1, 1, figsize=(8, 4))
 
-# fig.suptitle("Relative energy loss of muons passing Fe")
-fig.supylabel("Energy loss ratio")
+log_range = (np.log10(args.e_range[0]), np.log10(args.e_range[1]))
+edges = 10 ** np.linspace(log_range[0], log_range[1], args.bins)
+mid = 0.5 * (edges[:-1] + edges[1:])
 
-for i, ax, label, g4_input, acts_input in zip(
-    range(3), axs, labels, args.g4_input, args.acts_input
+# ax._settitle("Relative energy loss of muons passing Fe")
+ax.set_xlabel("Initial momentum [GeV]")
+ax.set_ylabel("Energy loss ratio (Acts / Geant4)")
+
+ax.set_xscale("log")
+ax.set_xlim(edges[0], edges[-1])
+
+ax.hlines(1, edges[0], edges[-1], linestyle="--", color="grey")
+
+for i, label, g4_input, acts_input in zip(
+    range(3), labels, args.g4_input, args.acts_input
 ):
-    ax.set_xlabel("Initial momentum [GeV]")
-    ax.set_ylabel(label)
-
-    log_range = (np.log10(args.e_range[0]), np.log10(args.e_range[1]))
-    edges = 10 ** np.linspace(log_range[0], log_range[1], args.bins)
-    mid = 0.5 * (edges[:-1] + edges[1:])
-
     if g4_input is not None:
         g4_data = read_g4_data(g4_input, args.min_p_out)
         g4_mode, g4_mean, g4_std = make_g4_eloss_stats(g4_data, edges, log_range)
@@ -91,16 +89,23 @@ for i, ax, label, g4_input, acts_input in zip(
             statistic=stat_mean,
         )
 
-    ax.hlines(1, edges[0], edges[-1], linestyle="--", color="C1", label="Acts")
     ax.errorbar(
-        mid, g4_mean / acts_mean, marker="o", linestyle="", color="C0", label="Geant4"
+        mid,
+        g4_mean / acts_mean,
+        marker=get_marker(i),
+        linestyle="",
+        color=get_color(i),
+        label=f"{label}",
     )
 
-    ax.set_xscale("log")
-    ax.set_xlim(edges[0], edges[-1])
+ax.legend(loc="upper right")
 
-    if i == 0:
-        ax.legend(loc="upper right")
+atlasify.atlasify(
+    axes=ax,
+    brand="Acts",
+    atlas="Simulation",
+    subtext=f"Acts v40.0.0\nsingle muons in {material_label(args.material)}",
+)
 
 fig.tight_layout()
 

@@ -6,6 +6,14 @@ import scipy.stats
 from scipy.optimize import curve_fit
 
 
+def material_label(material):
+    if material == "fe":
+        return "Fe"
+    if material == "lar":
+        return "LAr"
+    raise ValueError(f"Unknown material: {material}")
+
+
 def read_g4_data(path, min_p_out):
     g4_data = ak.to_dataframe(uproot.open(path)["reading"].arrays(library="ak"))
     g4_data = g4_data[g4_data["p_final"] > min_p_out]

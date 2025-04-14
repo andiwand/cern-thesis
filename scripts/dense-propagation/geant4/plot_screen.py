@@ -9,6 +9,15 @@ from scipy.optimize import curve_fit
 import uproot
 import awkward as ak
 import numpy as np
+import atlasify
+
+
+def material_label(material):
+    if material == "fe":
+        return "Fe"
+    if material == "lar":
+        return "LAr"
+    raise ValueError(f"Unknown material: {material}")
 
 
 def robust_gauss_fit_naive(data):
@@ -69,26 +78,31 @@ base_dir = Path(__file__).parent.parent.parent.parent
 
 parser = argparse.ArgumentParser(description="Plot multiple scattering")
 parser.add_argument(
+    "material",
+    type=str,
+    choices=["fe", "lar"],
+)
+parser.add_argument(
+    "thickness",
+    type=int,
+    help="Thickness in mm",
+)
+parser.add_argument(
     "--input",
     nargs=3,
     type=Path,
-    default=[
-        f"{base_dir}/data/dense-propagation/geant4/single_mom_lar_{m}GeV.root"
-        for m in [1, 10, 100]
-    ],
     help="Path to the input files",
 )
 parser.add_argument(
     "--output",
     type=Path,
-    default=f"{base_dir}/plots/dense-propagation/geant4_screen.pdf",
     help="Path to output file",
 )
 parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 fig, axs = plt.subplots(
-    2, 3, figsize=(8, 4), height_ratios=[2, 1], layout="constrained"
+    2, 3, figsize=(8, 4.5), height_ratios=[2, 1], layout="constrained"
 )
 
 # fig.suptitle("Recorded positions with muons passing 1 m of LAr")
@@ -106,13 +120,13 @@ for i, file, axs_cols, momentum, x_range, e_range in zip(
     x, y = data["x"], data["y"]
     e = data["p_final"]
 
-    axs_cols[0].set_aspect("equal")
+    #axs_cols[0].set_aspect("equal")
     axs_cols[0].set_title(f"{momentum} GeV")
-    axs_cols[0].set_xlabel("x [mm]")
+    #axs_cols[0].set_xlabel("x [mm]")
     if i == 0:
         axs_cols[0].set_ylabel("y [mm]")
 
-    h2d = axs_cols[0].hist2d(x, y, bins=50, range=(x_range, x_range), vmin=0, vmax=60)
+    h2d = axs_cols[0].hist2d(x, y, bins=50, range=(x_range, x_range), vmin=0, vmax=60, cmap="Blues", cmin=10)
 
     (m, s), cov = robust_gauss_fit(x)
 
@@ -142,13 +156,25 @@ for i, file, axs_cols, momentum, x_range, e_range in zip(
     #     axs_cols[1].axvline(m + j * s, color=c, linestyle="--", label=f"{j} σ = {m + j * s:.2f} mm")
     #     axs_cols[1].axvline(m - j * s, color=c, linestyle="--")
 
+    atlasify.atlasify(axes=axs_cols[0], outside=True, atlas=False, offset=0)
+    atlasify.atlasify(axes=axs_cols[1], outside=True, atlas=False, offset=0)
+
     axs_cols[1].legend(loc="lower right")
 
 cbar = fig.colorbar(h2d[3], ax=axs.ravel().tolist())
 cbar.set_ticks([])
-cbar.set_label("Hits")
+cbar.set_label("Hit density [a.u.]")
 
-fig.tight_layout()
+fig.suptitle("\n\n\n\n")
+
+ax = fig.add_axes([0.06, 0.0, 0.94, 1.0])
+ax.axis("off")
+atlasify.atlasify(
+    axes=ax,
+    brand="Acts",
+    atlas="Simulation",
+    subtext=f"Acts v40.0.0\nsingle muons in {args.thickness} mm of {material_label(args.material)}",
+)
 
 if args.output is not None:
     fig.savefig(args.output)

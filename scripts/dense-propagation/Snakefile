@@ -38,7 +38,7 @@ rule plot_screen:
         "plots/dense-propagation/geant4_screen_{material}_{thickness}mm.pdf",
     shell:
         """
-        python {input.script} --input {input.data} --output {output}
+        python {input.script} {wildcards.material} {wildcards.thickness} --input {input.data} --output {output}
         """
 
 rule plot_eloss_rate:
@@ -50,7 +50,7 @@ rule plot_eloss_rate:
         "plots/dense-propagation/eloss_rate_{material}_{thickness}mm.pdf",
     shell:
         """
-        python {input.script} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
+        python {input.script} {wildcards.material} {wildcards.thickness} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
         """
 
 rule plot_eloss_rel_stack:
@@ -62,7 +62,7 @@ rule plot_eloss_rel_stack:
         "plots/dense-propagation/eloss_rel_stack_{material}.pdf",
     shell:
         """
-        python {input.script} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
+        python {input.script} {wildcards.material} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
         """
 
 rule plot_msc_rel_stack:
@@ -74,5 +74,5 @@ rule plot_msc_rel_stack:
         "plots/dense-propagation/msc_rel_stack_{material}.pdf",
     shell:
         """
-        python {input.script} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
+        python {input.script} {wildcards.material} --g4-input {input.g4_data} --acts-input {input.acts_data} --output {output}
         """
