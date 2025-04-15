@@ -14,11 +14,9 @@
 
 ## current
 
-- [ ] get intro part done
 - [ ] get ITk perf chapter done
-- [ ] atlasify chapter 8 plots; put ratio plots on top of each other
+- [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] what is a ttbar event? where to put this?
-- [ ] what is pileup? where to put this?
 - [ ] mention traccc / detray? -> acts intro
 - [ ] what is a particle gun? -> acts intro?
 - [ ] what is eta?
@@ -42,27 +40,26 @@
 - [ ] Kurzfassung
 - [ ] Abstract
 - [ ] I. Introduction
-  - [ ] Intro text
-  - [ ] 1. General introduction
-    - [ ] Into text
-    - [ ] 1.1. Motivation
-    - [ ] 1.2. High-energy physics
-    - [ ] 1.3. The Standard Model
-      - [ ] 1.3.1. Beyond the Standard Model
-    - [ ] 1.4. CERN and the Large Hadron Collider
-    - [ ] 1.5. The ATLAS experiment
-      - [ ] 1.5.1. The ATLAS detector
-      - [ ] 1.5.2. Phase-2 Upgrade
-  - [x] 2. Reconstruction of tracks and primary vertices
-    - [x] Into text
-    - [x] 2.1. Particle-Matter Interactions
-    - [x] 2.2. Detection of Charged Particles
-    - [x] 2.3. Equation of Motion
-    - [x] 2.4. Runge-Kutta-Nystrom Method
-    - [x] 2.5. Track parameters
-    - [x] 2.6. Jacobian and covariance transport
-    - [x] 2.7. Reconstruction chains and objects
-    - [x] 2.8. Reconstruction algorithms
+  - [ ] ✔️✔️✔️ 1. General introduction
+    - [ ] ✔️✔️✔️ Into text
+    - [ ] ✔️✔️✔️ 1.1. Motivation
+    - [ ] ✔️✔️✔️ 1.2. High-energy physics
+    - [ ] ✔️✔️✔️ 1.3. The Standard Model
+      - [ ] ✔️✔️✔️ 1.3.1. Beyond the Standard Model
+    - [ ] ✔️✔️✔️ 1.4. CERN and the Large Hadron Collider
+    - [ ] ✔️✔️✔️ 1.5. The ATLAS experiment
+      - [ ] ✔️✔️✔️ 1.5.1. The ATLAS detector
+      - [ ] ✔️✔️✔️ 1.5.2. Phase-2 Upgrade
+  - [ ] ✔️✔️✔️ 2. Reconstruction of tracks and primary vertices
+    - [ ] ✔️✔️✔️ Into text
+    - [ ] ✔️✔️✔️ 2.1. Particle-Matter Interactions
+    - [ ] ✔️✔️✔️ 2.2. Detection of Charged Particles
+    - [ ] ✔️✔️✔️ 2.3. Equation of Motion
+    - [ ] ✔️✔️✔️ 2.4. Runge-Kutta-Nystrom Method
+    - [ ] ✔️✔️✔️ 2.5. Track parameters
+    - [ ] ✔️✔️✔️ 2.6. Jacobian and covariance transport
+    - [ ] ✔️✔️✔️ 2.7. Reconstruction chains and objects
+    - [ ] ✔️✔️✔️ 2.8. Reconstruction algorithms
   - [x] 3. Acts: A Common Tracking Software
     - [x] Into text
     - [x] 3.1. Components and their connections
