@@ -14,7 +14,6 @@ Similar to the existing surface-based approach, this implementation focues on tw
 \label{sec:dev/dense/equations-of-motion}
 
 Continuous energy loss affects the trajectory of a particle and needs to be treated in the equations of motion. Section \ref{sec:into/reco/equations-of-motion} describes the equations of motion for a particle in vacuum and in a magnetic field. The equations of motion can be extended to include continuous energy loss:
-
 \begin{align}
     \frac{d^2\mathbf{r}}{ds^2} &= \lambda \mathbf{T} \times \mathbf{B}(\mathbf{r}) \\
     \frac{d^2t}{ds^2} &= \frac{g m^2 \lambda^3}{q^3} \\
@@ -22,13 +21,11 @@ Continuous energy loss affects the trajectory of a particle and needs to be trea
     \frac{d\lambda}{ds} &= \frac{dt}{ds} \frac{\lambda^2 g}{q}
     \label{eq:dev/dense/eom}
 \end{align}
-
 with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, the magnetic field $\mathbf{B}$, the cartesian position $\mathbf{r}$, the rest frame time $t$, the path length $s$, the absolute momentum $p$, the energy loss rate $g$, the mass $m$, and the charge $q$.
 
 The dependent variables to be integrated are chosen as $\mathbf{y} = (\mathbf{r}^\mathrm{T} \; t \; \Lambda)^\mathrm{T}$ with their first derivatives $\mathbf{y}' = (\mathbf{T}^\mathrm{T} \; \frac{dt}{ds} \; \lambda)^\mathrm{T}$. Equation \ref{eq:dev/dense/eom} can be integrated with the Runge-Kutta-Nyström method which is described in Section \ref{sec:into/reco/runge-kutta-nystrom}.
 
-The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions \cite{pub-2008-003} :
-
+The energy loss rate is calculated from ionization, bremsstrahlung and, in case of muons, the direct $e^+e^-$ pair production and photonuclear interactions \cite{pub-2008-003}:
 \begin{equation}
     g = \left( \frac{dE}{ds} \right)_{\text{ion}} + \left( \frac{dE}{ds} \right)_{\text{brem}} + \left( \frac{dE}{ds} \right)_{\text{pair + photo nuclear}}
 \end{equation}
@@ -38,27 +35,21 @@ The individual energy loss rates are provided by \textcite{pub-2008-003} and lis
 \textbf{Mean energy loss from ionization}
 
 The mean energy loss from ionization is calculated using the Bethe-Bloch formula. The Bethe-Bloch formula describes the energy loss of a charged particle in matter due to ionization of the medium. It is given by \cite{pdg2024}
-
 \begin{equation}
     \left( \frac{dE}{ds} \right)_{\text{ion}} = - K z^2 \frac{Z}{A} \frac{\rho}{\beta^2} \left[ \frac{1}{2} \ln \frac{2m_e c^2 \beta^2 \gamma^2 W_{\text{max}}}{I^2} - \beta^2 - \frac{\delta}{2} \right]
 \end{equation}
-
 in $[\text{MeV} \, \text{cm}^{-1}]$ with the constant $K = 4 \pi N_A r_e^2 m_e c^2 \approx 0.307075 \, \text{MeV} \, \text{mol}^{-1} \, \text{cm}^2$, the charge of the particle $z$, the atomic number of the medium $Z$, the atomic mass of the medium $A$, the material density $\rho$ in $[\text{g} \, \text{cm}^{-3}]$, the maximum kinetic energy transfer in a single collision $W_{\text{max}}$ in $[\text{MeV}]$, the mean excitation energy of the medium $I$ in $[\text{MeV}]$, and the density effect correction $\delta$.
 
 The maximum kinetic energy transfer in a single collision is given by \cite{pdg2024}
-
 \begin{equation}
     W_{\text{max}} = \frac{2 m_e c^2 \beta^2 \gamma^2}{1 + 2 \gamma m_e / M + (m_e / M)^2}
 \end{equation}
-
 in $[\text{MeV}]$ with the electron mass $m_e$ in $[\text{MeV}/c^2]$, and the mass of the particle $M$ in $[\text{MeV}/c^2]$.
 
 At high energies (\textcite{pub-2008-003} suggests $\gamma \ge 10$) the density effect correction is given by \cite{pdg2024}
-
 \begin{equation}
     \frac{\delta}{2} = \ln \frac{\hbar \omega_p}{I} + \ln \beta \gamma - \frac{1}{2}
 \end{equation}
-
 with the plasma energy $\hbar \omega_p = \sqrt{4 \pi N_e r_e^3} m_e c^2 / \alpha$ in $[\text{MeV}]$. For lower energies, the density effect is ignored.
 
 The mean excitation energy is a material property and should be provided by the user. \textcite{pub-2008-003} suggests a crude approximation of $I = 16 \, \text{eV} \, Z^{0.9}$.
@@ -66,27 +57,21 @@ The mean excitation energy is a material property and should be provided by the 
 \textbf{Mean energy loss from bremsstrahlung in matter}
 
 The mean energy loss from bremsstrahlung is calculated using the Bethe-Heitler formula. It is given by \cite{bethe-heitler}
-
 \begin{equation}
     \left( \frac{dE}{ds} \right)_{\text{brem}} = - \frac{E}{X_0} \left( \frac{m_e}{M} \right)^2
 \end{equation}
-
 with the radiation length $X_0$ in $[\text{cm}]$, the electron mass $m_e$ in $[\text{MeV}/c^2]$, and the mass of the particle $M$ in $[\text{MeV}/c^2]$.
 
 \textbf{Mean energy loss from pair production and photonuclear interactions for muons}
 
 The mean energy loss from pair production and photonuclear interactions for muons is parameterized in \textcite{pub-2008-003} from data provided in \textcite{GROOM2001183}. The energy loss is given by
-
 \begin{equation}
     \left( \frac{dE}{ds} \right)_{\text{p.+p.n.}} = 0.5345 \frac{1}{X_0} - 6.803 \cdot 10^{-6} \frac{E}{X_0} - 2.278 \cdot 10^{-11} \frac{E^2}{X_0} + 9.899 \cdot 10^{-18} \frac{E^3}{X_0}
 \end{equation}
-
 for $8 \, \text{GeV} < E < 1 \, \text{TeV}$ and
-
 \begin{equation}
     \left( \frac{dE}{ds} \right)_{\text{pair + photo nuclear}} = 2.986 \frac{1}{X_0} - 9.253 \cdot 10^{-5} \frac{E}{X_0}
 \end{equation}
-
 for $E > 1 \, \text{TeV}$. Below $8 \, \text{GeV}$ the energy loss is negligible.
 
 \textbf{Integration}
@@ -101,10 +86,9 @@ The covariance of a particle transported through material needs to be adjusted d
 
 \textbf{Multiple scattering}
 
-Charged particles passing through a medium are deflected by many small-angles. Most of these deflections are caused by Coulomb scattering from nuclei which is described by the Rutherford cross section. Given the central limit theorem, the net scattering and displacement distributions are Guassian, with non-Gaussian tails produced by less frequent "hard" scattering \cite{pdg2024} .
+Charged particles passing through a medium are deflected by many small-angles. Most of these deflections are caused by Coulomb scattering from nuclei which is described by the Rutherford cross section. Given the central limit theorem, the net scattering and displacement distributions are Guassian, with non-Gaussian tails produced by less frequent "hard" scattering \cite{pdg2024}.
 
 The multiple scattering angle is given by \cite{pdg2024}
-
 \begin{equation}
     \theta_0 = \frac{13.6 \, \text{MeV}}{\beta c p} z \sqrt{\frac{x}{X_0}} \left[ 1 + 0.038 \ln \left( \frac{x z^2}{X_0 \beta^2} \right) \right]
     \label{eq:dev/dense/msc}
@@ -119,7 +103,6 @@ Thin scatterers only incrase directional uncertainty, as the particle will pass 
 The energy loss distribution of a particle passing through matter is highly non-Gaussian and has a long tail towards higher energy loss. As such, there is not one best solution to model energy loss as a Gaussian distribution. One can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width.
 
 The estimate of the energy loss uncertainty in Acts is given by \textcite{pdg2024} with
-
 \begin{equation}
 \begin{aligned}
     \text{FWHM}_E &\approx 4 \xi \qquad&
@@ -128,7 +111,6 @@ The estimate of the energy loss uncertainty in Acts is given by \textcite{pdg202
     \sigma_\lambda &= \frac{q}{\beta p^2} \sigma_E
 \end{aligned}
 \end{equation}
-
 with the molar electron density $\langle \rho \, Z/A \rangle$.
 
 \textbf{Transport}
@@ -136,7 +118,6 @@ with the molar electron density $\langle \rho \, Z/A \rangle$.
 One needs to be careful with continuous covariance updates as both, the energy loss and the multiple scattering are non-Gaussian processes and the convolution property is not fullfilled. As such, naively adding up variances after passing some amount of material will not give the correct result. To estimate the angle and energy uncertainty correctly, all the encountered material needs to be taken into account at once. At the same time these uncertainties will influence the positional and temporal uncertainty of the particle which needs to be accounted for.
 
 Taking the multiple scattering as an example, Equation \ref{eq:dev/dense/msc} gives the standard deviation of the angle uncertainty after passing some amount of material. We can apply this formula even for parts of the material, but it is not correct to "reset" the material amount after each step. For the second step one rather has to take the difference in angle variance $\text{Var}[\theta]$ from the first step into account to calculate the variance of the position $\text{Var}[y]$. Ignoring the evolution of the position variance during a step the variance can be calculated as follows:
-
 \begin{equation}
 \begin{split}
     \text{Var}[\theta]_\text{\,at $x_1$} &= \theta_0^2(x_1) \\
@@ -177,7 +158,6 @@ During the developments of the \texttt{SympyStepper} for dense material describe
 \end{split}
 \label{eq:dev/dense/split-var-iter}
 \end{equation}
-
 with the step size $h_i = x_i - x_{i-1}$. To include the continuous energy loss in the multiple scattering estimation, $\Delta\theta_0^2$ can be evaluated with an average momentum at the middle of the step.
 
 A major challenge during the dense material handling for the \texttt{EigenStepper}, described in Section \ref{sec:dev/dense/eigen}, was that this kind of covariance transport was not foreseen in Acts. The covariance is transported from one surface to the next using the transport Jacobian. There is no notion of a free track parameter covariance in the Acts \texttt{EigenStepper} where additional material effects can be accumulated.
@@ -185,13 +165,10 @@ A major challenge during the dense material handling for the \texttt{EigenSteppe
 To overcome this issue, the problem is decomposed and the additional covariance due to the material is calculated without taking the general transport Jacobian into account. Encountered material during the transport is accumulated and applied to the bound covariance only when it is transported to the next surface. This way, the additional covariance is accumulated independently from the transport Jacobian, which is justified by the fact that the multiple scattering does not affect the trajectory and increases the uncertainty orthogonal to the propagation direction.
 
 The bound covariance can then be written as
-
 \begin{equation}
     \mathbf{\Sigma}_\text{final} = \mathbf{J}_{\text{b\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}_{\text{b\textrightarrow b}}^\mathrm{T} + \mathbf{J}_{\text{f\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{additional} \cdot \mathbf{J}_{\text{f\textrightarrow b}}^\mathrm{T}
 \end{equation}
-
 with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and the free to bound Jacobian $\mathbf{J}_{\text{f\textrightarrow b}}$. The additional covariance can be written as
-
 \begin{equation}
     \mathbf{\Sigma}_\text{additional} =
         \begin{pmatrix}
@@ -201,7 +178,6 @@ with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and th
             \mathbf{0} & \text{Cov}[t,\lambda] & \mathbf{0} & \text{Var}[\lambda]
         \end{pmatrix}
 \end{equation}
-
 with the projector $\mathbf{P} = \mathbf{I} - \mathbf{T} \cdot \mathbf{T}^\mathrm{T}$.
 
 \section{Toy Model}

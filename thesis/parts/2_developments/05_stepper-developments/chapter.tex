@@ -22,30 +22,24 @@ Adaptive step size is a technique to improve the performance of the numerical in
 This is done by computing an error estimate after each step of the numerical integration and comparing it to the requested accuracy target. If the error estimate is larger than the requested accuracy target the step size is reduced, otherwise it is increased.
 
 A derivation of the expected error for the fourth-order Runge-Kutte-Nystrom is provided in \textcite{pub-2009-001} and only summarized here. The error estimate is given by
-
 \begin{equation}
-    \epsilon = h^2 \, \left\lVert \mathbf{k}_1 - \mathbf{k}_2 - \mathbf{k}_3 + \mathbf{k}_4 \right\rVert_1
+    \epsilon = h^2 \, \left\lVert \mathbf{k}_1 - \mathbf{k}_2 - \mathbf{k}_3 + \mathbf{k}_4 \right\rVert
 \end{equation}
-
-with the intermediate steps of the Runge-Kutta-Nystrom integration $\mathbf{k}_1$, $\mathbf{k}_2$, $\mathbf{k}_3$, and $\mathbf{k}_4$. Given the requested accuracy target $\tau$ and the used step length, the next step length can be calculated with \cite{pub-2009-001}\cite{numerical-recipes} :
-
+with the intermediate steps of the Runge-Kutta-Nystrom integration $\mathbf{k}_1$, $\mathbf{k}_2$, $\mathbf{k}_3$, and $\mathbf{k}_4$. Given the requested accuracy target $\tau$ and the used step length, the next step length can be calculated with \cite{pub-2009-001}\cite{numerical-recipes}:
 \begin{equation}
     h_{\text{next}} = h \, \left( \frac{\tau}{\epsilon} \right)^{1/4} \text{,}
     \label{eq:dev/stepper/adaptive-step-size}
 \end{equation}
-
 where the exponent of 1/4 is determined by the order of the Runge-Kutta-Nystrom integration.
 
 Equation \ref{eq:dev/stepper/adaptive-step-size} is used after each step of the numerical integration to adjuste the step size. If the error estimate is too large, the step size is reduced and the step is reattempted. If the error estimate is too small, the step size is increased to accelerate the next integration step.
 
 Since the error estimate can fluctuate, an upper and lower limit is imposed to the updated step size:
-
 \begin{equation}
     \frac{1}{4} h < h_{\text{next}} < 4 h \text{.}
 \end{equation}
 
 The accuracy condition is the following:
-
 \begin{equation}
     \epsilon < 4 \tau \text{.}
 \end{equation}
@@ -81,7 +75,7 @@ While the \texttt{EigenStepper} implementation is arguably doing well in terms o
 \section{Implementation of the \texttt{SympyStepper}}
 \label{sec:dev/stepper/sympy}
 
-The \texttt{SympyStepper} is a novel stepper implementation in Acts, conceptualized and implemented as part of the work on this thesis. It is based on generated code from the symbolic math library \texttt{SymPy} \cite{sympy} . The motivation for this stepper is to improve CPU performance while keeping or improving the readable representation of the mathematics behind the implementation. Figure \ref{fig:dev/stepper/sympy} shows an example of using \texttt{SymPy} to generate C++ code for the first intermediate step of the Runge-Kutta-Nystrom integration.
+The \texttt{SympyStepper} is a novel stepper implementation in Acts, conceptualized and implemented as part of the work on this thesis. It is based on generated code from the symbolic math library \texttt{SymPy} \cite{sympy}. The motivation for this stepper is to improve CPU performance while keeping or improving the readable representation of the mathematics behind the implementation. Figure \ref{fig:dev/stepper/sympy} shows an example of using \texttt{SymPy} to generate C++ code for the first intermediate step of the Runge-Kutta-Nystrom integration.
 
 \begin{figure}[ht]
     \centering

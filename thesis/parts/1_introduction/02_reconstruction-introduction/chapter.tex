@@ -1,10 +1,14 @@
-Reconstruction is the process of extracting underlying physical information from the raw data collected by a detector. Due to the complexity of the process, reconstruction is usually done in a series of steps. Each step takes the output of the previous step and produces new outputs. This proceedure can be thought of as building higher and higher level objects in a chain of reconstruction steps.
+Reconstruction is the process of extracting underlying physical information from the raw data collected by a detector. Due to the complexity of the process, reconstruction is usually done in a series of steps. Each step takes the output of the previous step and produces new outputs. This procedure can be thought of as building higher and higher level objects in a chain of reconstruction steps.
 
-This thesis is mainly concerned with the reconstruction of tracks from charged particles and the reconstruction of primary vertices. Track reconstruction is a crutial step in the reconstruction of the full event in a particle physics experiment. It is the process of reconstructing the trajectories of charged particles as they traverse the detector. After a trajectoy is found and fitted to the detector measurements, the track can be used to estimate the particle's momentum, charge, and origin.
+This thesis is mainly concerned with the reconstruction of tracks from charged particles produced in primary interactions and the reconstruction of their vertices. Track reconstruction is a crutial step in the reconstruction of the full event in a particle physics experiment. It is the process of reconstructing the trajectories of charged particles as they traverse the detector. After a trajectoy is found and fitted to the detector measurements, the track can be used to estimate the particle's momentum, charge, and origin.
 
 In a subsequent step called vertex reconstruction, tracks are used to find the point where the particles were produced, called vertex. The position of the vertex in comparison to the interaction region can be used to get an insight into the event processes.
 
-This chapter is an introduction to the concepts and methods used in track and vertex reconstruction. It provides an overview of the relevant particle-matter interactions, the equations of motion for charged particle in a magnetic field, the Runge-Kutta-Nyström method to integrate the equations of motion, track parameters, Jacobian and covariance transport, reconstruction chains and objects, and different reconstrution algorithms.
+For the reconstruction of the full event, track and vertices are used to form higher level objects like jets, missing transverse energy (MET), taus, and other.
+
+Displaced tracks and vertices are not covered in this thesis. They can be created by interactions with the detector material or decays of long-lived particles. Displaced tracks and vertices are usually reconstructed in a separate step after the standard reconstruction, also called large radius tracking (LRT).
+
+This chapter introduces the key concepts and methods involved in track and vertex reconstruction. It begins with an overview of the relevant particle-matter interactions and the equations of motion for charged particles in a magnetic field. The Runge-Kutta-Nyström method is then presented as the numerical technique used to integrate these equations. Subsequently, the concept of track parameters is discussed, along with the transport of Jacobians and covariance matrices. Finally, the reconstruction chains and objects for tracks and vertices are described, along with the various reconstruction algorithms employed.
 
 \section{Particle-matter interactions}
 
@@ -12,27 +16,25 @@ Free, energetic particles interact with matter in a variety of ways. The most co
 
 Interactions between particles and matter can be catagorized into elastic and inelastic interactions.
 
-During elastic interactions, the particle can be deflected but does not lose a significant amount of energy. An example of this is multiple Coulomb scattering, which in first order only affects the direction of the particle's trajectory. Additionally, a shift in the transverse plane relative to the incident direction can build up if the multiple scattering evolves over a long distance.
+During elastic interactions, the particle can be deflected but does not lose a significant amount of energy. An example of this is multiple Coulomb scattering, which in first order only affects the direction of the particle's trajectory. Additionally, a shift in the transverse plane relative to the incident direction can build up if the multiple scattering evolves over a long distance. This is discussed in more detail in Chapter \ref{ch:dev/dense}.
 
-For inelastic interactions, the particle loses a significant amount of energy or is absorbed in the material. This can happen through ionization, bremsstrahlung, or hadronic interactions. Bremsstrahlung is especially relevant for light particles like electrons. Hadronic interactions are relevant for hadronic particles and can lead to the disintegration of the incoming particle. Inelastic interactions can lead to the production of secondary particles, which may also be subject to detection. At the same time, they can reduce the number of produced hits in the detector for a given particle and thus reduce the efficiency of the detector.
+For inelastic interactions, the particle loses a significant amount of energy or is absorbed in the material. This can happen through ionization, bremsstrahlung, or hadronic interactions. Bremsstrahlung is especially relevant for light particles like electrons. Hadronic interactions are relevant for hadronic particles and can lead to the disintegration of the incoming particle. Inelastic interactions can lead to the production of secondary particles, which may also be subject to detection. At the same time, they can reduce the number of produced hits in the detector for a given particle and thus reduce the reconstruction efficiency of primary particles. The production of secondaries can increase hit confusion effects and further reduce the efficiency.
 
-\section{Detection of charged particles}
+\subsection{Detection of charged particles}
 
 Detecting charged particles is the first step in reconstructing their trajectories. Generally, they are detected by measuring some form of interaction with matter. As an example, charged particles typically ionize the surrounding material while traversing it. Particle detectors make use of this by converting the resulting charge into a measurable signal.
 
-Nowadays, semiconducting particle detectors are a very common electronic detection approach. They are made from two different semiconducting materials which form a depletion zone. When a charged particle traverses the depletion zone, it ionized the material and creates pairs of opposite charges. These charge pairs are separated by an applied electric field and drift towards the electrodes. An electric signal is created which can be amplified and read out. These sensors can be segmented in one dimension forming strips, or in two dimensions forming pixels. The measured signal can then be associated with a location on the sensor.
+Nowadays, semiconducting particle detectors are a very common electronic detection approach. These sensors can be segmented in one dimension forming strips, or in two dimensions forming pixels. The measured signal for individual segments can then be associated with a location on the sensor.
 
 \section{Equations of motion}
 \label{sec:into/reco/equations-of-motion}
 
-The equations of motion describe the trajectory of a free, charged particle in the presents of a magnetic field. Ignoring any material interactions, the equations can be written as:
-
+The equations of motion describe the trajectory of a free, charged particle in the presence of a magnetic field. Ignoring any material interactions, the equations can be written as:
 \begin{align}
     \label{eq:intro/reco/eom}
     \frac{d^2\mathbf{r}}{ds^2} &= \lambda \mathbf{T} \times \mathbf{B}(\mathbf{r}) \\
     \frac{dt}{ds} &= \sqrt{1 + \frac{m^2}{p^2}}
 \end{align}
-
 with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, magnetic field $\mathbf{B}$, the cartesian position $\mathbf{r}$, the rest frame time $t$, the path length $s$, the absolute momentum $p$, the mass $m$, and the charge $q$.
 
 In a homogenous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. While in reality, the magnetic field is not homogenous and the equations of motion are solved numerically. The most common method to solve the equations of motion is the Runge-Kutta-Nyström method, which is discussed in the next section.
@@ -45,17 +47,14 @@ This equation can be extended to include the effects of continuous energy loss w
 The Runge-Kutta-Nyström (RKN) method allows to solve second-order ordinary differential equations (ODE) numerically. It is a specialized Runge-Kutta (RK) method which operates on second-order instead of first-order ODE.\footnote{The RKN method can be derived from the RK method by rewriting the second-order ODE into a first-order ODE.} In track reconstruction, the RKN method is used to solve the equations of motion of a charged particle in a magnetic field, provided in Equation \ref{eq:intro/reco/eom}.
 
 A fourth-order RKN has the benefit of only requiring 3 magnetic field evaluations per step. At the same time, it has proven to be stable and accurate for tracking applications \cite{pub-2009-001}. The integration is performed as follows:
-
 \begin{align}
     \mathbf{T}_{n+1} &= \mathbf{T}_n + \frac{h}{6} (\mathbf{k}_1 + 2 \mathbf{k}_2 + 2 \mathbf{k}_3 + \mathbf{k}_4) \\
     \mathbf{r}_{n+1} &= \mathbf{r}_n + h \mathbf{T}_n + \frac{h^2}{6} (\mathbf{k}_1 + \mathbf{k}_2 + \mathbf{k}_3)
     \label{eq:intro/reco/rkn}
 \end{align}
-
 with the next direction estimate $\mathbf{T}_{n+1}$, the next position estimate $\mathbf{r}_{n+1}$, the step size $h$, and the four intermediate RKN steps $\mathbf{k}_i$.
 
 The intermediate steps $\mathbf{k}_i$ are defined as:
-
 \begin{align}
     \mathbf{k}_1 &= \mathbf{f}\left( t_n, \mathbf{y}_n, \mathbf{y}^{\prime}_n \right) \\
     \mathbf{k}_2 &= \mathbf{f}\left( t_n + \frac{h}{2}, \mathbf{y}_n + \frac{h}{2} \mathbf{y}^{\prime}_n + \frac{h^2}{8} \mathbf{k}_1, \mathbf{y}^{\prime}_n + \frac{h}{2} \mathbf{k}_1 \right) \\
@@ -63,7 +62,6 @@ The intermediate steps $\mathbf{k}_i$ are defined as:
     \mathbf{k}_4 &= \mathbf{f}\left( t_n + h, \mathbf{y}_n + h \mathbf{y}^{\prime}_n + \frac{h^2}{2} \mathbf{k}_3, \mathbf{y}^{\prime}_n + h \mathbf{k}_3 \right)
     \label{eq:intro/reco/rkn-steps}
 \end{align}
-
 with $\mathbf{y}_n = \left( \mathbf{r}^\mathrm{T} \, t \right)^\mathrm{T}$, $\mathbf{y}^{\prime}_n = \left( \mathbf{T}^\mathrm{T} \, \frac{dt}{ds} \right)^\mathrm{T}$, and the current path length $t_n = s$. The differential equation $\mathbf{f}$ is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}.
 
 The global error of the fourth-order RKN method is of order $\mathcal{O}(h^4)$, while the local error is of order $\mathcal{O}(h^5)$. An adaptive step size can be used to improve the performance of the RKN method, which is further discussed in Section \ref{sec:dev/stepper/adaptive-step-size}.
@@ -76,40 +74,36 @@ Track parameters can be bound to a surface or free. Bound track parameters are d
 
 Track parameterization is ultimately a choice. There is no single best parameterization for all applications. Experiments will use a parameterization that is best suited for their specific needs. Collider experiments are usually symmetric with respect to the beamline and use spherical and/or cylindrical coordinate systems to leverage that. If the magnetic field aligns with the beam axis, curvature only affects the transverse plane (also called bending plane), which can be reflected in the parameterization.
 
+The choice of track parameters in Acts is discussed in Section \ref{sec:intro/acts/track-parameterization}.
+
 \section{Jacobian and covariance transport}
 \label{sec:intro/reco/jac-transport}
 
 In tracking, covariance transport is the process of propagating track parameter uncertainties along the trajectory. It is crucial for some reconstruction algorithms like the Kalman filter based track fitting. Apart from that, the track parameter covariance can be used for physics and validation purposes.
 
 Covariance transport can be achieved by linearizing the track parameter transport into a Jacobian matrix. The Jacobian is a matrix of partial derivatives which describes how the track parameters change at a given point with respect to the initial parameters. The free transport Jacobian matrix can be extracted from the RKN method by taking the derivative of the track parameters with respect to the initial parameters. This is a semi-analytical approach as it depends on the formalism of the numerical integration. In order to get the full transport Jacobian matrix for bound to bound parameter propagation, the Jacobian matrix has to be multiplied with the Jacobian matrix of the bound to free and free to bound transformations.
-
 \begin{equation}
     \mathbf{J}_\text{bound\textrightarrow bound} = \mathbf{J}_\text{bound\textrightarrow free} \ \left[ \mathbf{I} + \dv{\mathbf{x}_\text{free}}{s} \ \pdv{s}{\mathbf{x}_\text{free}} \right] \ \mathbf{J}_\text{free\textrightarrow free} \ \mathbf{J}_\text{free\textrightarrow bound}
 \end{equation}
-
 An additional term is included to handle path length uncertainties. This can be thought of as a correction term due to projection effects. If the trajectory does not cross the surface perpendicular, the error of the local positions need to be increased. $\dv{\mathbf{x}_\text{free}}{s}$ is the derivative of the free track parameters with respect to the path length $s$ and is given by the equations of motion, provided in Equation \ref{eq:intro/reco/eom}. The fourth-order RKN method evaluates this with $\mathbf{k}_4$. $\pdv{s}{\mathbf{x}_\text{free}}$ is the partial derivative of the path length with respect to the free track parameters and is obtained from the approached surface.
 
 The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters from one surface to the next. This is done by multiplying the Jacobian matrix with the covariance.
-
 \begin{equation}
     \mathbf{\Sigma}_{\text{new}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^\mathrm{T}
 \end{equation}
-
 with the covariance on the previous surface $\mathbf{\Sigma}_{\text{previous}}$, and the covariance on the new surface $\mathbf{\Sigma}_{\text{new}}$.
 
 Derivations and validations of the Jacobian and covariance transport can be found in \textcite{bomki-jac}.
 
-\section{Reconstruction chains and objects}
+\section{Track and vertex reconstruction chains and objects}
 
-A reconstruction chain is a preceedure of steps to ultimately extract all the information of interest from an event. In the context of this thesis, reconstruction chains produce tracks and vertices as final objects. In a broader context of a particle physics experiment, reconstruction chains will also produce higher level objects like jets, missing energy, etc.
-
-A typical track reconstruction chain starts with the clustering of raw sensor readings to form measurements of the particle's trajectory. These measurements are transformed into spacepoints. Spacepoints are points in the global 3D detector coordinate system and represent the position of all potential hits particles left in the detector in one event. These points can be grouped into track candidates, called seeds. Usually this is done with 3 spacepoints, as this is the minimum to get a first track parameter estimate. Using the seeds and their initial parameters a track finding algorithm can be used to find the full track and to filter out random combinations, called fakes. The track is then fitted to all the compatible measurements. Finally, fitted tracks can be grouped into sets which seemingly originate from the same location, called vertices.
+A reconstruction chain is a preceedure of steps to ultimately extract all the information of interest from an event. In the context of this thesis, reconstruction chains produce tracks and vertices from primary interactions as final objects. In a broader context of a particle physics experiment, reconstruction chains will also produce higher level objects like jets, missing transverse energy (MET), etc.
 
 Reconstruction objects are the inputs to and outputs from reconstruction steps. They are captured and described with an event data model (EDM). Examples are clusters, spacepoints, seeds, tracks, and vertices. Where clusters are produced from raw sensor data using clustering algorithms, spacepoints are produced from clusters using spacepoint formation algorithms, seeds are produced from spacepoints using pattern recognition algorithms, tracks are produced from seeds using track finding algorithms, and vertices are produced from tracks using vertexing algorithms.
 
-\section{Reconstruction algorithms}
+\section{Reconstruction steps and algorithms}
 
-Reconstruction algorithms are the building blocks of a reconstruction chain. They process input data to produce higher level objects. Different algorithms exist for each reconstruction step. The choice of algorithm depends on the specific requirements of the experiment and the detector design. In this section, the most common reconstruction steps and algorithms are discussed.
+Reconstruction steps are preformed by one or more reconstruction algorithms and form the building blocks of a reconstruction chain. They process input data to produce higher level objects. Different algorithms exist for each reconstruction step. The choice of algorithm depends on the specific requirements of the experiment and the detector design. In this section, common reconstruction steps and algorithms for hadron collider experiments, like ATLAS, are discussed.
 
 \subsection{Clustering}
 
@@ -124,7 +118,7 @@ Clustering is usually the very first step in the reconstruction chain. It is the
     \label{fig:intro/reco/clustering}
 \end{figure}
 
-After a cluster is identified it is transformed into a measurement. This can be done by equally weighting the sensor cell positions (also called \textit{digital} clustering) or with a weighted average (also called \textit{analog} clustering) based on the charge amount or time over threshold (ToT) provided by the sensor. If available, the latter is usually preferred as it provides a better estimate of the hit position.
+After a cluster is identified it is transformed into a measurement. This can be done by equally weighting the sensor cell positions (also called \textit{digital} clustering) or with a weighted average (also called \textit{analog} clustering) based on the charge amount or time-over-threshold (ToT) provided by the sensor. If available, the latter is usually preferred as it provides a better estimate of the hit position.
 
 Clusters can be degraded by two effects: cluster splitting and cluster merging. Cluster splitting occurs when a single hit is reconstructed as multiple clusters. This can happen randomly when sensor cells are below threshold or sensor cells are damaged. Cluster merging occurs when multiple hits are reconstructed as a single cluster. This can happen when the hits are too close together, noise activates intermediate sensor cells, or secondary particles are produced. Both effects can lead to a loss of efficiency and resolution.
 
@@ -162,7 +156,7 @@ In a clasical track reconstruction chain, track finding depends on a pattern rec
     \label{fig:intro/reco/finding}
 \end{figure}
 
-Modern machine learning based algorithms exist which combine pattern recognition and track finding into a single step. These algorithms use deep learning techniques to learn the patterns of hits that are caused by a single particle. They can be trained on simulated data and then used to find tracks in real data.
+Modern machine learning based algorithms exist which combine pattern recognition and track finding into a single step \cite{exatrkx-2021}\cite{pubnote-gnn}. These algorithms use deep learning techniques to learn the patterns of hits that are caused by a single particle. They can be trained on simulated data and then used to find tracks in real data.
 
 \subsection{Track ambiguity resolution}
 
@@ -178,7 +172,7 @@ Alternatively to the KF, a global fit can be used. This can be done by minimizin
 
 \subsubsection{Kalman filter}
 
-The Kalman filter (KF) is an iterative algorithm that estimates the state of a linear dynamic system from a series of measurements with gaussian white noise. The KF consists of two steps: prediction and update. In the prediction step, the state and its uncertainty are extrapolated based on the previous state and the model of the system. In the update step, the predicted state is updated with a given measurement and its uncertainty. This is illustrated in Figure \ref{fig:intro/reco/kalman}. The KF is optimal for linear systems and gaussian white noise. It is widely used in tracking applications, as it can be used to reject outliers and estimate track parameters and their uncertainties.
+The Kalman filter (KF) is an iterative algorithm that estimates the state of a linear dynamic system from a series of measurements with gaussian white noise. The KF consists of two steps: prediction and update. In the prediction step, the state and its uncertainty are extrapolated based on the previous state and the model of the system. In the update step, the predicted state is updated with a given measurement and its uncertainty. This is illustrated in Figure \ref{fig:intro/reco/kalman}. It is widely used in tracking applications, as it can be used to reject outliers and estimate track parameters and their uncertainties.
 
 \begin{figure}[h]
     \centering
@@ -190,38 +184,30 @@ The Kalman filter (KF) is an iterative algorithm that estimates the state of a l
 A powerful feature of the KF is that the state does not need to be directly observable, but can be \textit{hidden}. In tracking, usually only the local position on a sensor is observable, while direction and curvature cannot be directly observed. The KF can be used to estimate these parameters even though they are locally hidden.
 
 The evolution of the state vector is described by
-
 \begin{equation}
     \mathbf{x}_{k} = \mathbf{F}_{k-1} \mathbf{x}_{k-1} + \mathbf{w}_{k-1}
 \end{equation}
-
 with the state vector $\mathbf{x}_k$, the state transition matrix $\mathbf{F}_k$, and the process noise $\mathbf{w}_k$. The process noise is assumed to be gaussian with zero mean and a covariance matrix $\mathbf{Q}_k$.
 
 For tracking purposes, the state transition matrix $\mathbf{F}_k$ can be obtained by the Jacobian transport matrix from the surface to surface propagation, as described in Section \ref{sec:intro/reco/jac-transport}.
 
 A measurement at step $k$ is described by
-
 \begin{equation}
     \mathbf{m}_k = \mathbf{H}_k \mathbf{x}_k + \mathbf{\epsilon}_k
 \end{equation}
-
 with the measurement vector $\mathbf{m}_k$, the measurement matrix $\mathbf{H}_k$, and the measurement noise $\mathbf{\epsilon}_k$. The measurement noise is also assumed to be gaussian with zero mean and a covariance matrix $\mathbf{R}_k$.
 
 The KF evolves through two steps: predition and update. In the prediction step, the state and its covariance are extrapolated based on the previous state and the model of the system:
-
 \begin{align}
     \mathbf{x}_{k|k-1} &= \mathbf{F}_{k-1} \mathbf{x}_{k-1|k-1} \\
     \mathbf{C}_{k|k-1} &= \mathbf{F}_{k-1} \mathbf{C}_{k-1|k-1} \mathbf{F}_{k-1}^\mathrm{T} + \mathbf{Q}_{k-1}
 \end{align}
-
 An updated state is formed by combining the predicted state and the measurement:
-
 \begin{align}
     \mathbf{x}_{k|k} &= \mathbf{x}_{k|k-1} + \mathbf{K}_k \left( \mathbf{m}_k - \mathbf{H}_k \mathbf{x}_{k|k-1} \right) \\
     \mathbf{C}_{k|k} &= \mathbf{F}_{k-1} \mathbf{C}_{k|k-1} \mathbf{F}_{k-1}^\mathrm{T} + \mathbf{Q}_{k-1} \\
     \mathbf{K}_k &= \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} \left( \mathbf{H}_k \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} + \mathbf{R}_k \right)^{-1}
 \end{align}
-
 with the Kalman gain $\mathbf{K}_k$, the predicted state $\mathbf{x}_{k|k-1}$, the predicted covariance $\mathbf{C}_{k|k-1}$, the updated state $\mathbf{x}_{k|k}$, and the updated covariance $\mathbf{C}_{k|k}$.
 
 One should note that the filtered covariance matrix $\mathbf{C}_{k|k}$ is always smaller than the predicted covariance matrix $\mathbf{C}_{k|k-1}$. For this reason, the initial covariance matrix $\mathbf{C}_0$ has to be inflated to avoid biasing the filter and to estimate the final uncertainties just from the measurement and process noise.
@@ -229,13 +215,11 @@ One should note that the filtered covariance matrix $\mathbf{C}_{k|k}$ is always
 The final filtered state and covariance are optimal as they contain information from all the available measurements. For tracking purposes it is important to obtain optimal parameters at the interaction point, and sometimes even at intermediate states. This can be achieved with a smoother, or by running the KF a second time in the reverse direction. A common smoother is the Rauch-Tung-Striebel (RTS) smoother, which is a fixed-interval smoother and operates in state space dimensions.
 
 A $\chi^2$ value can be computed between measurements and predicted, filtered, or smoothed states:
-
 \begin{align}
     \mathbf{r}_k = \mathbf{m}_k - \mathbf{H}_k \mathbf{x}_k \\
     \mathbf{S}_k = \mathbf{H}_k \mathbf{C}_k \mathbf{H}_k^\mathrm{T} + \mathbf{R}_k \\
     \chi^2_k = \mathbf{r}_k^\mathrm{T} \mathbf{S}_k^{-1} \mathbf{r}_k
 \end{align}
-
 with the appropriate state vector $\mathbf{x}_k$, its covariance $\mathbf{C}_k$, the residual $\mathbf{r}_k$, and the residual covariance $\mathbf{S}_k$. The $\chi^2$ value can be used to filter outliers or select measurements.
 
 \subsection{Primary vertexing}

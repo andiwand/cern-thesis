@@ -28,12 +28,6 @@
   - pull distribution
   - fitting the core of a gaussian-like distribution
 
-### plots
-
-- [ ] ITk
-  - [ ] schematic plot
-  - [ ] expected measurements over eta/phi
-
 ## document
 
 - [ ] Acknowledgements
