@@ -4,29 +4,25 @@
 % - Expected tracking performance https://arxiv.org/abs/2412.15090
 % - TDR https://cds.cern.ch/record/2802799
 
-\begin{itemize}
-    \color{red}
-    \item two applications: HLT and offline
-    \item mention technology choice
-\end{itemize}
+The new inner tracking detector (ITk) for the ATLAS experiment is designed to cope with the high luminosity and pileup conditions expected in the High-Luminosity Large Hadron Collider (HL-LHC) era. The ITk is a full-silicon detector and will be composed of a pixel \cite{itk-pixel-tdr} and strip \cite{itk-strip-tdr} subsystem. This upgrade is not only challening for the detector design, construction, and opteration, but also the track reconstruction software. The ATLAS collaboration is corrently working on upgrading the reconstruction software for Run-4, which is the first run with the new detector. This includes migrating to the Acts toolkit for track reconstruction, for both the inner detector and the muon spectrometer. Part of the work on this thesis was to integrate the Acts track finding algorithm into the ATLAS track reconstruction software, which was a joint effort and performed in close collaboration with the Acts-ITk team.
+
+Apart from the software upgrade, the ATLAS collaboration is currently working on a new trigger system for Run-4 and evaluates different hardware technologies to realize the high-level trigger (HLT). The Acts-based track reconstruction chain is one of the candidates, as a CPU-based solution. Other candidates are GPU-based and FPGA-based.
 
 \section{Acts-based track reconstruction chain}
 
-\begin{itemize}
-    \color{red}
-    \item reconstruction steps
-    \begin{itemize}
-        \item clustering for pixels and strips
-        \item spacepoints formation for pixels and strips
-        \item seeding for pixels and strips
-        \item track finding for pixels and strips
-        \item ambiguity resolution
-    \end{itemize}
-    \item validation against legacy chain
-    \item what is the legacy chain; tdr addendum
-\end{itemize}
+The Acts-based track reconstruction chain was planned to use the same reconstruction steps as the existing reconstruction chain, referred to as the \textit{legacy chain}. The legacy chain is based on Run-3 reconstruction and tuned to some degree for Run-4. The motivation for the Acts-based chain is increase maintainability and potentially performance. The ATLAS track reconsturction software was written in the early 2000s and its authors are no longer available. New people entering the collaboration are faced with a large amount of legacy code which is poorly documented and difficult to understand. For this reason, the ATLAS collaboration decided to adopt the Acts toolkit for the Run-4 track reconstruction, as it promises to be modern, maintainable, documented, and efficient from the start.
 
-\section{CPU performance and optimizations}
+For this purpose, some reconstruction algorithms have been ported from legacy to Acts and validated against the legacy chain. An example for this is the triplet seeding algorithm. Other algorithms, like the Kalman-based track finding and fitting, have been implemented from scratch in Acts, based on literature and experience from the legacy chain. One of the main benefits of Acts is its experiment-agnostic design, which allows to use the same code for different experiments. Other experiments can benefit from existing, validated reconstruction code, and potentially contribute to the development of the Acts toolkit. ATLAS will then also benefit from the experience of other experiments, and the code can be shared between different experiments.
+
+The Acts-based track reconstruction chain can be used for offline reconstruction, as well as for the HLT. The HLT is part of the ATLAS trigger system and makes the final decision on whether an event is stored on disk or fully discarded. The ATLAS collaboration is currently working on a new trigger system for Run-4 and evaluates different hardware technologies to realize the HLT. The Acts-based track reconstruction chain is one of the candidates, as a CPU-based solution. Other candidates are GPU-based and FPGA-based.
+
+The legacy and Acts-based reconstruction chain are very close to what was described in the introduction in Section \ref{sec:intro/reco/reco-steps}. The main pass, which reconstructs tracks from the primary interactions, starts from raw sensor data. The raw data is clustered and measurements are formed. The measurements are used to form spacepoints, which are the input for the seeding algorithm. The seeding algorithm finds potential starting points for tracks, which are used by the track finding algorithm to find tracks. The clusterization, spacepoint formation, and seeding steps are performed separately for pixels and stips. The track finding step combines pixel and stip seeds to form a single track collection.
+
+One main difference between the legacy and Acts-based chain is the track finding algorithm. While the legacy chain focuses only on finding compatible measurements, the Acts-based chain deploys a fully-fledged Kalman filter to not only find but also fit tracks simultaneously. Due to this, the Acts-based chain does not need a separate fitting step, which is required in the legacy chain.
+
+Apart from that, the Acts-based chain only deploys a simplistic ambiguity resolution algorithm for now, which is based on the greedy approach described in Section \ref{sec:dev/general/greedy-ambiguity-resolution}. The legacy chain uses a more sophisticated ambiguity resolution algorithm, which is also able to resolve cluster ambiguities and refit tracks based on this information. How this will be implemented in the Acts-based chain is currently under investigation.
+
+\section{CPU performance optimizations}
 
 \begin{itemize}
     \color{red}
@@ -35,14 +31,21 @@
     \item show CPU performance evolution
 \end{itemize}
 
-\section{Physics performance}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.15\textwidth]{parts/3_performance/12_athena-performance/figures/cpu_improvements.pdf}
+    \caption{Incremental decrease of the CPU time to reconstruct \ttbar events at $\langle \mu \rangle$ = 200 when adding improvements to the ACTS-based ITk track reconstruction deployed in the ATLAS software framework Athena. The CPU time shown only accounts for track finding, and it is relative to the current non-ACTS counterparts. A zoomed version of the last 5 data points is also shown. The starting date for the plot is 15 February 2024, using Athena 24.0.24 (ACTS v32.0.2). The relevant improvements are reported in chronological order on the horizontal axis of the plot and are described in the text. The last data point on the plot corresponds to the running time obtained on 10 September 2024 using Athena 25.0.16 (ACTS v36.2.1).}
+    \label{fig:perf/itk/cpu-improvements}
+\end{figure}
 
-\begin{itemize}
-    \color{red}
-    \item only if we are brave
-    \item single particle efficiency, fake rate, duplication rate, resolution, pulls
-    \item ttbar efficiency, fake rate, duplication rate, pileup dependence
-\end{itemize}
+% \section{Physics performance}
+
+% \begin{itemize}
+%     \color{red}
+%     \item only if we are brave
+%     \item single particle efficiency, fake rate, duplication rate, resolution, pulls
+%     \item ttbar efficiency, fake rate, duplication rate, pileup dependence
+% \end{itemize}
 
 \section{Summary, conclusion and outlook}
 

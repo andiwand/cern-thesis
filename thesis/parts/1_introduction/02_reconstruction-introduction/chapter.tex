@@ -95,13 +95,14 @@ with the covariance on the previous surface $\mathbf{\Sigma}_{\text{previous}}$,
 
 Derivations and validations of the Jacobian and covariance transport can be found in \textcite{bomki-jac}.
 
-\section{Track and vertex reconstruction chains and objects}
+\section{Reconstruction chains and objects}
 
 A reconstruction chain is a preceedure of steps to ultimately extract all the information of interest from an event. In the context of this thesis, reconstruction chains produce tracks and vertices from primary interactions as final objects. In a broader context of a particle physics experiment, reconstruction chains will also produce higher level objects like jets, missing transverse energy (MET), etc.
 
 Reconstruction objects are the inputs to and outputs from reconstruction steps. They are captured and described with an event data model (EDM). Examples are clusters, spacepoints, seeds, tracks, and vertices. Where clusters are produced from raw sensor data using clustering algorithms, spacepoints are produced from clusters using spacepoint formation algorithms, seeds are produced from spacepoints using pattern recognition algorithms, tracks are produced from seeds using track finding algorithms, and vertices are produced from tracks using vertexing algorithms.
 
-\section{Reconstruction steps and algorithms}
+\section{Track and primary vertex reconstruction steps and algorithms}
+\label{sec:intro/reco/reco-steps}
 
 Reconstruction steps are preformed by one or more reconstruction algorithms and form the building blocks of a reconstruction chain. They process input data to produce higher level objects. Different algorithms exist for each reconstruction step. The choice of algorithm depends on the specific requirements of the experiment and the detector design. In this section, common reconstruction steps and algorithms for hadron collider experiments, like ATLAS, are discussed.
 

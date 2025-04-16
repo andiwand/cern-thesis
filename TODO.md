@@ -18,6 +18,7 @@
 - [ ] motivate track finding developments and performance measurements in chapter 1
 - [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] pileup vs pile-up
+- [ ] Run-X vs Run X
 - [ ] what is a ttbar event? where to put this?
 - [ ] mention traccc / detray? -> acts intro
 - [ ] what is a particle gun? -> acts intro?
