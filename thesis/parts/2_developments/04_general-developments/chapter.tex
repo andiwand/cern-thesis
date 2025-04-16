@@ -26,6 +26,7 @@ As a result of this experience a new steering mechanism for the propagation was 
 The \texttt{Propagator} was modified to allow for the creation of a \texttt{PropagatorState} object by the user which can then be used to start and continue the propagation while an \texttt{Aborter} can be used to stop the propagation at any time. An algorithm can use this mechanism to propagate from one surface to another and deal with the reached surfaces outside the propagation loop. A next step would be to implement an algorithm like the Kalman track fitter using this mechanism and compare the performance and readability to the current implementation. This was not done as part of this thesis but is an interesting direction for future work.
 
 \section{A new measurement projection mechanism}
+\label{sec:dev/general/measurement-projection}
 
 Measurement projection is a mechanism in Acts to allow comparing predicted track parameters to measurements in a generic way. In Acts, measurements are represented as a subset of bound track parameters, which are defined as $\mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^\mathrm{T}$. This is a simple and powerful abstraction which allows to represent any combination of measurement dimensions.
 

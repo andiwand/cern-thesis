@@ -24,28 +24,46 @@ Apart from that, the Acts-based chain only deploys a simplistic ambiguity resolu
 
 \section{CPU performance optimizations}
 
-\begin{itemize}
-    \color{red}
-    \item in parts application of optimizations done in ACTS; ref other chapters/sections
-    \item this is basically the note noemi wrote
-    \item show CPU performance evolution
-\end{itemize}
+Since compute resources will be limited for reconstructing the large amount of data expected from the HL-LHC, the Acts-based chain does not only need to deliver similar physics performance as the legacy chain, but perform at least as good as the legacy chain in terms of CPU time. To achieve this, the Acts-based chain has been optimized over several iterations. This was carried out by the Acts-ITk team and as part of the work on this thesis. Some of these optimizations have already been described in Chapter \ref{ch:dev/track_finding}.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1.15\textwidth]{parts/3_performance/12_athena-performance/figures/cpu_improvements.pdf}
-    \caption{Incremental decrease of the CPU time to reconstruct \ttbar events at $\langle \mu \rangle$ = 200 when adding improvements to the ACTS-based ITk track reconstruction deployed in the ATLAS software framework Athena. The CPU time shown only accounts for track finding, and it is relative to the current non-ACTS counterparts. A zoomed version of the last 5 data points is also shown. The starting date for the plot is 15 February 2024, using Athena 24.0.24 (ACTS v32.0.2). The relevant improvements are reported in chronological order on the horizontal axis of the plot and are described in the text. The last data point on the plot corresponds to the running time obtained on 10 September 2024 using Athena 25.0.16 (ACTS v36.2.1).}
+    \caption{Incremental improvements to the compute time for reconstructing \ttbar events at $\langle \mu \rangle$ = 200 with the ATLAS reconstruction software Athena \cite{pubnote-2024-017}. The CPU time shown only accounts for track finding, and it is relative to the legacy counterpart. A zoomed version of the last 5 data points is also shown.}
     \label{fig:perf/itk/cpu-improvements}
 \end{figure}
 
-% \section{Physics performance}
+Figure \ref{fig:perf/itk/cpu-improvements} shows the incremental improvements to the compute time for reconstructing \ttbar events at $\langle \mu \rangle$ = 200 with the ATLAS reconstruction software Athena \cite{pubnote-2024-017}. The starting date for the plot is 15 February 2024, using Athena 24.0.24 (ACTS v32.0.2). The relevant improvements are reported in chronological order on the horizontal axis of the plot and are described in the text. The last data point on the plot corresponds to the running time obtained on 10 September 2024 using Athena 25.0.16 (ACTS v36.2.1).
 
-% \begin{itemize}
-%     \color{red}
-%     \item only if we are brave
-%     \item single particle efficiency, fake rate, duplication rate, resolution, pulls
-%     \item ttbar efficiency, fake rate, duplication rate, pileup dependence
-% \end{itemize}
+The individual improvements shown in Figure \ref{fig:perf/itk/cpu-improvements} are:
+\begin{enumerate}
+    \item \textbf{Ready for optimization}: the starting point for the optimizations, corresponding to the first  fullyfunctional version of the ACTS-based ITk track reconstruction deployed in Athena 24.0.24 (ACTS v32.0.2) on 15 February 2024. This version of the code was measured to be six times slower than the legacy ITk track finding.
+    \item \textbf{Branching elimination}: the combinatorial Kalman filter is configured to only consider a single branch. Hence proving one input seed can at most result in a single track candidate. The justification for this is that the triplet seeding algorithm already explores the measurement combinatorics and the track finding does not need to do this again.
+    \item \textbf{Bi-directional track finding}: enabling track finding to search for measurements both outward(i.e. away from the interaction point) and inward. This is described in more detail in Section \ref{sec:dev/trackfinding/two-way}.
+    \item \textbf{EDM optimization}: improved storage and access of the seed containers.
+    \item \textbf{EDM optimization}: better usage of internal representation of track containers.
+    \item \textbf{Branch stoppers introduction}: usage of early branch-aborting conditions to stop the track finding and decide whether to keep the track candidate.
+    \item \textbf{EDM optimization}: simplification of measurement access from track states. These developments lead to a more general improvement of measurement projection in Acts described in Section \ref{sec:dev/general/measurement-projection}.
+    \item \textbf{Fitting of seeds disabled}: avoiding seed parameter refinement using a Kalman filter. This was shown not to be critical for the track finding performance, especially in the pixels.
+    \item \textbf{Measurement selector optimization}: improved selection and calibration of measurements during track state creation for the combinatorial Kalman filter.
+    \item \textbf{Stepper optimizations}: faster implementation of the numerical integration and the Jacobian and covariance transport. This is described in more detail in Section \ref{sec:dev/stepper/sympy}.
+    \item \textbf{Handling of outliers}: implementation of a dedicated outlier compatibility criterion. Define a maximum number of outliers allowed per track and stop track finding earlier if the limit is exceeded.
+    \item \textbf{Avoid unnecessary extrapolation}: avoiding unnecessary extrapolation at the end of track finding, in case this is already performed by the inward extension.
+    \item \textbf{Improved mapping to geometry}: improved mapping of detector elements and measurements to tracking geometry surfaces.
+\end{enumerate}
+
+At the end of the optimizations, the Acts-based track finding was measured to be about 8\% slower than the legacy track finding. This is a significant improvement compared to the starting point. Given the fact that the Acts-based chain does not need a separate fitting step, the overall performance of the Acts-based chain is expected to be better than the legacy chain. However, not all algorithms have been ported to Acts yet, including a more sophisticated ambiguity resolution algorithm that deals with cluster ambiguities. Only after the chains are feature equivalent, a fair comparison can be made. This is an ongoing effort.
+
+Given the current workload of the track finding algorithm, it appears that its CPU performance cannot be significantly improved further. A potential bottleneck is the triplet seeding algorithm, which produces a large number of fake seeds, which need then to be filtered out be the track finding algorithm. This is currently under investigation. Other seeding algorithms exist, which produce less fakes and show promising CPU performance \cite{acts-gbts}. However, these algorithms are not yet fully available in Acts. The Acts-ITk team is currently working on integrating these algorithms into Acts and the Acts-based ITk chain.
+
+\section{Physics performance}
+
+\begin{itemize}
+    \color{red}
+    \item only if we are brave
+    \item single particle efficiency, fake rate, duplication rate, resolution, pulls
+    \item ttbar efficiency, fake rate, duplication rate, pileup dependence
+\end{itemize}
 
 \section{Summary, conclusion and outlook}
 
