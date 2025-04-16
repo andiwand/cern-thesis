@@ -43,7 +43,6 @@ The accuracy condition is the following:
 \begin{equation}
     \epsilon < 4 \tau \text{.}
 \end{equation}
-
 If not satisfied, the step is rejected and reattempted. The factor 4 provides some margin for the requested accuracy target and allows $\epsilon$ to fluctuate around $\tau$ without immediately rejecting steps.
 
 The adaptive step size technique was implemented in Acts during the work on this thesis and tested with the \texttt{EigenStepper}.

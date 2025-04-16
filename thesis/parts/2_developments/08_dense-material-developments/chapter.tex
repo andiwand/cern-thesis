@@ -133,7 +133,6 @@ Taking the multiple scattering as an example, Equation \ref{eq:dev/dense/msc} gi
 \end{split}
 \label{eq:dev/dense/split-var}
 \end{equation}
-
 \textcite{pdg2024} suggests to use a factor $1/3$ to calculate the increase in position variance during a step. This is derived in \textcite{cern-81-06} and due to integration over the step length.
 
 During the developments of the \texttt{SympyStepper} for dense material described later in Section \ref{sec:dev/dense/sympy}, it was found that Equation \ref{eq:dev/dense/split-var} can be rewritten to be calculated iteratively. This way a bookkeeping of the material and stepper information is not needed and the additional covariance can be directly updated after each step.
@@ -168,7 +167,9 @@ The bound covariance can then be written as
 \begin{equation}
     \mathbf{\Sigma}_\text{final} = \mathbf{J}_{\text{b\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}_{\text{b\textrightarrow b}}^\mathrm{T} + \mathbf{J}_{\text{f\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{additional} \cdot \mathbf{J}_{\text{f\textrightarrow b}}^\mathrm{T}
 \end{equation}
-with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and the free to bound Jacobian $\mathbf{J}_{\text{f\textrightarrow b}}$. The additional covariance can be written as
+with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and the free to bound Jacobian $\mathbf{J}_{\text{f\textrightarrow b}}$.
+
+The additional covariance can be written as
 \begin{equation}
     \mathbf{\Sigma}_\text{additional} =
         \begin{pmatrix}
