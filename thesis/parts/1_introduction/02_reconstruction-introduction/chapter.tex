@@ -231,6 +231,12 @@ with the appropriate state vector $\mathbf{x}_k$, its covariance $\mathbf{C}_k$,
     \label{fig:intro/reco/vertexing}
 \end{figure}
 
-Vertexing is the process of locating the point where particles from a single interactions were produced. In case of primary vertexing, the reconstruction of vertices from the actual primary collisions, this is usually done with the impact parameters of fitted tracks. Figure \ref{fig:intro/reco/vertexing} illustrates the difference between primary vertices and secondary vertices.
+Vertexing is the process of locating the point where particles from a single interactions were produced. In case of primary vertexing, the reconstruction of vertices from the primary collisions, this is usually done with the impact parameters of fitted tracks. Figure \ref{fig:intro/reco/vertexing} illustrates the difference between primary vertices and secondary vertices.
 
-Similar to tracking, vertexing is usually done in a sequence of steps: seeding, finding, and fitting. Vertex seeding identifies regions of interest, usually based on track density. The vertex finding then uses the seeds to find tracks that are compatible with the vertex seed. The vertex fitting then uses the selected tracks to fit the vertex position. Simultaneously, the track parameters can be fitted to the vertex, improving the impact parameter resolution further. Common vertex fitters are Kalman-based fitters \cite{fruehwirth} and the Billoir fitter \cite{billoir}.
+Similar to tracking, vertexing is usually done in a sequence of steps: seeding, finding, and fitting.
+
+Vertex seeding identifies regions of interest, usually based on track density. For primary vertexing this can be done along the beamline using a clustering algorithm or by finding peaks in the track density. The track density can be expressed analytically as a sum of gaussians, where mean and width come from the track parameters and their uncertainty \cite{pubnote-2019-015}. Peaks can then be found numerically by gradient decent or by binning the track density and finding local maxima directly.
+
+Vertex finding proceeds by using seeds to identify nearby tracks that are compatible with the vertex seed. This process is typically carried out iteratively, evaluating one seed at a time, which imparts a greedy character to the algorithm. The selected tracks are subsequently passed to a vertex fitter.
+
+The vertex fitting then uses the selected tracks to fit the vertex position. Simultaneously, the track parameters can be fitted to the vertex, improving the impact parameter resolution further. Common vertex fitters are Kalman-based fitters \cite{fruehwirth} and the Billoir fitter \cite{billoir}.
