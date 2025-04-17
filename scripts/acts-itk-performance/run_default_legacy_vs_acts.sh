@@ -32,7 +32,8 @@ Reco_tf.py \
   --inputRDOFile ${input_rdo} \
   --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude" \
-  --preExec "flags.Tracking.doTruth=True; \
+  --preExec "flags.Common.MsgSuppression=False; \
+      flags.Tracking.doTruth=True; \
       flags.Tracking.doITkFastTracking=False; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
@@ -51,7 +52,8 @@ Reco_tf.py \
   --inputRDOFile ${input_rdo} \
   --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude,ActsConfig.ActsCIFlags.actsWorkflowFlags" \
-  --preExec "flags.Tracking.doTruth=True; \
+  --preExec "flags.Common.MsgSuppression=False; \
+      flags.Tracking.doTruth=True; \
       flags.Tracking.doITkFastTracking=False; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
@@ -69,7 +71,7 @@ cd "${output_dir}/legacy"
 runIDPVM.py \
   --filesInput AOD.root \
   --outputFile idpvm.root \
-  --validateExtraTrackCollections 'SiSPSeededTracksActsValidateTracksTrackParticles' \
+  --validateExtraTrackCollections "SiSPSeededTracks" \
   --doTechnicalEfficiency \
   --doExpertPlots
 
@@ -84,9 +86,11 @@ cd "${output_dir}/acts"
 runIDPVM.py \
   --filesInput AOD.root \
   --outputFile idpvm.root \
-  --validateExtraTrackCollections 'SiSPSeededTracksActsValidateTracksTrackParticles' \
+  --validateExtraTrackCollections "SiSPSeededTracksActsValidateTracksTrackParticles" \
   --doTechnicalEfficiency \
   --doExpertPlots
+
+cd "${current_dir}"
 
 # run dcube to compare legacy and acts
 
