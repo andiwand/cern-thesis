@@ -2,6 +2,7 @@
 
 set -e
 
+current_dir=`pwd`
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # param 1 is the list of input rdos; read it and set the input_rdo variable
@@ -25,7 +26,7 @@ mkdir -p ${output_dir}/dcube
 
 echo "Running Athena default legacy..."
 
-cd ${output_dir}/legacy
+cd "${output_dir}/legacy"
 
 Reco_tf.py \
   --inputRDOFile ${input_rdo} \
@@ -38,11 +39,13 @@ Reco_tf.py \
   --maxEvents ${n_events} \
   --multithreaded True
 
+cd "${current_dir}"
+
 # run Athena default acts
 
 echo "Running Athena default acts..."
 
-cd ${output_dir}/acts
+cd "${output_dir}/acts"
 
 Reco_tf.py \
   --inputRDOFile ${input_rdo} \
@@ -55,11 +58,13 @@ Reco_tf.py \
   --maxEvents ${n_events} \
   --multithreaded True
 
+cd "${current_dir}"
+
 # run IDPVM on default legacy
 
 echo "Running IDPVM on Athena default legacy..."
 
-cd ${output_dir}/legacy
+cd "${output_dir}/legacy"
 
 runIDPVM.py \
   --filesInput AOD.root \
@@ -68,11 +73,13 @@ runIDPVM.py \
   --doTechnicalEfficiency \
   --doExpertPlots
 
+cd "${current_dir}"
+
 # run IDPVM on default acts
 
 echo "Running IDPVM on Athena default acts..."
 
-cd ${output_dir}/acts
+cd "${output_dir}/acts"
 
 runIDPVM.py \
   --filesInput AOD.root \
@@ -85,7 +92,7 @@ runIDPVM.py \
 
 echo "Running dcube to compare legacy and acts..."
 
-cd ${output_dir}/dcube
+cd "${output_dir}/dcube"
 
 # Compare performance athena vs acts
 $ATLAS_LOCAL_ROOT/dcube/current/DCubeClient/python/dcube.py \
@@ -93,3 +100,5 @@ $ATLAS_LOCAL_ROOT/dcube/current/DCubeClient/python/dcube.py \
   -c "${script_dir}/dcube_IDPVMPlots_ACTS_CKF_ITk_techeff.xml" \
   -r "${output_dir}/legacy/idpvm.root" \
   "${output_dir}/acts/idpvm.root"
+
+cd "${current_dir}"
