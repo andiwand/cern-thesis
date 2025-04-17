@@ -8,23 +8,22 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # param 1 is the list of input rdos; read it and set the input_rdo variable
 # param 2 is the number of events; read it and set the n_events variable
 # param 3 is the output folder; read it and set the output_folder variable
-# param 4 is the number of threads; read it and set the NTHREADS variable
+# param 4 is the number of threads; read it and set the nthreads variable
 
 input_rdo=`cat $1 | grep -v "^#"`
 n_events=$2
 output_dir=$3
+nthreads=$4
 
 printf "Input RDOs:\n${input_rdo}\n"
 echo "Number of events: ${n_events}"
 echo "Output folder: ${output_dir}"
-echo "Number of threads: ${NTHREADS}"
+echo "Number of threads: ${nthreads}"
 
 mkdir -p ${output_dir}
 mkdir -p ${output_dir}/legacy
 mkdir -p ${output_dir}/acts
 mkdir -p ${output_dir}/dcube
-
-NTHREADS=$4
 
 # run Athena default legacy
 
@@ -43,7 +42,7 @@ Reco_tf.py \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts "--nprocs=1 --threads=${NTHREADS}"
+  --athenaopts "--threads=${nthreads}"
 
 cd "${current_dir}"
 
@@ -64,7 +63,7 @@ Reco_tf.py \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts "--nprocs=1 --threads=${NTHREADS}"
+  --athenaopts "--threads=${nthreads}"
 
 cd "${current_dir}"
 
