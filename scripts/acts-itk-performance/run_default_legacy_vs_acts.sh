@@ -96,13 +96,9 @@ cd "${current_dir}"
 
 echo "Running dcube to compare legacy and acts..."
 
-cd "${output_dir}/dcube"
-
 # Compare performance athena vs acts
 $ATLAS_LOCAL_ROOT/dcube/current/DCubeClient/python/dcube.py \
   -p -x "${output_dir}/dcube" \
   -c "${script_dir}/dcube_IDPVMPlots_ACTS_CKF_ITk_techeff.xml" \
   -r "${output_dir}/legacy/idpvm.root" \
   "${output_dir}/acts/idpvm.root"
-
-cd "${current_dir}"
