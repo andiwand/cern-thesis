@@ -17,6 +17,7 @@ output_dir=$3
 printf "Input RDOs:\n${input_rdo}\n"
 echo "Number of events: ${n_events}"
 echo "Output folder: ${output_dir}"
+echo "Number of threads: ${NTHREADS}"
 
 mkdir -p ${output_dir}
 mkdir -p ${output_dir}/legacy
@@ -24,7 +25,6 @@ mkdir -p ${output_dir}/acts
 mkdir -p ${output_dir}/dcube
 
 NTHREADS=$4
-ATHENA_CORE_NUMBER=${NTHREADS}
 
 # run Athena default legacy
 
@@ -42,7 +42,8 @@ Reco_tf.py \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
-  --multithreaded True
+  --multithreaded True \
+  --athenaopts "--nprocs=1 --threads=${NTHREADS}"
 
 cd "${current_dir}"
 
@@ -62,7 +63,8 @@ Reco_tf.py \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
-  --multithreaded True
+  --multithreaded True \
+  --athenaopts "--nprocs=1 --threads=${NTHREADS}"
 
 cd "${current_dir}"
 
