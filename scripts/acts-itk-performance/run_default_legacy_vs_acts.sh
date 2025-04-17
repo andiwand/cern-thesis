@@ -47,7 +47,7 @@ Reco_tf.py \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts '--threads=${nthreads}'
+  --athenaopts='--threads=${nthreads}'
 
 cd "${current_dir}"
 
@@ -68,7 +68,7 @@ Reco_tf.py \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts '--threads=${nthreads}'
+  --athenaopts='--threads=${nthreads}'
 
 cd "${current_dir}"
 
