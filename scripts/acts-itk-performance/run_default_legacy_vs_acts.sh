@@ -10,6 +10,11 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # param 3 is the output folder; read it and set the output_folder variable
 # param 4 is the number of threads; read it and set the nthreads variable
 
+if [ "$#" -ne 4 ]; then
+    echo "Usage: $0 <input_rdo_list> <n_events> <output_folder> <nthreads>"
+    exit 1
+fi
+
 input_rdo=`cat $1 | grep -v "^#"`
 n_events=$2
 output_dir=$3
@@ -42,7 +47,7 @@ Reco_tf.py \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts "--threads=${nthreads}"
+  --athenaopts '--threads=${nthreads}'
 
 cd "${current_dir}"
 
@@ -63,7 +68,7 @@ Reco_tf.py \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts "--threads=${nthreads}"
+  --athenaopts '--threads=${nthreads}'
 
 cd "${current_dir}"
 
