@@ -1,6 +1,7 @@
 ## Samples
 
 - single muons pT=10GeV `mc21_14TeV.900495.PG_single_muonpm_Pt10_etaFlatnp0_43.recon.RDO.e8557_s4422_r16128`
+- ttbar pu200 1lep hstruth `mc21_14TeV.601229.PhPy8EG_A14_ttbar_hdamp258p75_SingleLep.recon.RDO.e8481_s4149_r14700`
 
 ## Get access to `/eos/atlas`
 

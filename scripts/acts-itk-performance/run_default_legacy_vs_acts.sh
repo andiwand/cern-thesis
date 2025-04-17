@@ -8,6 +8,7 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 # param 1 is the list of input rdos; read it and set the input_rdo variable
 # param 2 is the number of events; read it and set the n_events variable
 # param 3 is the output folder; read it and set the output_folder variable
+# param 4 is the number of threads; read it and set the NTHREADS variable
 
 input_rdo=`cat $1 | grep -v "^#"`
 n_events=$2
@@ -21,6 +22,9 @@ mkdir -p ${output_dir}
 mkdir -p ${output_dir}/legacy
 mkdir -p ${output_dir}/acts
 mkdir -p ${output_dir}/dcube
+
+NTHREADS=$4
+ATHENA_CORE_NUMBER=${NTHREADS}
 
 # run Athena default legacy
 
