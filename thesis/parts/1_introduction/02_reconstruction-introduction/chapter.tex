@@ -89,9 +89,9 @@ An additional term is included to handle path length uncertainties. This can be 
 
 The Jacobian matrix can then be used to transport the covariance matrix of the bound track parameters from one surface to the next. This is done by multiplying the Jacobian matrix with the covariance.
 \begin{equation}
-    \mathbf{\Sigma}_{\text{new}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{previous}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^\mathrm{T}
+    \mathbf{\Sigma}_{\text{final}} = \mathbf{J}_{\text{bound\textrightarrow bound}} \ \mathbf{\Sigma}_{\text{initial}} \ \mathbf{J}_{\text{bound\textrightarrow bound}}^\mathrm{T}
 \end{equation}
-with the covariance on the previous surface $\mathbf{\Sigma}_{\text{previous}}$, and the covariance on the new surface $\mathbf{\Sigma}_{\text{new}}$.
+with the covariance on the previous surface $\mathbf{\Sigma}_{\text{initial}}$, and the covariance on the next surface $\mathbf{\Sigma}_{\text{final}}$.
 
 Derivations and validations of the Jacobian and covariance transport can be found in \textcite{bomki-jac}.
 

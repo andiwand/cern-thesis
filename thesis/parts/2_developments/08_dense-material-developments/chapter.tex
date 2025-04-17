@@ -165,7 +165,7 @@ To overcome this issue, the problem is decomposed and the additional covariance 
 
 The bound covariance can then be written as
 \begin{equation}
-    \mathbf{\Sigma}_\text{final} = \mathbf{J}_{\text{b\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{initial} \cdot \mathbf{J}_{\text{b\textrightarrow b}}^\mathrm{T} + \mathbf{J}_{\text{f\textrightarrow b}} \cdot \mathbf{\Sigma}_\text{additional} \cdot \mathbf{J}_{\text{f\textrightarrow b}}^\mathrm{T}
+    \mathbf{\Sigma}_\text{final} = \mathbf{J}_{\text{b\textrightarrow b}} \ \mathbf{\Sigma}_\text{initial} \ \mathbf{J}_{\text{b\textrightarrow b}}^\mathrm{T} + \mathbf{J}_{\text{f\textrightarrow b}} \ \mathbf{\Sigma}_\text{additional} \ \mathbf{J}_{\text{f\textrightarrow b}}^\mathrm{T}
 \end{equation}
 with the bound to bound Jacobian $\mathbf{J}_{\text{b\textrightarrow b}}$ and the free to bound Jacobian $\mathbf{J}_{\text{f\textrightarrow b}}$.
 
@@ -179,7 +179,7 @@ The additional covariance can be written as
             \mathbf{0} & \text{Cov}[t,\lambda] & \mathbf{0} & \text{Var}[\lambda]
         \end{pmatrix}
 \end{equation}
-with the projector $\mathbf{P} = \mathbf{I} - \mathbf{T} \cdot \mathbf{T}^\mathrm{T}$.
+with the projector $\mathbf{P} = \mathbf{I} - \mathbf{T} \ \mathbf{T}^\mathrm{T}$.
 
 \section{Toy Model}
 

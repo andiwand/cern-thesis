@@ -17,8 +17,11 @@
 - [ ] get ITk perf chapter done
 - [ ] motivate track finding developments and performance measurements in chapter 1
 - [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
+- [ ] references firstname vs lastname first
 - [ ] pileup vs pile-up
 - [ ] Run-X vs Run X
+- [ ] Phase-2 vs Phase 2 vs Phase-II
+- [ ] atlasify stepper plot
 - [ ] what is a ttbar event? where to put this?
 - [ ] mention traccc / detray? -> acts intro
 - [ ] what is a particle gun? -> acts intro?
@@ -145,9 +148,9 @@
     - [x] 11.8. Computational performance
     - [x] 11.9. Summary, conclusion and outlook
   - [ ] 12. ITk tracking performance with Acts
-    - [ ] Intro text
-    - [ ] 12.1. Acts-based track reconstruction chain
-    - [ ] 12.2. CPU performance and optimizations
+    - [ ] ✔️✔️✔️ Intro text
+    - [ ] ✔️✔️✔️ 12.1. Acts-based track reconstruction chain
+    - [ ] ✔️✔️✔️ 12.2. CPU performance and optimizations
     - [ ] 12.3. Physics performance
     - [ ] 12.4. Summary, conclusion and outlook
 - [ ] IV. Conclusion and Outlook
