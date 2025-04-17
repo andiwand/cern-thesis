@@ -12,9 +12,9 @@ input_rdo=`cat $1 | grep -v "^#"`
 n_events=$2
 output_dir=$3
 
-printf "Input RDOs:\n${input_rdo}"
-printf "Number of events: ${n_events}"
-printf "Output folder: ${output_dir}"
+printf "Input RDOs:\n${input_rdo}\n"
+echo "Number of events: ${n_events}"
+echo "Output folder: ${output_dir}"
 
 mkdir -p ${output_dir}
 mkdir -p ${output_dir}/legacy
@@ -23,12 +23,13 @@ mkdir -p ${output_dir}/dcube
 
 # run Athena default legacy
 
-printf "Running Athena default legacy..."
+echo "Running Athena default legacy..."
 
 cd ${output_dir}/legacy
 
 Reco_tf.py \
   --inputRDOFile ${input_rdo} \
+  --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude" \
   --preExec "flags.Tracking.doTruth=True; \
       flags.Tracking.doITkFastTracking=False; \
@@ -39,12 +40,13 @@ Reco_tf.py \
 
 # run Athena default acts
 
-printf "Running Athena default acts..."
+echo "Running Athena default acts..."
 
 cd ${output_dir}/acts
 
 Reco_tf.py \
   --inputRDOFile ${input_rdo} \
+  --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude,ActsConfig.ActsCIFlags.actsWorkflowFlags" \
   --preExec "flags.Tracking.doTruth=True; \
       flags.Tracking.doITkFastTracking=False; \
@@ -55,7 +57,7 @@ Reco_tf.py \
 
 # run IDPVM on default legacy
 
-printf "Running IDPVM on Athena default legacy..."
+echo "Running IDPVM on Athena default legacy..."
 
 cd ${output_dir}/legacy
 
@@ -68,7 +70,7 @@ runIDPVM.py \
 
 # run IDPVM on default acts
 
-printf "Running IDPVM on Athena default acts..."
+echo "Running IDPVM on Athena default acts..."
 
 cd ${output_dir}/acts
 
@@ -81,7 +83,7 @@ runIDPVM.py \
 
 # run dcube to compare legacy and acts
 
-printf "Running dcube to compare legacy and acts..."
+echo "Running dcube to compare legacy and acts..."
 
 cd ${output_dir}/dcube
 
