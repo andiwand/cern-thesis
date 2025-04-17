@@ -36,12 +36,12 @@ echo "Running Athena default legacy..."
 
 cd "${output_dir}/legacy"
 
+# use `flags.Common.MsgSuppression=False` to see all messages
 Reco_tf.py \
   --inputRDOFile ${input_rdo} \
   --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude" \
-  --preExec "flags.Common.MsgSuppression=False; \
-      flags.Tracking.doTruth=True; \
+  --preExec "flags.Tracking.doTruth=True; \
       flags.Tracking.doITkFastTracking=False; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
@@ -61,8 +61,7 @@ Reco_tf.py \
   --inputRDOFile ${input_rdo} \
   --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude,ActsConfig.ActsCIFlags.actsWorkflowFlags" \
-  --preExec "flags.Common.MsgSuppression=False; \
-      flags.Tracking.doTruth=True; \
+  --preExec "flags.Tracking.doTruth=True; \
       flags.Tracking.doITkFastTracking=False; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
