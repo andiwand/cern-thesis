@@ -39,7 +39,6 @@ Reco_tf.py \
   --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude" \
   --preExec "flags.Tracking.doTruth=True; \
-      flags.Tracking.doITkFastTracking=False; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events}
@@ -57,7 +56,6 @@ Reco_tf.py \
   --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude,ActsConfig.ActsCIFlags.actsWorkflowFlags" \
   --preExec "flags.Tracking.doTruth=True; \
-      flags.Tracking.doITkFastTracking=False; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events}
