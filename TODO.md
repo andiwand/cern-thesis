@@ -18,9 +18,6 @@
 - [ ] motivate track finding developments and performance measurements in chapter 1
 - [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] references firstname vs lastname first
-- [ ] pileup vs pile-up
-- [ ] Run-X vs Run X
-- [ ] Phase-2 vs Phase 2 vs Phase-II
 - [ ] atlasify stepper plot
 - [ ] what is a ttbar event? where to put this?
 - [ ] mention traccc / detray? -> acts intro

@@ -108,7 +108,7 @@ Reconstruction steps are preformed by one or more reconstruction algorithms and 
 
 \subsection{Clustering}
 
-% there would be more to say about cluster uncertainty, calibration, lorenz angle, pile-up dependency, ...
+% there would be more to say about cluster uncertainty, calibration, lorenz angle, pileup dependency, ...
 
 Clustering is usually the very first step in the reconstruction chain. It is the process of grouping raw sensor readings which seem to have been produced by a single particle. This is important for pixel and strip detectors, since a traversing particle may not activate a single sensor cell but rather a cluster of cells, which is illustrated in Figure \ref{fig:intro/reco/clustering}. Clustering is usually done with a connected component analysis (CCA) algorithm.
 
@@ -228,7 +228,7 @@ with the appropriate state vector $\mathbf{x}_k$, its covariance $\mathbf{C}_k$,
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{parts/1_introduction/02_reconstruction-introduction/figures/vertexing.pdf}
-    \caption{Illustration of a set of three vertices in a proton-proton collision, distinguishing between primary hard-scatter, primary pile-up, and secondary vertices. Gracefully taken from \textcite{gessinger-thesis}.}
+    \caption{Illustration of a set of three vertices in a proton-proton collision, distinguishing between primary hard-scatter, primary pileup, and secondary vertices. Gracefully taken from \textcite{gessinger-thesis}.}
     \label{fig:intro/reco/vertexing}
 \end{figure}
 
