@@ -65,6 +65,7 @@ Reco_tf.py \
   --preExec "flags.Tracking.doTruth=True; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
+  --postExec "ckf=cfg.getEventAlgo('ActsTrackFindingAlg');ckf.chi2CutOff=[100];ckf.chi2OutlierCutOff=[100]" \
   --maxEvents ${n_events} \
   --multithreaded True \
   --athenaopts="--threads=${n_threads}"
