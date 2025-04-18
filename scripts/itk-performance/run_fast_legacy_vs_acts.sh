@@ -32,9 +32,9 @@ mkdir -p ${output_dir}/legacy
 mkdir -p ${output_dir}/acts
 mkdir -p ${output_dir}/dcube
 
-# run Athena default legacy
+# run Athena fast legacy
 
-echo "Running Athena default legacy..."
+echo "Running Athena fast legacy..."
 
 cd "${output_dir}/legacy"
 
@@ -43,7 +43,8 @@ Reco_tf.py \
   --inputRDOFile ${input_rdo} \
   --outputAODFile AOD.root \
   --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude" \
-  --preExec "flags.Tracking.doTruth=True; \
+  --preExec "flags.Tracking.doITkFastTracking=True; \
+      flags.Tracking.doTruth=True; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
@@ -52,17 +53,18 @@ Reco_tf.py \
 
 cd "${current_dir}"
 
-# run Athena default acts
+# run Athena fast acts
 
-echo "Running Athena default acts..."
+echo "Running Athena fast acts..."
 
 cd "${output_dir}/acts"
 
 Reco_tf.py \
   --inputRDOFile ${input_rdo} \
   --outputAODFile AOD.root \
-  --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude,ActsConfig.ActsCIFlags.actsWorkflowFlags" \
-  --preExec "flags.Tracking.doTruth=True; \
+  --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude,ActsConfig.ActsCIFlags.actsFastWorkflowFlags" \
+  --preExec "flags.Tracking.doITkFastTracking=True; \
+      flags.Tracking.doTruth=True; \
       flags.Tracking.writeExtendedSi_PRDInfo=True; \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
@@ -71,9 +73,9 @@ Reco_tf.py \
 
 cd "${current_dir}"
 
-# run IDPVM on default legacy
+# run IDPVM on fast legacy
 
-echo "Running IDPVM on Athena default legacy..."
+echo "Running IDPVM on Athena fast legacy..."
 
 cd "${output_dir}/legacy"
 
@@ -86,9 +88,9 @@ runIDPVM.py \
 
 cd "${current_dir}"
 
-# run IDPVM on default acts
+# run IDPVM on fast acts
 
-echo "Running IDPVM on Athena default acts..."
+echo "Running IDPVM on Athena fast acts..."
 
 cd "${output_dir}/acts"
 
