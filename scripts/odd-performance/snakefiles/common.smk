@@ -63,7 +63,7 @@ def get_event_sim_label(wildcards):
     return create_event_sim_label(event_label, sim_label)
 
 
-configfile: "scripts/acts-odd-performance/config.yaml"
+configfile: "scripts/odd-performance/config.yaml"
 
 
 SIM_LABELS = list_sim_labels(config)

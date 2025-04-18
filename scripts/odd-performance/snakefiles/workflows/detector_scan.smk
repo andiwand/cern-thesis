@@ -3,23 +3,23 @@ include: "../common.smk"
 
 rule all_scan:
     input:
-        "data/acts-odd-performance/scan/fatras/propagation_summary.root",
-        "data/acts-odd-performance/scan/fatras/material_tracks.root",
-        "data/acts-odd-performance/scan/geant4/material_tracks.root",
+        "data/odd-performance/scan/fatras/propagation_summary.root",
+        "data/odd-performance/scan/fatras/material_tracks.root",
+        "data/odd-performance/scan/geant4/material_tracks.root",
 
 rule fatras_scan:
     input:
-        script = "scripts/acts-odd-performance/detector_scan.py",
+        script = "scripts/odd-performance/detector_scan.py",
     output:
-        "data/acts-odd-performance/scan/fatras/propagation_summary.root",
-        "data/acts-odd-performance/scan/fatras/material_tracks.root",
+        "data/odd-performance/scan/fatras/propagation_summary.root",
+        "data/odd-performance/scan/fatras/material_tracks.root",
     params:
-        outdir = "data/acts-odd-performance/scan/fatras",
+        outdir = "data/odd-performance/scan/fatras",
         skip = 0,
         events = config["scan"]["number_of_events"],
     log:
-        stdout = "data/acts-odd-performance/scan/fatras/stdout.txt",
-        stderr = "data/acts-odd-performance/scan/fatras/stderr.txt",
+        stdout = "data/odd-performance/scan/fatras/stdout.txt",
+        stderr = "data/odd-performance/scan/fatras/stderr.txt",
     threads: get_scan_threads
     shell:
         """
@@ -35,16 +35,16 @@ rule fatras_scan:
 
 rule geant4_scan:
     input:
-        script = "scripts/acts-odd-performance/detector_scan.py",
+        script = "scripts/odd-performance/detector_scan.py",
     output:
-        "data/acts-odd-performance/scan/geant4/material_tracks.root",
+        "data/odd-performance/scan/geant4/material_tracks.root",
     params:
-        outdir = "data/acts-odd-performance/scan/geant4",
+        outdir = "data/odd-performance/scan/geant4",
         skip = 0,
         events = config["scan"]["number_of_events"],
     log:
-        stdout = "data/acts-odd-performance/scan/geant4/stdout.txt",
-        stderr = "data/acts-odd-performance/scan/geant4/stderr.txt",
+        stdout = "data/odd-performance/scan/geant4/stdout.txt",
+        stderr = "data/odd-performance/scan/geant4/stderr.txt",
     threads: get_scan_threads
     shell:
         """

@@ -9,5 +9,5 @@ Sometimes a rule changes or the scripts which is part of the input, but we beliv
 For example to skip rerunning the simulations jobs for the Acts ODD performance study:
 ```
 rm -rf .snakemake
-find data/acts-odd-performance/sim -type f -exec touch {} +
+find data/odd-performance/sim -type f -exec touch {} +
 ```

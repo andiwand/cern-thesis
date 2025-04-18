@@ -5,5 +5,5 @@ Originally from
 # How to run it
 
 ```
-snakemake --snakefile scripts/acts-odd-performance/Snakefile --retries 3 --keep-going --cores 64 --resources mem_mb=100000
+snakemake --snakefile scripts/odd-performance/Snakefile --retries 3 --keep-going --cores 64 --resources mem_mb=100000
 ```

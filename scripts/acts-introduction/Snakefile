@@ -7,7 +7,7 @@ rule all_acts_introduction:
 rule odd_hits:
     input:
         script = "scripts/acts-introduction/plot_odd_hits.py",
-        particles = "data/acts-odd-performance/sim/1mu-pt100GeV_geant4/particles_simulation.root",
+        particles = "data/odd-performance/sim/1mu-pt100GeV_geant4/particles_simulation.root",
     output:
         "plots/acts-introduction/odd_hits.pdf",
     shell:
@@ -28,7 +28,7 @@ rule odd_layout:
 rule odd_material:
     input:
         script = "scripts/acts-introduction/plot_odd_material.py",
-        material = "data/acts-odd-performance/scan/geant4_big/material_composition.root",
+        material = "data/odd-performance/scan/geant4_big/material_composition.root",
     output:
         "plots/acts-introduction/odd_material_{y}_{x}.pdf",
     shell:
