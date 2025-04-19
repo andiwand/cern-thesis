@@ -30,7 +30,9 @@ echo
 mkdir -p ${output_dir}
 mkdir -p ${output_dir}/legacy
 mkdir -p ${output_dir}/acts
-mkdir -p ${output_dir}/dcube
+mkdir -p ${output_dir}/acts_modified
+mkdir -p ${output_dir}/dcube_legacy_acts
+mkdir -p ${output_dir}/dcube_legacy_acts_modified
 
 export ATHENA_CORE_NUMBER=${n_threads}
 
@@ -59,6 +61,25 @@ cd "${current_dir}"
 echo "Running Athena default acts..."
 
 cd "${output_dir}/acts"
+
+Reco_tf.py \
+  --inputRDOFile ${input_rdo} \
+  --outputAODFile AOD.root \
+  --preInclude "InDetConfig.ConfigurationHelpers.OnlyTrackingPreInclude,ActsConfig.ActsCIFlags.actsWorkflowFlags" \
+  --preExec "flags.Tracking.doTruth=True; \
+      flags.Tracking.writeExtendedSi_PRDInfo=True; \
+      flags.Tracking.doPixelDigitalClustering=True;" \
+  --maxEvents ${n_events} \
+  --multithreaded True \
+  --perfmon fullmonmt
+
+cd "${current_dir}"
+
+# run Athena default acts modified
+
+echo "Running Athena default acts modified..."
+
+cd "${output_dir}/acts_modified"
 
 Reco_tf.py \
   --inputRDOFile ${input_rdo} \
@@ -104,13 +125,39 @@ runIDPVM.py \
 
 cd "${current_dir}"
 
+# run IDPVM on default acts modified
+
+echo "Running IDPVM on Athena default acts modified..."
+
+cd "${output_dir}/acts_modified"
+
+runIDPVM.py \
+  --filesInput AOD.root \
+  --outputFile idpvm.root \
+  --validateExtraTrackCollections "SiSPSeededTracksActsValidateTracksTrackParticles" \
+  --doTechnicalEfficiency \
+  --doExpertPlots
+
+cd "${current_dir}"
+
 # run dcube to compare legacy and acts
 
 echo "Running dcube to compare legacy and acts..."
 
 # Compare performance athena vs acts
 $ATLAS_LOCAL_ROOT/dcube/current/DCubeClient/python/dcube.py \
-  -p -x "${output_dir}/dcube" \
+  -p -x "${output_dir}/dcube_legacy_acts" \
   -c "${script_dir}/dcube_IDPVMPlots_ACTS_CKF_ITk_techeff.xml" \
   -r "${output_dir}/legacy/idpvm.root" \
   "${output_dir}/acts/idpvm.root"
+
+# run dcube to compare legacy and acts modified
+
+echo "Running dcube to compare legacy and acts modified..."
+
+# Compare performance athena vs acts modified
+$ATLAS_LOCAL_ROOT/dcube/current/DCubeClient/python/dcube.py \
+  -p -x "${output_dir}/dcube_legacy_acts_modified" \
+  -c "${script_dir}/dcube_IDPVMPlots_ACTS_CKF_ITk_techeff.xml" \
+  -r "${output_dir}/legacy/idpvm.root" \
+  "${output_dir}/acts_modified/idpvm.root"
