@@ -32,6 +32,8 @@ mkdir -p ${output_dir}/legacy
 mkdir -p ${output_dir}/acts
 mkdir -p ${output_dir}/dcube
 
+export ATHENA_CORE_NUMBER=${n_threads}
+
 # run Athena default legacy
 
 echo "Running Athena default legacy..."
@@ -48,7 +50,7 @@ Reco_tf.py \
       flags.Tracking.doPixelDigitalClustering=True;" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts="--threads=${n_threads}"
+  --perfmon fullmonmt
 
 cd "${current_dir}"
 
@@ -68,7 +70,7 @@ Reco_tf.py \
   --postExec "ckf=cfg.getEventAlgo('ActsTrackFindingAlg');ckf.chi2CutOff=[100];ckf.chi2OutlierCutOff=[100]" \
   --maxEvents ${n_events} \
   --multithreaded True \
-  --athenaopts="--threads=${n_threads}"
+  --perfmon fullmonmt
 
 cd "${current_dir}"
 
