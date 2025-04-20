@@ -147,7 +147,7 @@ echo "Running dcube to compare legacy and acts..."
 # Compare performance athena vs acts
 $ATLAS_LOCAL_ROOT/dcube/current/DCubeClient/python/dcube.py \
   -p -x "${output_dir}/dcube_legacy_acts" \
-  -c "${script_dir}/dcube_IDPVMPlots_ACTS_CKF_ITk_techeff.xml" \
+  -c "${script_dir}/dcube.xml" \
   -r "${output_dir}/legacy/idpvm.root" \
   "${output_dir}/acts/idpvm.root"
 
@@ -158,6 +158,6 @@ echo "Running dcube to compare legacy and acts modified..."
 # Compare performance athena vs acts modified
 $ATLAS_LOCAL_ROOT/dcube/current/DCubeClient/python/dcube.py \
   -p -x "${output_dir}/dcube_legacy_acts_modified" \
-  -c "${script_dir}/dcube_IDPVMPlots_ACTS_CKF_ITk_techeff.xml" \
+  -c "${script_dir}/dcube.xml" \
   -r "${output_dir}/legacy/idpvm.root" \
   "${output_dir}/acts_modified/idpvm.root"

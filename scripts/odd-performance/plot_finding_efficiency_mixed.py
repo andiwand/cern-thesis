@@ -49,7 +49,7 @@ atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0\nsingle particles, <$\\mu$> = 0, $p_T$ = 10 GeV",
+    subtext="Acts v40.0.0\nsingle particles, $p_T$ = 10 GeV, <$\\mu$> = 0",
     enlarge=1.4,
 )
 

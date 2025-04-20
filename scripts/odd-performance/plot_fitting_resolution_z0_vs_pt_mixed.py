@@ -36,8 +36,8 @@ ax.set_ylabel(r"$\sigma_{z_0}$ [mm]")
 ax.set_xlim(0, 100)
 
 for i, ptype, perf in zip(range(3), ptypes, fitting_perf):
-    eff_vs_eta = TH1(perf.Get("reswidth_z0_vs_pT"))
-    eff_vs_eta.errorbar(
+    res_vs_eta = TH1(perf.Get("reswidth_z0_vs_pT"))
+    res_vs_eta.errorbar(
         ax, label=f"{ptype}", marker=get_marker(i), linestyle="", color=get_color(i)
     )
 
@@ -47,7 +47,7 @@ atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0\nsingle particles, <$\\mu$> = 0, $p_T$ = 10 GeV",
+    subtext="Acts v40.0.0\nsingle particles, $p_T$ = 10 GeV, <$\\mu$> = 0",
     enlarge=1.4,
 )
 

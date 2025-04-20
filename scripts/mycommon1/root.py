@@ -8,8 +8,7 @@ class TH1:
         except:
             th1 = th1_tefficiency
 
-        bins = [i for i in range(th1.GetNbinsX())]
-        bins = bins[1:]
+        bins = list(range(1, th1.GetNbinsX() + 1))
 
         if xrange is not None:
             bins = [

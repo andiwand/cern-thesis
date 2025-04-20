@@ -10,6 +10,7 @@ from scipy.stats import binned_statistic
 import atlasify
 
 from mycommon1.plots import get_color, get_marker
+from mycommon1.stats import ratio_std
 
 
 base_dir = Path(__file__).parent.parent.parent
@@ -122,7 +123,7 @@ axs[1].errorbar(
 axs[1].errorbar(
     bin_centers,
     data[1][0] / data[0][0],
-    yerr=np.sqrt((data[1][1] / data[0][0])**2 + (data[0][1]**2 * data[1][0]**2 / data[0][0]**4)),
+    yerr=ratio_std(data[1][0], data[0][0], data[1][1], data[0][1]),
     xerr=(bin_edges[1:] - bin_edges[:-1]) / 2,
     #label="Acts",
     marker=get_marker(1),

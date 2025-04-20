@@ -38,7 +38,7 @@ atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0\nsingle muons, <$\\mu$> = 0, $p_T$ = 1 GeV",
+    subtext="Acts v40.0.0\nsingle muons, $p_T$ = 1 GeV, <$\\mu$> = 0",
     enlarge=1.4,
 )
 
