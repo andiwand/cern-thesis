@@ -133,7 +133,7 @@
     - [x] 10.1. Shortcomings
     - [x] 10.2. Proposals for future developments
 - [x] III. Performance
-  - [ ] Intro text
+  - [x] Intro text
   - [x] 11. OpenDataDetector tracking performance with Acts
     - [x] Intro text
     - [x] 11.1. Event generation and simulation
@@ -145,12 +145,12 @@
     - [x] 11.7. Vertex fitting performance
     - [x] 11.8. Computational performance
     - [x] 11.9. Summary, conclusion and outlook
-  - [ ] 12. ITk tracking performance with Acts
+  - [ ] ✔️✔️✔️ 12. ITk tracking performance with Acts
     - [ ] ✔️✔️✔️ Intro text
     - [ ] ✔️✔️✔️ 12.1. Acts-based track reconstruction chain
     - [ ] ✔️✔️✔️ 12.2. CPU performance and optimizations
-    - [ ] 12.3. Physics performance
-    - [ ] 12.4. Summary, conclusion and outlook
+    - [ ] ✔️✔️✔️ 12.3. Physics performance
+    - [ ] ✔️✔️✔️ 12.4. Summary, conclusion and outlook
 - [ ] IV. Conclusion and Outlook
   - [ ] 13. Conclusion
   - [ ] 14. Outlook
