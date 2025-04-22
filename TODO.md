@@ -15,6 +15,7 @@
 ## current
 
 - [ ] get ITk perf chapter done
+- [ ] ODD perf ttbar track eff for HS??
 - [ ] motivate track finding developments and performance measurements in chapter 1
 - [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] references firstname vs lastname first

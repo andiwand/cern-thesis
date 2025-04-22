@@ -249,6 +249,8 @@ def add_my_reconstruction_chain(
     addDigiParticleSelection(
         sequencer,
         ParticleSelectorConfig(
+            # we are only interested in the hard scatter vertex
+            primaryVertexId=(1, 2),
             rho=(0.0, 24 * u.mm),
             absZ=(0.0, 1.0 * u.m),
             eta=(-3.0, 3.0),

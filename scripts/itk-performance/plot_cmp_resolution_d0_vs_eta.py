@@ -42,7 +42,7 @@ fig, axs = plt.subplots(
     gridspec_kw={"hspace": 0.05, "height_ratios": [4, 1]},
 )
 
-axs[0].set_ylabel(r"$\sigma_{d_0}$ [mm]")
+axs[0].set_ylabel(r"$\sigma_{d_0}$ [$\mu$m]")
 
 axs[1].set_xlabel(r"true $\eta$")
 axs[1].set_ylabel(r"Ratio")
