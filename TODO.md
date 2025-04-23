@@ -14,9 +14,7 @@
 
 ## current
 
-- [ ] get ITk perf chapter done
-- [ ] ODD perf ttbar track eff for HS??
-- [ ] motivate track finding developments and performance measurements in chapter 1
+- [ ] motivate track finding developments and performance measurements in introduction
 - [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] references firstname vs lastname first
 - [ ] atlasify stepper plot
@@ -27,7 +25,6 @@
 - [ ] track parameterization illustration? -> acts intro
 - [ ] line break after hyphen?
 - [ ] class/function name formatting
-- [ ] ToC for chapters?
 - [ ] appendix?
   - pull distribution
   - fitting the core of a gaussian-like distribution
@@ -37,27 +34,27 @@
 - [ ] Acknowledgements
 - [ ] Kurzfassung
 - [ ] Abstract
-- [ ] I. Introduction
-  - [ ] ✔️✔️✔️ 1. General introduction
-    - [ ] ✔️✔️✔️ Into text
-    - [ ] ✔️✔️✔️ 1.1. Motivation
-    - [ ] ✔️✔️✔️ 1.2. High-energy physics
-    - [ ] ✔️✔️✔️ 1.3. The Standard Model
-      - [ ] ✔️✔️✔️ 1.3.1. Beyond the Standard Model
-    - [ ] ✔️✔️✔️ 1.4. CERN and the Large Hadron Collider
-    - [ ] ✔️✔️✔️ 1.5. The ATLAS experiment
-      - [ ] ✔️✔️✔️ 1.5.1. The ATLAS detector
-      - [ ] ✔️✔️✔️ 1.5.2. Phase-2 Upgrade
-  - [ ] ✔️✔️✔️ 2. Reconstruction of tracks and primary vertices
-    - [ ] ✔️✔️✔️ Into text
-    - [ ] ✔️✔️✔️ 2.1. Particle-Matter Interactions
-    - [ ] ✔️✔️✔️ 2.2. Detection of Charged Particles
-    - [ ] ✔️✔️✔️ 2.3. Equation of Motion
-    - [ ] ✔️✔️✔️ 2.4. Runge-Kutta-Nystrom Method
-    - [ ] ✔️✔️✔️ 2.5. Track parameters
-    - [ ] ✔️✔️✔️ 2.6. Jacobian and covariance transport
-    - [ ] ✔️✔️✔️ 2.7. Reconstruction chains and objects
-    - [ ] ✔️✔️✔️ 2.8. Reconstruction algorithms
+- [x] I. Introduction
+  - [x] 1. General introduction
+    - [x] Into text
+    - [x] 1.1. Motivation
+    - [x] 1.2. High-energy physics
+    - [x] 1.3. The Standard Model
+      - [x] 1.3.1. Beyond the Standard Model
+    - [x] 1.4. CERN and the Large Hadron Collider
+    - [x] 1.5. The ATLAS experiment
+      - [x] 1.5.1. The ATLAS detector
+      - [x] 1.5.2. Phase-2 Upgrade
+  - [x] 2. Reconstruction of tracks and primary vertices
+    - [x] Into text
+    - [x] 2.1. Particle-Matter Interactions
+    - [x] 2.2. Detection of Charged Particles
+    - [x] 2.3. Equation of Motion
+    - [x] 2.4. Runge-Kutta-Nystrom Method
+    - [x] 2.5. Track parameters
+    - [x] 2.6. Jacobian and covariance transport
+    - [x] 2.7. Reconstruction chains and objects
+    - [x] 2.8. Reconstruction algorithms
   - [x] 3. Acts: A Common Tracking Software
     - [x] Into text
     - [x] 3.1. Components and their connections
@@ -70,7 +67,7 @@
     - [x] 3.8. The Examples framework
     - [x] 3.9. The OpenDataDetector
 - [x] II. Developments
-  - [ ] Intro text
+  - [x] Intro text
   - [x] 4. General deveopments of Acts
     - [x] Into text
     - [x] 4.1. Propagator developments

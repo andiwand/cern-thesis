@@ -1,21 +1,7 @@
-\begin{itemize}
-    \color{red}
-    \item what was shown in this thesis
-    \begin{itemize}
-        \item latest developments in Acts regarding infrastructure, track finding, track fitting, vertex finding, vertex fitting, and 4D tracking
-        \item performance of Acts in terms of physics and CPU performance
-        \item track finding performance for ATLAS Phase-2 upgrade
-        \item tracking in dense environments with Acts
-        \item 4D tracking developments and performance with Acts
-    \end{itemize}
-\end{itemize}
+This thesis has shown the latest developments and performance of the Acts toolkit \cite{acts-2022} --- a community-driven project that provides experiment-independent tracking algorithms written in modern C++. The developments include improvements to the general infrastructure including the numerical intergration and detector navigation (Chapter \ref{ch:dev/general}, \ref{ch:dev/stepper}, \ref{ch:dev/navigator}), track finding (Chapter \ref{ch:dev/track_finding}), propagation in dense material (Chapter \ref{ch:dev/dense}), and 4D tracking (Chapter \ref{ch:dev/4d_tracking}). The performance of Acts was evaluated using the OpenDataDetector (ODD) \cite{odd-v2} (Chapter \ref{ch:perf/odd}) and the ATLAS \cite{atlas} Phase-2 inner tracker (ITk) \cite{itk-pixel-tdr}\cite{itk-strip-tdr} (Chapter \ref{ch:perf/itk}) in terms of computation and physics.
 
-\begin{itemize}
-    \color{red}
-    \item tracking remains a challenging problem with Acts
-    \begin{itemize}
-        \item HL-LHC pileup challenge
-        \item software design as experiment independent toolkit
-        \item future of Acts depends on community involvement
-    \end{itemize}
-\end{itemize}
+One of the main achievements was the development and application of a general purpose track finding algorithm to the ITk, which will be used for reconstruction after the Phase-2 upgrade during Run 4 of the Large Hadron Collider (LHC) at CERN. The high-luminosity (HL) upgrade \cite{hl-lhc-tdr} of the LHC will substantially increase its instantaneous luminosity, leading to a greater number of collisions per bunch crossing. The HL-LHC is expected to reach an instantaneous luminosity of up to $7.5 \times 10^{34} \, \text{cm}^{-2}\text{s}^{-1}$, resulting in an average of up to 200 simultaneous proton-proton interactions per bunch crossing, commonly referred to as \textit{pileup}. In this environment, computational performance of reconstruction algorithms is crucial and Acts has been chosen to meet the challenges posed by high pileup conditions. The track finding algorithm has been carefully optimized to ensure that it can handle the increased event complexity within a tight CPU budget while maintaining high efficiency and low fake rates.
+
+The developments on 4D tracking provide a promising outlook for the future of tracking in high-energy physics experiments with new emerging fast timing detector technologies. The integration of time information into reconstruction has the potential to significantly improve physics performance by reducing the impact of pileup. Chapter \ref{ch:dev/4d_tracking} summarizes the latest developments in Acts for 4D tracking. The performance was shown as part of Chapter \ref{ch:perf/odd} with the ODD.
+
+All these developments and performance evaluations are not bound to a single experiment, but can be applied to any high-energy physics experiment. The modularity and flexibility of Acts allows for easy adaptation to different experimental setups and requirements. This makes Acts a valuable tool for the future of high-energy physics, as it can be used in a wide range of experiments and applications.
