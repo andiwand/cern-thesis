@@ -1,4 +1,7 @@
-\begin{itemize}
-    \color{red}
-    \item mention that this is a technical thesis
-\end{itemize}
+This thesis presents the development and performance evaluation of track reconstruction software optimized for the High-Luminosity upgrade of the ATLAS experiment at CERN. With the advent of the High-Luminosity Large Hadron Collider (HL-LHC), commonly referred to as Phase-2, the ATLAS detector faces the unprecedented challenge of reconstructing particle trajectories in an environment with up to 200 simultaneous proton-proton interactions per bunch crossing. To meet these demands, the ATLAS collaboration has decided to adopt the Acts (a common tracking software) toolkit —-- a community-driven project that provides experiment-independent tracking algorithms written in modern C++.
+
+The work detailed in this thesis contributes significantly to the Acts codebase, enhancing its capabilities across a range of reconstruction tasks. These include improvements in track propagation, stepper mechanics, navigation logic, ambiguity resolution, and time-aware tracking. Special focus is given to developments that improve computational efficiency and robustness of track finding under HL-LHC conditions.
+
+In addition to software development, this thesis includes comprehensive performance studies. Tracking performance is evaluated using the OpenDataDetector (ODD), a prototype (HL-)LHC-like full-silicon inner tracking detector, as well as the ATLAS Phase-2 Inner Tracker (ITk). Results demonstrate the effectiveness of the new developments in high-pileup environments, showing track finding efficiency, resolution, and computational performance.
+
+This work establishes a robust foundation for the integration of Acts into ATLAS Phase-2 reconstruction workflows and contributes to a growing toolkit supporting future high-energy physics experiments.
