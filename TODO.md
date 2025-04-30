@@ -5,14 +5,12 @@
 - [ ] ✔️✔️✔️ self read and corrected
 - [x] other read and corrected
 
-## potential
-
-- mBF smoother formalism vs gain matrix formalism
-- flow diagram of the greedy ambiguity solver
-- add stuff to the developments summary
-  - other shortcomings: 3D surface tolerance, track EDM dynamic columns for vectors and matrices
-
 ## current
+
+- [ ] review feedback
+- [ ] review thesis
+- [ ] check typos
+- [ ] layout
 
 - [ ] motivate track finding developments and performance measurements in introduction
 - [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
@@ -29,12 +27,20 @@
   - pull distribution
   - fitting the core of a gaussian-like distribution
 
+## potential
+
+- mBF smoother formalism vs gain matrix formalism
+- flow diagram of the greedy ambiguity solver
+- add stuff to the developments summary
+  - other shortcomings: 3D surface tolerance, track EDM dynamic columns for vectors and matrices
+
 ## document
 
 - [ ] Acknowledgements
-- [ ] Kurzfassung
-- [ ] Abstract
+- [ ] ✔️✔️✔️ Kurzfassung
+- [ ] ✔️✔️✔️ Abstract
 - [x] I. Introduction
+  - [x] Intro text
   - [x] 1. General introduction
     - [x] Into text
     - [x] 1.1. Motivation
@@ -142,12 +148,12 @@
     - [x] 11.7. Vertex fitting performance
     - [x] 11.8. Computational performance
     - [x] 11.9. Summary, conclusion and outlook
-  - [ ] ✔️✔️✔️ 12. ITk tracking performance with Acts
-    - [ ] ✔️✔️✔️ Intro text
-    - [ ] ✔️✔️✔️ 12.1. Acts-based track reconstruction chain
-    - [ ] ✔️✔️✔️ 12.2. CPU performance and optimizations
-    - [ ] ✔️✔️✔️ 12.3. Physics performance
-    - [ ] ✔️✔️✔️ 12.4. Summary, conclusion and outlook
-- [ ] IV. Conclusion and Outlook
-  - [ ] 13. Conclusion
-  - [ ] 14. Outlook
+  - [x] 12. ITk tracking performance with Acts
+    - [x] Intro text
+    - [x] 12.1. Acts-based track reconstruction chain
+    - [x] 12.2. CPU performance and optimizations
+    - [x] 12.3. Physics performance
+    - [x] 12.4. Summary, conclusion and outlook
+- [ ] ✔️✔️✔️ IV. Conclusion and Outlook
+  - [ ] ✔️✔️✔️ 13. Conclusion
+  - [ ] ✔️✔️✔️ 14. Outlook
