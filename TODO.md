@@ -37,8 +37,8 @@
 ## document
 
 - [ ] Acknowledgements
-- [ ] ✔️✔️✔️ Kurzfassung
 - [ ] ✔️✔️✔️ Abstract
+- [ ] ✔️✔️✔️ Kurzfassung
 - [x] I. Introduction
   - [x] Intro text
   - [x] 1. General introduction
