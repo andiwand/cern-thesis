@@ -12,6 +12,7 @@
 - [ ] check typos
 - [ ] layout
 
+- [ ] Phase-2 is the upgrade period and not the data taking aftwerwards -> use Run 4
 - [ ] motivate track finding developments and performance measurements in introduction
 - [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] references firstname vs lastname first
