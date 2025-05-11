@@ -30,7 +30,7 @@ parser.add_argument(
     "--acts-input",
     nargs=3,
     type=Path,
-    help="Path to Acts input file",
+    help="Path to ACTS input file",
 )
 parser.add_argument(
     "--output",
@@ -55,7 +55,7 @@ mid = 0.5 * (edges[:-1] + edges[1:])
 
 # ax.set_title("Relative positional uncertainty of muons passing Fe")
 ax.set_xlabel("Initial momentum [GeV]")
-ax.set_ylabel(r"$\Delta$ position ratio (Acts / Geant4)")
+ax.set_ylabel(r"$\Delta$ position ratio (ACTS / Geant4)")
 
 ax.set_xscale("log")
 ax.set_xlim(edges[0], edges[-1])
@@ -74,7 +74,7 @@ for i, label, g4_input, acts_input in zip(
         acts_std = make_acts_msc_stats(acts_data, edges, log_range)
 
     # ax.hlines(1, edges[0], edges[-1], linestyle="--", color="C0", label="Geant4")
-    # ax.errorbar(mid, acts_std / g4_std, yerr=g4_std_std*(acts_std/g4_std**2), marker="o", linestyle="", color="C1", label="Acts")
+    # ax.errorbar(mid, acts_std / g4_std, yerr=g4_std_std*(acts_std/g4_std**2), marker="o", linestyle="", color="C1", label="ACTS")
 
     ax.errorbar(
         mid,
@@ -90,9 +90,9 @@ ax.legend(loc="upper right")
 
 atlasify.atlasify(
     axes=ax,
-    brand="Acts",
+    brand="ACTS",
     atlas="Simulation",
-    subtext=f"Acts v40.0.0\nsingle muons in {material_label(args.material)}",
+    subtext=f"ACTS v40.0.0\nsingle muons in {material_label(args.material)}",
 )
 
 fig.tight_layout()

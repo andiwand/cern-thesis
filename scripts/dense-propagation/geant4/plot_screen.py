@@ -171,9 +171,9 @@ ax = fig.add_axes([0.06, 0.0, 0.94, 1.0])
 ax.axis("off")
 atlasify.atlasify(
     axes=ax,
-    brand="Acts",
+    brand="ACTS",
     atlas="Simulation",
-    subtext=f"Acts v40.0.0\nsingle muons in {args.thickness} mm of {material_label(args.material)}",
+    subtext=f"ACTS v40.0.0\nsingle muons in {args.thickness} mm of {material_label(args.material)}",
 )
 
 if args.output is not None:

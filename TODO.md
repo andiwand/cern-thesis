@@ -62,7 +62,7 @@
     - [x] 2.6. Jacobian and covariance transport
     - [x] 2.7. Reconstruction chains and objects
     - [x] 2.8. Reconstruction algorithms
-  - [x] 3. Acts: A Common Tracking Software
+  - [x] 3. ACTS: A Common Tracking Software
     - [x] Into text
     - [x] 3.1. Components and their connections
     - [x] 3.2. Units and constants
@@ -75,7 +75,7 @@
     - [x] 3.9. The OpenDataDetector
 - [x] II. Developments
   - [x] Intro text
-  - [x] 4. General deveopments of Acts
+  - [x] 4. General deveopments of ACTS
     - [x] Into text
     - [x] 4.1. Propagator developments
     - [x] 4.2. A new measurement projection mechanism
@@ -94,7 +94,7 @@
   - [x] 6. Navigator developments
     - [x] Into text
     - [x] 6.1. Navigation subtleties and edge cases
-    - [x] 6.2. A streamlined navigation model for Acts
+    - [x] 6.2. A streamlined navigation model for ACTS
     - [x] 6.3. Robust intersection handling for cylinders
     - [x] 6.4. Remove path limit and overstep limit
     - [x] 6.5. Decoupling from the stepper
@@ -124,7 +124,7 @@
     - [x] 8.7. Performance
   - [x] 9. Tracking with time information
     - [x] Intro text
-    - [x] 9.1. 4D tracking in Acts
+    - [x] 9.1. 4D tracking in ACTS
     - [x] 9.2. Correlations with the time parameter
     - [x] 9.3. Spacepoints with time
     - [x] 9.4. Seeding with time
@@ -138,7 +138,7 @@
     - [x] 10.2. Proposals for future developments
 - [x] III. Performance
   - [x] Intro text
-  - [x] 11. OpenDataDetector tracking performance with Acts
+  - [x] 11. OpenDataDetector tracking performance with ACTS
     - [x] Intro text
     - [x] 11.1. Event generation and simulation
     - [x] 11.2. Reconstruction chain and cuts
@@ -149,9 +149,9 @@
     - [x] 11.7. Vertex fitting performance
     - [x] 11.8. Computational performance
     - [x] 11.9. Summary, conclusion and outlook
-  - [x] 12. ITk tracking performance with Acts
+  - [x] 12. ITk tracking performance with ACTS
     - [x] Intro text
-    - [x] 12.1. Acts-based track reconstruction chain
+    - [x] 12.1. ACTS-based track reconstruction chain
     - [x] 12.2. CPU performance and optimizations
     - [x] 12.3. Physics performance
     - [x] 12.4. Summary, conclusion and outlook

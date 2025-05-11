@@ -43,7 +43,7 @@ parser.add_argument(
 parser.add_argument(
     "--acts-input",
     type=Path,
-    help="Path to Acts input file",
+    help="Path to ACTS input file",
 )
 parser.add_argument(
     "--output",
@@ -137,32 +137,32 @@ if args.g4_input is not None:
         acts_std = acts_eloss["landau_sigma"][acts_mask].mean()
 
         if False:
-            oax.axvline(acts_mean, color="red", linestyle="--", label="Acts mean")
+            oax.axvline(acts_mean, color="red", linestyle="--", label="ACTS mean")
             oax.axvline(
                 acts_mean - acts_std,
                 color="orange",
                 linestyle="--",
-                label="Acts mean - std",
+                label="ACTS mean - std",
             )
             oax.axvline(
                 acts_mean + acts_std,
                 color="orange",
                 linestyle="--",
-                label="Acts mean + std",
+                label="ACTS mean + std",
             )
 
-            oax.axvline(acts_mode, color="green", linestyle="--", label="Acts mode")
+            oax.axvline(acts_mode, color="green", linestyle="--", label="ACTS mode")
             oax.axvline(
                 acts_mode - acts_std,
                 color="limegreen",
                 linestyle="--",
-                label="Acts mode - std",
+                label="ACTS mode - std",
             )
             oax.axvline(
                 acts_mode + acts_std,
                 color="limegreen",
                 linestyle="--",
-                label="Acts mode + std",
+                label="ACTS mode + std",
             )
 
         oax.legend()
@@ -205,18 +205,18 @@ if args.acts_input is not None:
         yerr=acts_landau_sigma,
         fmt="^",
         linestyle="",
-        label="Acts",
+        label="ACTS",
     )
-    # ax.plot(mid, acts_total_mean, marker="^", linestyle="", label="Acts")
-    # ax.plot(mid, acts_bethe, label="Acts bethe")
+    # ax.plot(mid, acts_total_mean, marker="^", linestyle="", label="ACTS")
+    # ax.plot(mid, acts_bethe, label="ACTS bethe")
 
 ax.legend()
 
 atlasify.atlasify(
     axes=ax,
-    brand="Acts",
+    brand="ACTS",
     atlas="Simulation",
-    subtext=f"Acts v40.0.0\nsingle muons in {args.thickness} mm of {material_label(args.material)}",
+    subtext=f"ACTS v40.0.0\nsingle muons in {args.thickness} mm of {material_label(args.material)}",
 )
 
 ylim = ax.get_ylim()

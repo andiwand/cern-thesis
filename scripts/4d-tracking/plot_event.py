@@ -119,7 +119,7 @@ atlasify.atlasify(
     outside=True,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV, <$\\mu$> = 200",
+    subtext="ACTS v40.0.0\n$t\\bar{t}$, $\\sqrt{s}$ = 14 TeV, <$\\mu$> = 200",
     offset=18,
 )
 atlasify.atlasify(axes=axs[0, 1], outside=True, atlas=False, offset=0)

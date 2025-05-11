@@ -71,7 +71,7 @@ atlasify.atlasify(
     axes=ax,
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0",
+    subtext="ACTS v40.0.0",
     enlarge=1.3,
 )
 

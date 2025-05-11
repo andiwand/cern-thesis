@@ -70,7 +70,7 @@ acts_res_vs_eta = TH1(
 )
 acts_res_vs_eta.errorbar(
     axs[0],
-    label=f"Acts-based",
+    label=f"ACTS-based",
     marker=get_marker(0),
     linestyle="",
     color=get_color(0),
@@ -108,7 +108,7 @@ axs[1].errorbar(
         acts_res_vs_eta.y_err_lo,
         legacy_res_vs_eta.y_err_lo,
     ),
-    # label="Acts-based",
+    # label="ACTS-based",
     marker=get_marker(0),
     linestyle="",
     color=get_color(0),
@@ -121,7 +121,7 @@ if idpvm_acts_mod:
     )
     acts_mod_res_vs_eta.errorbar(
         axs[0],
-        label=f"Acts-based modified",
+        label=f"ACTS-based modified",
         marker=get_marker(2),
         linestyle="",
         color=get_color(2),
@@ -137,7 +137,7 @@ if idpvm_acts_mod:
             acts_mod_res_vs_eta.y_err_lo,
             legacy_res_vs_eta.y_err_lo,
         ),
-        # label="Acts-based modified",
+        # label="ACTS-based modified",
         marker=get_marker(2),
         linestyle="",
         color=get_color(2),

@@ -54,7 +54,7 @@ data = []
 for i, scan, label in zip(
     range(2),
     [geant4_scan, acts_scan],
-    ["Geant4", "Acts"],
+    ["Geant4", "ACTS"],
 ):
     scan["mat_step_X0"] = scan["mat_step_length"] / scan["mat_X0"]
     scan["mat_step_L0"] = scan["mat_step_length"] / scan["mat_L0"]
@@ -99,7 +99,7 @@ atlasify.atlasify(
     axes=axs[0],
     brand="ODD",
     atlas="Simulation",
-    subtext="Acts v40.0.0\n",
+    subtext="ACTS v40.0.0\n",
 )
 
 ylim = axs[0].get_ylim()
@@ -125,7 +125,7 @@ axs[1].errorbar(
     data[1][0] / data[0][0],
     yerr=ratio_std(data[1][0], data[0][0], data[1][1], data[0][1]),
     xerr=(bin_edges[1:] - bin_edges[:-1]) / 2,
-    #label="Acts",
+    #label="ACTS",
     marker=get_marker(1),
     linestyle="",
     color=get_color(1),

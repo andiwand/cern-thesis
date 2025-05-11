@@ -50,7 +50,7 @@ config taken from https://gitlab.cern.ch/atlas/athena/-/blob/main/InnerDetector/
 
 https://github.com/pbutti/condor_acts
 
-to run the Acts fast chain
+to run the ACTS fast chain
 
 ```bash
 Reco_tf.py \

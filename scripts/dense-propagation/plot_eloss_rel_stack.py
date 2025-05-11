@@ -31,7 +31,7 @@ parser.add_argument(
     "--acts-input",
     nargs=3,
     type=Path,
-    help="Path to Acts input file",
+    help="Path to ACTS input file",
 )
 parser.add_argument(
     "--output",
@@ -56,7 +56,7 @@ mid = 0.5 * (edges[:-1] + edges[1:])
 
 # ax._settitle("Relative energy loss of muons passing Fe")
 ax.set_xlabel("Initial momentum [GeV]")
-ax.set_ylabel("Energy loss ratio (Acts / Geant4)")
+ax.set_ylabel("Energy loss ratio (ACTS / Geant4)")
 
 ax.set_xscale("log")
 ax.set_xlim(edges[0], edges[-1])
@@ -102,9 +102,9 @@ ax.legend(loc="upper right")
 
 atlasify.atlasify(
     axes=ax,
-    brand="Acts",
+    brand="ACTS",
     atlas="Simulation",
-    subtext=f"Acts v40.0.0\nsingle muons in {material_label(args.material)}",
+    subtext=f"ACTS v40.0.0\nsingle muons in {material_label(args.material)}",
 )
 
 fig.tight_layout()

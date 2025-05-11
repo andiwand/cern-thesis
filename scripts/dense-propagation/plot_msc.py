@@ -28,7 +28,7 @@ parser.add_argument(
     "--acts-input",
     type=Path,
     default=f"{base_dir}/data/dense-propagation/acts/msc_eloss_fe_1000mm.csv",
-    help="Path to Acts input file",
+    help="Path to ACTS input file",
 )
 parser.add_argument(
     "--output",
@@ -64,7 +64,7 @@ if args.acts_input is not None:
     acts_data = read_acts_data(args.acts_input, args.min_p_out)
     acts_std = make_acts_msc_stats(acts_data, edges, log_range)
 
-    ax.plot(mid, acts_std, marker="^", linestyle="", label="Acts")
+    ax.plot(mid, acts_std, marker="^", linestyle="", label="ACTS")
 
 ax.set_xscale("log")
 ax.set_yscale("log")
@@ -89,13 +89,13 @@ for p_min, p_max in [
     oaxs[0].plot(
         acts_xs,
         scipy.stats.norm.pdf(acts_xs, 0, np.mean(acts_data["x_sigma"])),
-        label="Acts",
+        label="ACTS",
     )
 
     print("pos")
     print(f"Geant4: {np.mean(g4_data['x']):.2f} ± {np.std(g4_data['x']):.2f}")
     print(f"Geant4 fit: {stat_robust_std(g4_data['x']):.2f}")
-    print(f"Acts: 0 ± {np.mean(acts_data['x_sigma']):.2f}")
+    print(f"ACTS: 0 ± {np.mean(acts_data['x_sigma']):.2f}")
 
     oaxs[0].legend()
 
@@ -107,13 +107,13 @@ for p_min, p_max in [
     oaxs[1].plot(
         acts_xs,
         scipy.stats.norm.pdf(acts_xs, 0, np.mean(acts_data["dir_sigma"])),
-        label="Acts",
+        label="ACTS",
     )
 
     print("dir")
     print(f"Geant4: {np.mean(g4_data['dir1'])} ± {np.std(g4_data['dir1'])}")
     print(f"Geant4 fit: {stat_robust_std(g4_data['dir1'])}")
-    print(f"Acts: 0 ± {np.mean(acts_data['dir_sigma'])}")
+    print(f"ACTS: 0 ± {np.mean(acts_data['dir_sigma'])}")
 
 fig.tight_layout()
 

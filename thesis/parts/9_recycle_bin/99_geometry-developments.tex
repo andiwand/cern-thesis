@@ -1,19 +1,19 @@
 \begin{itemize}
     \color{red}
-    \item Why is the geometry so central to Acts?
+    \item Why is the geometry so central to ACTS?
     \item What is the job of the geometry?
     \item What components couple against the geometry?
     \item Reference and mention previous discussions of the geometry
     \item Random text blocks
     \begin{itemize}
         \item The tracking geometry has to serve two purposes. It needs to be a physical accurate representation of the detector, both geometrically and material wise. It also needs to be a fast and efficient data structure for navigation. These goals usually oppose each other. A physical accurate representation of the detector is usually a complex data structure, while a fast and efficient data structure is usually a simplified representation of the detector. The tracking geometry has to find a balance between these two goals.
-        \item The main interaction point of the user with the tracking geometry is its construction. Users usually have a representation of their detector in a detector description language, like DD4hep, and want to convert this representation into the tracking geometry. ACActsTS has Plugins for these conversions and a subset of them is excercised in the Examples.
+        \item The main interaction point of the user with the tracking geometry is its construction. Users usually have a representation of their detector in a detector description language, like DD4hep, and want to convert this representation into the tracking geometry. ACTS has Plugins for these conversions and a subset of them is excercised in the Examples.
     \end{itemize}
 \end{itemize}
 
-As Acts aims to be an experiment independet track reconstruction toolkit, its components have to have the same goal. The tracking geometry is at the very center of Acts. The propagation and most of the algorithms couple against the geometry. As such, the geometry is usually the first thing an Acts user has to interact with.
+As ACTS aims to be an experiment independet track reconstruction toolkit, its components have to have the same goal. The tracking geometry is at the very center of ACTS. The propagation and most of the algorithms couple against the geometry. As such, the geometry is usually the first thing an ACTS user has to interact with.
 
-Becase the geometry is such a central part of Acts and the original design, the Gen1 geometry model, had some shortcomings, a new geometry model was developed. This chapter will give an overview of the Gen1 geometry model, its shortcomings and the new geometry models that were developed.
+Becase the geometry is such a central part of ACTS and the original design, the Gen1 geometry model, had some shortcomings, a new geometry model was developed. This chapter will give an overview of the Gen1 geometry model, its shortcomings and the new geometry models that were developed.
 
 \section{Reminder of the Gen1 Geometry Model}
 
@@ -24,7 +24,7 @@ Becase the geometry is such a central part of Acts and the original design, the 
     \item Explain and inllustrate approach surfaces
     \item References
     \begin{itemize}
-        \item Acts paper
+        \item ACTS paper
         \item Thesis Paul
     \end{itemize}
 \end{itemize}
@@ -46,16 +46,16 @@ Material can be assigned to volumes, layers and surfaces. The material is used d
     \end{itemize}
 \end{itemize}
 
-The main shortcoming of the Gen1 geometry model is that layers are not a good abstraction for all detectors. One examples for this is the ATLAS TRT or its muon spectrometer. Both have densly packed straws which are not well represented by layers. The complications arises already in the construction of the detector where one would need special handling for volumes containing straws. Since this special handling is not detector agnostic and Acts does not have a generic way to handle this, the user is left with constructing the tracking geometry by themselves. Apart from that this requires a custom implementation of the layer to deal with the surface lookup.
+The main shortcoming of the Gen1 geometry model is that layers are not a good abstraction for all detectors. One examples for this is the ATLAS TRT or its muon spectrometer. Both have densly packed straws which are not well represented by layers. The complications arises already in the construction of the detector where one would need special handling for volumes containing straws. Since this special handling is not detector agnostic and ACTS does not have a generic way to handle this, the user is left with constructing the tracking geometry by themselves. Apart from that this requires a custom implementation of the layer to deal with the surface lookup.
 
-\section{A new Geometry Model for Acts}
+\section{A new Geometry Model for ACTS}
 
 \begin{itemize}
     \color{red}
     \item Illustrate the transition from layers to volumes
 \end{itemize}
 
-The core idea of a new geometry model for Acts is to remove the layer abstraction and replace it with a more general concept. Layers in the Gen1 geometry model are very close to volumes. A new geometry model could remove this distinction and effectively cut the hierarchy to just volumes and surfaces. This has the additional benefit that the navigation is simplified. Instead of navigating through layers, the navigation can just deal with volumes and surfaces.
+The core idea of a new geometry model for ACTS is to remove the layer abstraction and replace it with a more general concept. Layers in the Gen1 geometry model are very close to volumes. A new geometry model could remove this distinction and effectively cut the hierarchy to just volumes and surfaces. This has the additional benefit that the navigation is simplified. Instead of navigating through layers, the navigation can just deal with volumes and surfaces.
 
 \subsection{The Gen2 Geometry Model}
 
@@ -68,7 +68,7 @@ The core idea of a new geometry model for Acts is to remove the layer abstractio
 
 The Gen2 geometry model was the first step to remove layers from the tracking geometry. This was done in a seperate tracking geometry implementation on the main branch. This speparate implementation consistent of a new top level class \texttt{Detector} which contained new volume objects of the class \texttt{DetectorVolume}. These are analogous to the Gen1 \texttt{TrackingGeometry} and \texttt{TrackingVolume} classes. Since this implementation is not compatible with the existing Gen1 geometry, it required completely new construction and navigation code.
 
-Apart from the removal of the layer abstraction, the Gen2 geometry model introduced a blueprint mechanism. This allows the user to define a tree-like structure of volume builders which build parts of the detector. As such, the bluprint gives the user more fine grained control over the construction of the detector. If the Acts pre-defined construction mechanisms are not sufficient for a part of the detector, the user can define their own volume builder and insert it into the blueprint. Opposite to the Gen1 geometry, where the user had to default to build whole geometry by themselves if just one part of the detector was not constructible by the Acts pre-defined mechanisms.
+Apart from the removal of the layer abstraction, the Gen2 geometry model introduced a blueprint mechanism. This allows the user to define a tree-like structure of volume builders which build parts of the detector. As such, the bluprint gives the user more fine grained control over the construction of the detector. If the ACTS pre-defined construction mechanisms are not sufficient for a part of the detector, the user can define their own volume builder and insert it into the blueprint. Opposite to the Gen1 geometry, where the user had to default to build whole geometry by themselves if just one part of the detector was not constructible by the ACTS pre-defined mechanisms.
 
 The Gen2 geometry model also introduced a local navigation mechanism. This allows the user to control the navigation in each volume individually if the default navigation is not sufficient. In comparison to the Gen1 geometry this is not coupled to the geometrical volume class but just a \texttt{Delegate} which is held by the volume and can be set by the user. The delegate is designed to take a generic navigation state object as input and output to fill surface targets and update them.
 

@@ -6,9 +6,9 @@ The main difference between the two approaches is how the material is handled du
 
 \input{parts/2_developments/08_dense-material-developments/figures/scatterer_think_thick.tex}
 
-While the surface-based approach is a long standing feature in Acts, the volume-based approach was not fully implemented yet. The work presented in this thesis aims to close this gap by implementing and validating particle transport through volume-based material in Acts.
+While the surface-based approach is a long standing feature in ACTS, the volume-based approach was not fully implemented yet. The work presented in this thesis aims to close this gap by implementing and validating particle transport through volume-based material in ACTS.
 
-Similar to the existing surface-based approach, this implementation focues on two interactions with the material, continuous energy loss and multiple scattering, which are described in the following sections. Afterwards, a reference with Geant4 is established and the implementation in Acts is described. Finally, the performance of the implementation is evaluated.
+Similar to the existing surface-based approach, this implementation focues on two interactions with the material, continuous energy loss and multiple scattering, which are described in the following sections. Afterwards, a reference with Geant4 is established and the implementation in ACTS is described. Finally, the performance of the implementation is evaluated.
 
 \section{Modified equations of motion}
 \label{sec:dev/dense/equations-of-motion}
@@ -102,7 +102,7 @@ Thin scatterers only incrase directional uncertainty, as the particle will pass 
 
 The energy loss distribution of a particle passing through matter is highly non-Gaussian and has a long tail towards higher energy loss. As such, there is not one best solution to model energy loss as a Gaussian distribution. One can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width.
 
-The estimate of the energy loss uncertainty in Acts is given by \textcite{pdg2024} with
+The estimate of the energy loss uncertainty in ACTS is given by \textcite{pdg2024} with
 \begin{equation}
 \begin{aligned}
     \text{FWHM}_E &\approx 4 \xi \qquad&
@@ -159,7 +159,7 @@ During the developments of the \texttt{SympyStepper} for dense material describe
 \end{equation}
 with the step size $h_i = x_i - x_{i-1}$. To include the continuous energy loss in the multiple scattering estimation, $\Delta\theta_0^2$ can be evaluated with an average momentum at the middle of the step.
 
-A major challenge during the dense material handling for the \texttt{EigenStepper}, described in Section \ref{sec:dev/dense/eigen}, was that this kind of covariance transport was not foreseen in Acts. The covariance is transported from one surface to the next using the transport Jacobian. There is no notion of a free track parameter covariance in the Acts \texttt{EigenStepper} where additional material effects can be accumulated.
+A major challenge during the dense material handling for the \texttt{EigenStepper}, described in Section \ref{sec:dev/dense/eigen}, was that this kind of covariance transport was not foreseen in ACTS. The covariance is transported from one surface to the next using the transport Jacobian. There is no notion of a free track parameter covariance in the ACTS \texttt{EigenStepper} where additional material effects can be accumulated.
 
 To overcome this issue, the problem is decomposed and the additional covariance due to the material is calculated without taking the general transport Jacobian into account. Encountered material during the transport is accumulated and applied to the bound covariance only when it is transported to the next surface. This way, the additional covariance is accumulated independently from the transport Jacobian, which is justified by the fact that the multiple scattering does not affect the trajectory and increases the uncertainty orthogonal to the propagation direction.
 
@@ -183,7 +183,7 @@ with the projector $\mathbf{P} = \mathbf{I} - \mathbf{T} \ \mathbf{T}^\mathrm{T}
 
 \section{Toy Model}
 
-A toy model is used to simplify the implementation and validation of the volume-based material handling in Acts. It consists of a box filled with dense material and a screen with some displacement to the box. Muons are emitted at some distance towards the box and their hits are recorded on a screen. Figure \ref{fig:dev/dense/toy-model} illustrates the setup.
+A toy model is used to simplify the implementation and validation of the volume-based material handling in ACTS. It consists of a box filled with dense material and a screen with some displacement to the box. Muons are emitted at some distance towards the box and their hits are recorded on a screen. Figure \ref{fig:dev/dense/toy-model} illustrates the setup.
 
 This captures the essence of the problem without the complexity of a full detector simulation. Inside the dense material, the muons lose energy and scatter multiple times. The scattering not only affects the uncertainty of the direction but also the position uncertainty on the screen. After passing the dense material, the muons are transported in a vacuum which should keep the uncertainty in direction unchanged but the position uncertainty to further increase.
 
@@ -193,7 +193,7 @@ Note that this toy model does not include a magnetic field which is present in a
 
 \section{Baseline with Geant4}
 
-A reference is established using Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016} which allows comparisons to the analytical solution that will be implemented in Acts. Geant4 is a widely used particle transport simulation framework. It covers a wide range of interactions beyond the basic energy loss and the multiple scattering which are implemented in Acts.
+A reference is established using Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016} which allows comparisons to the analytical solution that will be implemented in ACTS. Geant4 is a widely used particle transport simulation framework. It covers a wide range of interactions beyond the basic energy loss and the multiple scattering which are implemented in ACTS.
 
 \begin{figure}[ht]
     \centering
@@ -218,31 +218,31 @@ Figure \ref{fig:dev/dense/geant4-msc} shows the density of the hits on the scree
 \section{First attempts with \texttt{EigenStepper}}
 \label{sec:dev/dense/eigen}
 
-A volume-based material description exists in Acts already for a while as well as an extension mechanism for the \texttt{EigenStepper} to deal with continuous energy loss. A natural first attempt to implement a full covariance transport through volume-based material was using this extension mechanism to also deal with multiple scattering.
+A volume-based material description exists in ACTS already for a while as well as an extension mechanism for the \texttt{EigenStepper} to deal with continuous energy loss. A natural first attempt to implement a full covariance transport through volume-based material was using this extension mechanism to also deal with multiple scattering.
 
-Since steppers in Acts primirily deal with Jacobian transport and propagate the covariance only on demand, the additional angle and positional uncertainty due to multiple scattering cannot be simply patched into the code. To work around this, an additional covariance term was intoduced which is used to accumulate the multiple scattering and energy uncertainty. This term is then added when the covariance is transported to the next surface.
+Since steppers in ACTS primirily deal with Jacobian transport and propagate the covariance only on demand, the additional angle and positional uncertainty due to multiple scattering cannot be simply patched into the code. To work around this, an additional covariance term was intoduced which is used to accumulate the multiple scattering and energy uncertainty. This term is then added when the covariance is transported to the next surface.
 
 The \texttt{EigenStepper} extension mechanism does not provide a way to accumulate the additional covariance during the transport and to apply it to the bound covariance when requested by the user. Changing this seemed like a major software architectural effort. A proof of concept was provided, reevaluating the additional covariance after each step. This is wasteful in terms of computing resources and should be improved later on.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/eloss_rate_fe_100mm.pdf}
-    \caption{A comparison of the energy loss rate computed by Acts and Geant4 for muons over different momenta after passing 100 mm of iron. The vertical bars represent the estimated energy loss uncertainty. A Landau distribution is fitted to the Geant4 data for each bin and summarized as the emperical mean from the data in the bin and standard deviation computed from the FWHM of the distribution. Acts is able to reproduce the mean energy loss and the FWHM well over the full spectrum.}
+    \caption{A comparison of the energy loss rate computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The vertical bars represent the estimated energy loss uncertainty. A Landau distribution is fitted to the Geant4 data for each bin and summarized as the emperical mean from the data in the bin and standard deviation computed from the FWHM of the distribution. ACTS is able to reproduce the mean energy loss and the FWHM well over the full spectrum.}
     \label{fig:dev/dense/eloss-cmp-rate}
 \end{figure}
 
-Figure \ref{fig:dev/dense/eloss-cmp-rate} shows the energy loss rate computed by Acts and Geant4 for muons over different momenta after passing 100 mm of iron. The mean energy loss and its uncertainty are represented well with Acts in comparison to Geant4. The energy loss distribution is skewed and has a long tail towards higher energy loss. Acts deals with Gaussian uncertainties to simplify the covariance transport and fitting procedures. Modeling the energy loss distribution as a Gaussian is subjective as one can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width.
+Figure \ref{fig:dev/dense/eloss-cmp-rate} shows the energy loss rate computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The mean energy loss and its uncertainty are represented well with ACTS in comparison to Geant4. The energy loss distribution is skewed and has a long tail towards higher energy loss. ACTS deals with Gaussian uncertainties to simplify the covariance transport and fitting procedures. Modeling the energy loss distribution as a Gaussian is subjective as one can choose the mean or the mode as the central value and the FWHM or the standard deviation as the width.
 
 \input{parts/2_developments/08_dense-material-developments/tables/prototype_performance.tex}
 
-Table \ref{tab:dev/dense/prototype-performance} shows the positional uncertainty and the final momentum of muons with different momenta after passing 1 meter of liquid Argon using the toy model in Acts and Geant4. The Geant4 reference corresponds to Figure \ref{fig:dev/dense/geant4-msc}.
+Table \ref{tab:dev/dense/prototype-performance} shows the positional uncertainty and the final momentum of muons with different momenta after passing 1 meter of liquid Argon using the toy model in ACTS and Geant4. The Geant4 reference corresponds to Figure \ref{fig:dev/dense/geant4-msc}.
 
-While this approach led to promising results, the implementation was unsatisfactory as the multiple scattering contribution had to be recalculated at each step which is computationally inefficient. The \texttt{EigenStepper} extension mechanism needed to be redesigned to allow only calculating the uncertainties when they are transported to the next surface. At the same time it was unclear how multiple extensions should cooperate on the additional covariance as the position uncertainty keeps increasing due to the direciton uncertainty even in vacuum. This bigger architectural change of Acts was not directly attempted and this first solution was only a proof of concept and kept in a separate branch. A proper implementation was done with the \texttt{SympyStepper} which is described in the following section.
+While this approach led to promising results, the implementation was unsatisfactory as the multiple scattering contribution had to be recalculated at each step which is computationally inefficient. The \texttt{EigenStepper} extension mechanism needed to be redesigned to allow only calculating the uncertainties when they are transported to the next surface. At the same time it was unclear how multiple extensions should cooperate on the additional covariance as the position uncertainty keeps increasing due to the direciton uncertainty even in vacuum. This bigger architectural change of ACTS was not directly attempted and this first solution was only a proof of concept and kept in a separate branch. A proper implementation was done with the \texttt{SympyStepper} which is described in the following section.
 
 \section{Final implementation with \texttt{SympyStepper}}
 \label{sec:dev/dense/sympy}
 
-The \texttt{SympyStepper} is a new stepper implementation in Acts based on symbolic math expressions with are transformed into code. Developments and performance are described in Section \ref{sec:dev/stepper/sympy}. It is an alternative approach to the \texttt{EigenStepper} where the math has to be done first and then manually transcribed into code using a linear algebra framework like Eigen. \texttt{SymPy} has the benefit of writing concise and readable math expressions which can be used to generate the stepping code automatically, including the derivation of the transport Jacobian. As such, including the continuous energy loss is just a matter of changing the equations of motion, which then automatically affect the Runge-Kutta-Nyström integration and the transport Jacobian.
+The \texttt{SympyStepper} is a new stepper implementation in ACTS based on symbolic math expressions with are transformed into code. Developments and performance are described in Section \ref{sec:dev/stepper/sympy}. It is an alternative approach to the \texttt{EigenStepper} where the math has to be done first and then manually transcribed into code using a linear algebra framework like Eigen. \texttt{SymPy} has the benefit of writing concise and readable math expressions which can be used to generate the stepping code automatically, including the derivation of the transport Jacobian. As such, including the continuous energy loss is just a matter of changing the equations of motion, which then automatically affect the Runge-Kutta-Nyström integration and the transport Jacobian.
 
 With this new implementation a generalized stepping extension mechanism is avoided and the continuous multiple scattering and energy loss is implemented as a separate routine. The \texttt{SympyStepper} switches to this routine when the particle passes through dense material. Instead of trying to generalize this, which was attemted with the \texttt{EigenStepper}, the \texttt{SympyStepper} just enumerates the two cases we are aware of: vacuum and dense material.
 
@@ -259,20 +259,20 @@ The performance of the \texttt{EigenStepper} and \texttt{SympyStepper} is evalua
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/msc_rel_stack_fe.pdf}
-    \caption{A comparison of the multiple scattering computed by Acts and Geant4 for muons over different momenta after passing 10, 100, 1000 mm of iron. A Gaussian is fitted to the Geant4 data for each bin to estimate the standard deviation of the positional uncertainty.}
+    \caption{A comparison of the multiple scattering computed by ACTS and Geant4 for muons over different momenta after passing 10, 100, 1000 mm of iron. A Gaussian is fitted to the Geant4 data for each bin to estimate the standard deviation of the positional uncertainty.}
     \label{fig:dev/dense/msc-cmp}
 \end{figure}
 
-Figure \ref{fig:dev/dense/msc-cmp} shows the effects of multiple scattering computed by Acts and Geant4 for muons over different momenta after passing different amounts of iron. Acts is able to reproduce the standard deviation of the positional uncertainty to about 5\% over a large spectrum. A bias is building up over increasing material thickness and lower momenta which is not understood yet and needs further investigation.
+Figure \ref{fig:dev/dense/msc-cmp} shows the effects of multiple scattering computed by ACTS and Geant4 for muons over different momenta after passing different amounts of iron. ACTS is able to reproduce the standard deviation of the positional uncertainty to about 5\% over a large spectrum. A bias is building up over increasing material thickness and lower momenta which is not understood yet and needs further investigation.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/eloss_rel_stack_fe.pdf}
-    \caption{A comparison of the energy loss computed by Acts and Geant4 for muons over different momenta after passing 10, 100, 1000 mm of iron.}
+    \caption{A comparison of the energy loss computed by ACTS and Geant4 for muons over different momenta after passing 10, 100, 1000 mm of iron.}
     \label{fig:dev/dense/eloss-cmp}
 \end{figure}
 
-Figure \ref{fig:dev/dense/eloss-cmp} shows the energy loss computed by Acts and Geant4 for muons over different momenta after passing different amounts of iron. Acts is able to reproduce the mean energy loss well over the full spectrum. Fluctuations in the estimated energy loss for low thickness and high momenta are due to limited statistics and the application of an emperical mean to the data.
+Figure \ref{fig:dev/dense/eloss-cmp} shows the energy loss computed by ACTS and Geant4 for muons over different momenta after passing different amounts of iron. ACTS is able to reproduce the mean energy loss well over the full spectrum. Fluctuations in the estimated energy loss for low thickness and high momenta are due to limited statistics and the application of an emperical mean to the data.
 
 \input{parts/2_developments/08_dense-material-developments/tables/cpu_performance.tex}
 

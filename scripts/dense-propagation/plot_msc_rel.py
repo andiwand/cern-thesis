@@ -22,7 +22,7 @@ parser.add_argument(
     "--acts-input",
     type=Path,
     default=f"{base_dir}/data/dense-propagation/acts/msc_eloss_fe_100mm.csv",
-    help="Path to Acts input file",
+    help="Path to ACTS input file",
 )
 parser.add_argument(
     "--output",
@@ -57,7 +57,7 @@ if args.acts_input is not None:
     acts_std = make_acts_msc_stats(acts_data, edges, log_range)
 
 ax.hlines(1, edges[0], edges[-1], linestyle="--", color="black", label="Geant4")
-ax.plot(mid, acts_std / g4_std, marker="o", linestyle="", label="Acts")
+ax.plot(mid, acts_std / g4_std, marker="o", linestyle="", label="ACTS")
 
 ax.set_xscale("log")
 

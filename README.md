@@ -1,12 +1,20 @@
-# Development and performance of track reconstruction software for ATLAS Phase-2 Upgrade and beyond
+# Development and Performance of ACTS-Based Track Reconstruction Software for the ATLAS Phase-2 Upgrade and Beyond
 
 ## Abstract
+
+With the advent of the High-Luminosity Large Hadron Collider (HL-LHC) the ATLAS detector will face the unprecedented challenge of reconstructing particle trajectories in an environment with up to 200 simultaneous proton-proton interactions per bunch crossing. To meet these demands, the ATLAS Collaboration has decided to adopt the ACTS (A Common Tracking Software) toolkit —-- a community-driven project that provides experiment-independent tracking algorithms written in modern C++.
+
+This thesis presents the development and performance evaluation of track reconstruction software optimized for the High-Luminosity upgrade of the ATLAS experiment at CERN. The work detailed in this thesis contributes significantly to the ACTS codebase, enhancing its capabilities across a range of reconstruction tasks. These include improvements in track propagation, stepper mechanics, navigation logic, ambiguity resolution, and time-aware tracking. Special focus is given to developments that improve computational efficiency and robustness of track finding under HL-LHC conditions.
+
+In addition to software development, this thesis includes sets of comprehensive tracking performance studies with the OpenDataDetector, a prototype (HL-)LHC-like full-silicon inner tracking detector, as well as the ATLAS Inner Tracker. Results demonstrate the effectiveness of the new developments in high-pileup environments, showing track finding efficiency, resolution, and computational performance.
+
+This work establishes a robust foundation for the integration of ACTS intothe ATLAS track reconstruction software and contributes to a growing toolkit supporting future high-energy physics experiments.
 
 ## Snakemake
 
 Sometimes a rule changes or the scripts which is part of the input, but we belive that the output will be the same. For long jobs we want to skip reprocessing. This can be achieved by cleaning the snakemake cache and touching the relevant output files of these rules.
 
-For example to skip rerunning the simulations jobs for the Acts ODD performance study:
+For example to skip rerunning the simulations jobs for the ACTS ODD performance study:
 ```
 rm -rf .snakemake
 find data/odd-performance/sim -type f -exec touch {} +
