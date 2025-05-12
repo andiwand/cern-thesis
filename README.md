@@ -1,4 +1,4 @@
-# Development, Performance, and Prospects of ACTS-based Track Reconstruction Software for ATLAS at the High-Luminosity LHC
+# Development, Performance, and Prospects of ACTS for ATLAS Track Reconstruction during High-Luminosity LHC and Beyond
 
 ## Abstract
 
