@@ -4,11 +4,11 @@ This thesis is mainly concerned with the reconstruction of tracks from charged p
 
 In a subsequent step called vertex reconstruction, tracks are used to find the point where the particles were produced, called vertex. The position of the vertex in comparison to the interaction region can be used to get an insight into the event processes.
 
-For the reconstruction of the full event, track and vertices are used to form higher level objects like jets, missing transverse energy (MET), taus, and other.
+For the reconstruction of the full event, tracks and vertices are used to form higher level objects like jets, missing transverse energy (MET), taus, and other.
 
 Displaced tracks and vertices are not covered in this thesis. They can be created by interactions with the detector material or decays of long-lived particles. Displaced tracks and vertices are usually reconstructed in a separate step after the standard reconstruction, also called large radius tracking (LRT).
 
-This chapter introduces the key concepts and methods involved in track and vertex reconstruction. It begins with an overview of the relevant particle-matter interactions and the equations of motion for charged particles in a magnetic field. The Runge-Kutta-Nyström method is then presented as the numerical technique used to integrate these equations. Subsequently, the concept of track parameters is discussed, along with the transport of Jacobians and covariance matrices. Finally, the reconstruction chains and objects for tracks and vertices are described, along with the various reconstruction algorithms employed.
+This chapter introduces the key concepts and methods involved in track and vertex reconstruction. It begins with an overview of the relevant particle-matter interactions and the equations of motion for charged particles in a magnetic field. Then, the Runge-Kutta-Nyström method is presented as the numerical technique used to integrate these equations. Subsequently, the concept of track parameters is discussed, along with the transport of Jacobians and covariance matrices. Finally, the reconstruction chains and objects for tracks and vertices are described, along with the various reconstruction algorithms employed.
 
 \section{Particle-matter interactions}
 
@@ -16,9 +16,9 @@ Free, energetic particles interact with matter in a variety of ways. The most co
 
 Interactions between particles and matter can be catagorized into elastic and inelastic interactions.
 
-During elastic interactions, the particle can be deflected but does not lose a significant amount of energy. An example of this is multiple Coulomb scattering, which in first order only affects the direction of the particle's trajectory. Additionally, a shift in the transverse plane relative to the incident direction can build up if the multiple scattering evolves over a long distance. This is discussed in more detail in Chapter \ref{ch:dev/dense}.
+During elastic interactions, the particle can be deflected but does not lose a significant amount of energy. An example of this is multiple Coulomb scattering, which in first order only affects the direction of the particle's trajectory. Additionally, a shift in the transverse plane relative to the incident direction can build up if the multiple scattering evolves over a sufficiently long distance. This is discussed in more detail in Chapter \ref{ch:dev/dense}.
 
-For inelastic interactions, the particle loses a significant amount of energy or is absorbed in the material. This can happen through ionization, bremsstrahlung, or hadronic interactions. Bremsstrahlung is especially relevant for light particles like electrons. Hadronic interactions are relevant for hadronic particles and can lead to the disintegration of the incoming particle. Inelastic interactions can lead to the production of secondary particles, which may also be subject to detection. At the same time, they can reduce the number of produced hits in the detector for a given particle and thus reduce the reconstruction efficiency of primary particles. The production of secondaries can increase hit confusion effects and further reduce the efficiency.
+For inelastic interactions, the particle loses a significant amount of energy or is absorbed in the material. This can happen through ionization, bremsstrahlung, or hadronic interactions. Bremsstrahlung is especially relevant for light particles like electrons. Hadronic interactions are relevant for hadronic particles and lead to the disintegration of the incoming particle. Inelastic interactions lead to the production of secondary particles, which may also be subject to detection. At the same time, they can reduce the number of produced hits in the detector for a given particle and thus reduce the reconstruction efficiency of primary particles. The production of secondaries can increase hit confusion effects and further reduce the efficiency.
 
 \subsection{Detection of charged particles}
 
