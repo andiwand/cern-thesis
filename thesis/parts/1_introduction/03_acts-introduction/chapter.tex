@@ -12,7 +12,7 @@ This chapter gives a brief overview of the ACTS project and reviews the core con
 
 ACTS can be thought of as a collection of components which interact with each other to build higher and higher levels of abstractions. The most basic building blocks are the magnetic field, the geometry and the material. The magnetic field can be queried for its field strength at a given point in space. There are a few implementations available with the simplest one being a constant field. The geometry component deals with surfaces, layers and volumes which built up the tracking geometry of a detector. The material component abstracts material properties and provides utilities to estimate interactions like ionization loss and multiple scattering for a given incident particle.
 
-The propagator component is responsible for moving parameters along a particle's trajectory. The most prominent use case is to extrapolate track parameters from one surface to another. The propagator uses the magnetic field to estimate the beding of the particle's trajectory. The geometry is used to check for intersections with the tracking geometry and the material is used to estimate energy loss and multiple scattering.
+The propagator component is responsible for moving parameters along a particle's trajectory. The most prominent use case is to extrapolate track parameters from one surface to another. The propagator uses the magnetic field to estimate the bending of the particle's trajectory. The geometry is used to check for intersections with the tracking geometry and the material is used to estimate energy loss and multiple scattering.
 
 Ultimately, algorithms are built on top of these components. Some of them depend on the propagation, like classical track finding and track fitting algorithms, while others just depend on the geometry, like the spacepoint formation.
 
@@ -26,37 +26,37 @@ Most importantly, lengths are measured in millimeters and energies in GeV. The s
 
 Units are ultimately a choice, but one that is taken by ACTS and not the user. Having a consistent, pre-defined set of units allows for easier to read and consistent code. The types of scalars and vectors in ACTS do not reflect their units, since they are implicit for the dimension. Some decisions taken for units and constants reach further into the ACTS codebase than just \texttt{Units.hpp}. For example $c = 1$ is built implicitly into many equations.
 
-The choice of measuring length in millimeters has direct consequences for the time units. The distance light travels in one nanosecond in vacuum $1\ \text{ns} = 299.79\ \text{mm/c}$ results in a big value compared to the typical spatial resolution of micrometers in tracking detectors. This can potentially lead to numerical instabilities and may need reconsideration in the future.
+The choice of measuring length in millimeters has direct consequences for the time units. The distance light travels in one nanosecond in vacuum $1\ \text{ns} \approx 299.79\ \text{mm/c}$ results in a big value compared to the typical spatial resolution of micrometers in tracking detectors. This can potentially lead to numerical instabilities and may need reconsideration in the future.
 
 \section{Track parameterization}
 \label{sec:intro/acts/track-parameterization}
 
-Track parameters describe the observable state of a track at a given point in space and/or time. This includes the position, time, direction, and charge over momentum. There are two kinds of track parameters in ACTS: bound parameters and free parameters. Bound track parameters are expressed with a local position at a given surface, a direction with two spherical coordinate angles, while free track parameters are expressed with a global cartesian position and a normalized direction vector.
+Track parameters describe the observable state of a track at a given point in space and/or time. This includes the position, time, direction, and charge over momentum. There are two kinds of track parameters in ACTS: bound parameters and free parameters. Bound track parameters are expressed with a local position at a given surface, a direction with two spherical coordinate angles. Free track parameters are expressed with a global cartesian position and a normalized direction vector.
 \begin{equation}
     \mathbf{x}_\text{local} = \left(l_0, l_1, \phi, \theta, q/p, t\right)^\mathrm{T}
 \end{equation}
 \begin{equation}
     \mathbf{x}_\text{global} = \left(g_0, g_1, g_2, t, d_0, d_1, d_2, q/p\right)^\mathrm{T}
 \end{equation}
-The azimuthal angle, $\phi$, should be within $[-\pi, \pi)$, but values outside this range are also accepted as they uniquely map to a valid value in the range. The polar angle, $\theta$, has to be within $[0, \pi]$, while $0$ and $\pi$ should be avoided as they correspond to the poles of the spherical coordinate system. The charge over momentum parameter, $q/p$, captures the curvature of the trajectory given the local magnetic field. This choice can be motivated by the equations of motion for a free particle in a magnetic field. The charge is signed and the momentum is the magnitude of the momentum vector. Using the absolute momentum magnitude over the traverse momentum magnitude is more general given an arbitraty magnetic field. To extract the momentum from $q/p$, one has to assume an absolute charge of the particle.
+The azimuthal angle, $\phi$, should be within $[-\pi, \pi)$, but values outside this range are also accepted as they uniquely map to a valid value in the range. The polar angle, $\theta$, has to be within $[0, \pi]$, while $0$ and $\pi$ should be avoided as they correspond to the poles of the spherical coordinate system. The charge over momentum parameter, $q/p$, captures the curvature of the trajectory given the local magnetic field. This choice can be motivated by the equations of motion for a free particle in a magnetic field. The charge is signed and the momentum is the magnitude of the momentum vector. Using the absolute momentum magnitude over the traverse momentum magnitude is more general given an arbitrary magnetic field. To extract the momentum from $q/p$, one has to assume an absolute charge of the particle.
 
 In ACTS, \texttt{BoundTrackParameters} contain the bound parameter vector, the surface, a particle hypothesis and optionally a covariance matrix. Similarly, \texttt{FreeTrackParameters} contain the free parameter vector, a particle hypothesis and optionally a covariance matrix.
 
-Note that the ACTS \texttt{BoundTrackParameters} are sort of standard for collider experiments. This comes with two caveats: the bound parametrization does not make a lot of sense for foward exteriments and there are poles in the parametrization which can lead to numerical instabilities. This can be avoided by rotating the tracking geometry away from the poles.
+Note that the ACTS \texttt{BoundTrackParameters} are sort of standard for collider experiments. This comes with two caveats: the bound parametrization does not make a lot of sense for forward experiments and there are poles in the parametrization which can lead to numerical instabilities. This can be avoided by rotating the tracking geometry away from the poles.
 
-Track parametrization is ultimately a choice and there is not single best one. Since ACTS aims to be experiment independent, a more general solution would be preferable but was not reached yet. The parametrization is deeply baked into ACTS which makes it hard to change. At the same time an abstraction for the track parameters might bring a compute performance penalty.
+Track parametrization is ultimately a choice and there is not a single best one. Since ACTS aims to be experiment independent, a more general solution would be preferable but was not reached yet. The parametrization is deeply baked into ACTS which makes it hard to change. At the same time an abstraction for the track parameters might come with a computational overhead.
 
 % Track parameters should be unique and "well-behaved" in the sense that they should not have singularities or discontinuities. This is not always the case with the ACTS track parameters. Additionally, for numerical stability, they should live on a similar scale which also depends on the units and geometry.
 
 \section{Event data model}
 
-The event data model (EDM) in ACTS is a collection of data structures which are used to store inputs and outputs of the reconstruction. For example, ACTS Core defines containers and access to spacepoints, seeds and tracks. While ACTS Examples defines remaining types like clusters and measurements. Current EDM implementations try to be experiment independent by defining interfaces for read and write access and providing default implementations within ACTS Core. The main reason for this is to avoid copying data to and from user-defined data structures. This is beneficial for memory usage, but might have performance implications which are currently under investigation. Potentially ACTS could define a set of EDM types and couple its algorithms to these types directly. This would also avoid C++ template interfaces in the algorihtms.
+The event data model (EDM) in ACTS is a collection of data structures which are used to store inputs and outputs of the reconstruction. For example, ACTS Core defines containers and access to spacepoints, seeds and tracks. While ACTS Examples defines remaining types like clusters and measurements. Current EDM implementations try to be experiment independent by defining interfaces for read and write access and providing default implementations within ACTS Core. The main reason for this is to avoid copying data to and from user-defined data structures. This is beneficial for memory usage, but might have performance implications which are currently under investigation. Potentially ACTS could define a set of EDM types and couple its algorithms to these types directly. This would also avoid C++ template interfaces for algorithms.
 
 Most tracking EDMs can be thought of as tables. Each row corresponds to a single object and each column corresponds to a property of the object. The rows are indexed by an integer ID which is unique for the object. An example for this is the track EDM. The track container stores track parameters, the reference surface, the particle hypothesis and the last track state index which points into the track state container. The track state container stores track parameters for each surface crossed and links to the previous track states.
 
 \section{Tracking geometry}
 
-A tracking geometry is a simplified version of the full detector geometry with the purpose of simplifying and accelerating tracking algorithms. Real detectors consist of support structures, cables, cooling pipes, etc. which are not directly relevant for track reconstruction algorithms. The ACTS tracking geometry consists of surfaces, layers, and volumes. These are hierarchical: volumes contain layers, and layers contain surfaces. Surfaces come in different shapes, like rectangular or cylindrical. Volumes are enclosed with boundary surfaces, which connect to other volumes or to the end of world.
+A tracking geometry is a simplified version of the full detector geometry with the purpose of simplifying and accelerating tracking algorithms. Real detectors consist of support structures, cables, cooling pipes, etc. which are not directly relevant for track reconstruction algorithms. The ACTS tracking geometry consists of surfaces, layers, and volumes. They follow a hierarchical structure: volumes contain layers, and layers contain surfaces. Surfaces come in different shapes, like rectangular or cylindrical. Volumes are enclosed with boundary surfaces, which connect to other volumes or to the \textit{end of world}.
 
 The tracking geometry distinguishes between sensitive and passive surfaces. Sensitive surfaces measure parts of the state or properties of particles, like their 2D hit position. Passive surfaces represent logical structures of the detector or carry accumulated passive detector material. The procedure of deriving this accumulated material is called \textit{material mapping}.
 
@@ -78,7 +78,7 @@ Fatras is heavily used in ACTS Examples, for testing ACTS in general, and early 
 
 \section{Plugins}
 
-ACTS comes with a list of plugins which can be used to extend the functionality of the Core library with additional external dependencies. ACTS Core is designed to have a minimal set of dependencies. Everything that goes beyond these are optional and captured by a plugin. Plugins can be enabled or disabled during the build process.
+ACTS comes with a list of plugins which can be used to extend the functionality of the Core library with additional external dependencies. ACTS Core is designed to have a minimal set of dependencies. Everything that goes beyond these are optional and captured by a plugin. Plugins can be enabled or disabled during the configuration of the build process.
 
 There are geometry plugins to deal with different input sources like DD4hep \cite{dd4hep}, GeoModel \cite{geomodel}, ROOT's TGeo \cite{root}, and Geant4. There are also plugins for serialization and deserialization of data like Json, EDM4hep \cite{edm4hep}, and ROOT.
 
@@ -88,7 +88,7 @@ The Examples framework exercises the use of the Core library to build a reconstr
 
 The goal of the Examples is to test common workflows and to enable monitoring of our algorithms on a higher level. Testing within the Core library cannot include a detailed simulation and reconstruction chains. The Examples framework provides a way to test the Core library in a more realistic environment.
 
-The Examples provide various detectors, such as a generic telescope detector and the OpenDataDetector. A sequencer component allows to execute reconstruction algorihtms in a given order. There is a central event data store called \texttt{Whiteboard}, which can be used by algorithms to reach for their input and return their output to. Algorithms perform the individual steps of the reconstruction chain, like track finding, track fitting, and vertexing. Readers and writers can be used to move event and reconstruction data from and to disk. Special summary writers exist to measure the performance of reconstruction algorithms using truth information.
+The Examples provide various detectors, such as a generic telescope detector and the OpenDataDetector. A sequencer component allows to execute reconstruction algorithms in a given order. There is a central event data store called \texttt{Whiteboard}, which can be used by algorithms to reach for their input and to return their output to. Algorithms perform the individual steps of the reconstruction chain, like track finding, track fitting, and vertexing. Readers and writers can be used to move event and reconstruction data from and to disk. Special summary writers exist to measure the performance of reconstruction algorithms using truth information.
 
 \section{The OpenDataDetector}
 \label{sec:intro/acts/odd}
@@ -98,7 +98,7 @@ The OpenDataDetector (ODD) \cite{odd-v2} is an evolution of the TrackML \cite{tr
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/1_introduction/03_acts-introduction/figures/odd_layout.pdf}
-    \caption{Illustration of the ODD layout from a Z-R view, segmented into: Beam pip, Pixels, Short Strips, Long Strips, and Solenoid. The solid lines inside the sub detectors represent the layers. The dashed lines represent different eta regions.}
+    \caption{Illustration of the ODD layout from a ZR view, segmented into: Beam pip, Pixels, Short Strips, Long Strips, and Solenoid. The solid lines inside the sub detectors represent the layers. The dashed lines represent different pseudo rapidity $\eta$ regions.}
     \label{fig:intro/acts/odd-layout}
 \end{figure}
 
@@ -137,13 +137,13 @@ Figure \ref{fig:intro/acts/odd-hits} shows the number of hits as a function of $
     \label{fig:intro/acts/odd-material-x0-eta}
 \end{figure}
 
-Figure \ref{fig:intro/acts/odd-material-x0-eta} shows the amount of material in $X/X_0$ as a function of $\eta$. The material amount is sampled with Geant4. The number of crossed radiation lengths $X/X_0$ determines the amount of energy loss and multiple scattering a particle experiences while traversing the detector. The material amount is not constant and varies with $\eta$ due to geometric effects. $X/X_0$ determines the impact parameter resolution of the detector.
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/1_introduction/03_acts-introduction/figures/odd_material_l0_eta.pdf}
     \caption{Material amount in $X/\lambda_0$ as a function of $\eta$. The vertical dashed lines indicate the usual $[-3,3]$ $\eta$ coverage.}
     \label{fig:intro/acts/odd-material-l0-eta}
 \end{figure}
+
+Figure \ref{fig:intro/acts/odd-material-x0-eta} shows the amount of material in $X/X_0$ as a function of $\eta$. The material amount is sampled with Geant4. The number of crossed radiation lengths $X/X_0$ determines the amount of energy loss and multiple scattering a particle experiences while traversing the detector. The material amount is not constant and varies with $\eta$ due to geometric effects. Usually, $X/X_0$ determines the impact parameter resolution of the detector.
 
 Figure \ref{fig:intro/acts/odd-material-l0-eta} shows the amount of material in $X/\lambda_0$ as a function of $\eta$. The number of crossed nuclear interaction lengths $X/\lambda_0$ determines the number of nuclear interactions a hadron experiences on average while traversing the detector. As such, $X/\lambda_0$ also determines the upper bound of efficiency for hadrons.
