@@ -87,7 +87,7 @@ A boundary check with tolerance has to be provided by an implementation of \text
 
 The modified Bryson-Frazier (mBF) smoother \cite{mbf-smoother} is an alternative to the Rauch-Tung-Striebel (RTS) smoother \cite{rts-smoother} with potential advantages in terms of numerical stability and performance. The mBF smoother does not rely on the inversion of the covariance matrix in parameter space and can reuse information from the forward filter to improve the computational performance further.
 
-The RTS smoother is a long standing feature in ACTS and is called \texttt{GainMatrixSmoother}. The mBF smoother was implemented during the work on this thesis. It is called \texttt{MbfSmoother} and is a drop-in replacement for the RTS smoother. The user can choose between the two smoothers in the relevant tools or algorithms, for instance the Kalman track fitter.
+The RTS smoother is a long standing feature in ACTS and can be \texttt{GainMatrixSmoother}. The mBF smoother was implemented during the work on this thesis. It is called \texttt{MbfSmoother} and is a drop-in replacement for the RTS smoother. The user can choose between the two smoothers in the relevant tools or algorithms, for instance the Kalman track fitter.
 
 The implementation of the mBF smoother does not reuse information from the forward filter yet. This requires additional information on the track state and error handling and is planned for future work.
 
