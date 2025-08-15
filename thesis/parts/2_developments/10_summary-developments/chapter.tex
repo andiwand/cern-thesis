@@ -1,4 +1,4 @@
-Lots of developments were done during the course of this thesis. The previous chapters framed the big topics of these developments. They included developments on the propagation, the support for dense material during propagation, the improvements to the track finding, and developments on 4D tracking. A total of 581 pull requests have been merged to ACTS \texttt{main} during the course of this thesis, from May 2022 to April 2025. Some of them were small bug fixes, others large scale refactors, and some were new features. All of them contributed to the overall goal of improving ACTS by accomodating needs from experiments, making it more experiment independent, adaptable, maintainable, and efficient. Software is not a stationary object due to its changing environment and requires continuous maintainance and improvements.
+A number of developments were completed during the course of this thesis. The previous chapters framed the big topics of these developments. This included developments on the propagation, the support for dense material during propagation, the improvements to the track finding, and developments on 4D tracking. A total of 581 pull requests have been merged to ACTS \texttt{main} during the course of this thesis, from May 2022 to April 2025. Some of them were small bug fixes, others large scale refactors, and some were new features. All of them contributed to the overall goal of improving ACTS by accommodating needs from experiments, making it more experiment independent, adaptable, maintainable, and efficient. Software is not a stationary object, due to its changing environment and requirements, it requires continuous maintenance and improvements. In this chapter, the most important developments are summarized and the shortcomings and proposals for future developments are discussed.
 
 One of the central features conceptualized and implemented during this thesis was the introduction of the particle hypothesis. It is a crucial ingredient for reconstruction and unavoidable for an experiment independent track reconstruction toolkit.
 
@@ -11,8 +11,6 @@ The stepping performance was improved substantially with the implementation of t
 The track finding has been effectively redesigned and modularized. The new design provides building blocks for track finding solutions and puts the user in control of the finding procedure. This allows for more aggressive optimizations and experiment specific solutions.
 
 The Examples framework has been improved over several iterations. The main purpose for these developments was to enable detailed studies on physics performance. The Examples framework is now more flexible and can be used for a wide range of studies.
-
-Not all ideas have been followed up and implemented. This is summarized in the following sections: shortcoming during the work on this thesis and proposals for future developments.
 
 \section{Shortcomings}
 
