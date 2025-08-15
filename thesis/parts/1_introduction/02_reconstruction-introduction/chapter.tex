@@ -1,10 +1,10 @@
-Reconstruction is the process of extracting underlying physical information from the raw data collected by a detector. Due to the complexity of the process, reconstruction is usually done in a series of steps. Each step takes the output of the previous step and produces new outputs. This procedure can be thought of as building higher and higher level objects in a chain of reconstruction steps.
+Reconstruction is the process of extracting underlying physical information from the raw data collected by a detector. Due to the complexity of the process, reconstruction is usually done in a series of steps. Each step takes the output of the previous step and produces new results. This procedure can be thought of as building increasingly higher-level objects in a chain of reconstruction steps.
 
 This thesis is mainly concerned with the reconstruction of tracks from charged particles produced in primary interactions and the reconstruction of their vertices. Track reconstruction is a crucial step in the reconstruction of the full event in a particle physics experiment. It is the process of reconstructing the trajectories of charged particles after they traversed the detector. After a trajectory is found and fitted to the detector measurements, the track can be used to estimate the particle's momentum, charge, and origin.
 
-In a subsequent step called vertex reconstruction, tracks are used to find the points where the particles were produced, called vertices. The position of the vertices in comparison to the interaction region can be used to get an insight into the event processes.
+In a subsequent step called vertex reconstruction, tracks are used to find the points where the particles were produced, called vertices. The position of the vertices in comparison to the interaction region can be used to gain insight into the event processes.
 
-For the reconstruction of the full event, tracks and vertices are used to form higher level objects like jets, missing transverse energy (MET), taus, and other.
+For the reconstruction of the full event, tracks and vertices are used to form higher-level objects like jets, missing transverse energy (MET), taus, and others.
 
 Displaced tracks and vertices are not covered in this thesis. They can be created by interactions with the detector material or decays of long-lived particles. Displaced tracks and vertices are usually reconstructed in a separate step after the standard reconstruction, also called large radius tracking (LRT).
 
@@ -37,7 +37,7 @@ The equations of motion describe the trajectory of a free, charged particle in t
 \end{align}
 with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, magnetic field $\mathbf{B}$, the cartesian position $\mathbf{r}$, the rest frame time $t$, the path length $s$, the absolute momentum $p$, the mass $m$, and the charge $q$.
 
-In a homogenous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. While in reality, the magnetic field is not homogenous and the equations of motion are solved numerically. The most common method to solve the equations of motion is the Runge-Kutta-Nyström method, which is discussed in the next section.
+In a homogeneous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. In reality, the magnetic field is not homogeneous, and the equations of motion are solved numerically. The most common method to solve the equations of motion is the Runge-Kutta-Nyström method, which is discussed in the next section.
 
 This equation can be extended to include the effects of continuous energy loss which is described in Section \ref{sec:dev/dense/equations-of-motion}.
 
@@ -46,7 +46,7 @@ This equation can be extended to include the effects of continuous energy loss w
 
 The Runge-Kutta-Nyström (RKN) method allows to solve second-order ordinary differential equations (ODE) numerically. It is a specialized Runge-Kutta (RK) method which operates on second-order instead of first-order ODE.\footnote{The RKN method can be derived from the RK method by rewriting the second-order ODE into a first-order ODE.} In track reconstruction, the RKN method is used to solve the equations of motion of a charged particle in a magnetic field, provided in Equation \ref{eq:intro/reco/eom}.
 
-A fourth-order RKN has the benefit of only requiring 3 magnetic field evaluations per step. At the same time, it has proven to be stable and accurate for tracking applications \cite{pub-2009-001}. The integration is performed as follows:
+A fourth-order RKN only requires three magnetic field evaluations per step. At the same time, it has proven to be stable and accurate for tracking applications \cite{pub-2009-001}. The integration is performed as follows:
 \begin{align}
     \mathbf{T}_{n+1} &= \mathbf{T}_n + \frac{h}{6} (\mathbf{k}_1 + 2 \mathbf{k}_2 + 2 \mathbf{k}_3 + \mathbf{k}_4) \\
     \mathbf{r}_{n+1} &= \mathbf{r}_n + h \mathbf{T}_n + \frac{h^2}{6} (\mathbf{k}_1 + \mathbf{k}_2 + \mathbf{k}_3)
