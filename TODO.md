@@ -12,7 +12,6 @@
 - [ ] different standard model picture (-> paul's thesis)
   - [ ] what are the "interesting" particles for tracking?
 - [ ] illustrate different detector types and what they aim to do (-> stephen's thesis)
-- [ ] Phase-2 is the upgrade period and not the data taking aftwerwards -> use Run 4
 - [ ] references firstname vs lastname first
 - [ ] atlasify stepper plot
 - [ ] more references
