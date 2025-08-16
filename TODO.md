@@ -7,39 +7,38 @@
 
 ## current
 
-- [ ] review feedback
-- [ ] review thesis
-- [ ] check typos
-- [ ] layout
-
+- [ ] why is tracking important in the grad schema?
+- [ ] what is luminosity (-> stephen's thesis)
+- [ ] different standard model picture (-> paul's thesis)
+  - [ ] what are the "interesting" particles for tracking?
+- [ ] illustrate different detector types and what they aim to do (-> stephen's thesis)
 - [ ] Phase-2 is the upgrade period and not the data taking aftwerwards -> use Run 4
-- [ ] motivate track finding developments and performance measurements in introduction
-- [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] references firstname vs lastname first
 - [ ] atlasify stepper plot
+- [ ] more references
+
+## potential
+
+- [ ] motivate track finding developments and performance measurements in introduction
 - [ ] what is a ttbar event? where to put this?
 - [ ] mention traccc / detray? -> acts intro
 - [ ] what is a particle gun? -> acts intro?
 - [ ] what is eta?
 - [ ] track parameterization illustration? -> acts intro
-- [ ] line break after hyphen?
-- [ ] class/function name formatting
+- [ ] explain more on vertexing; expand in chapter 2; AMVF in chapter 3
 - [ ] appendix?
-  - pull distribution
-  - fitting the core of a gaussian-like distribution
-
-## potential
-
-- mBF smoother formalism vs gain matrix formalism
-- flow diagram of the greedy ambiguity solver
-- add stuff to the developments summary
-  - other shortcomings: 3D surface tolerance, track EDM dynamic columns for vectors and matrices
+  - [ ] pull distribution
+  - [ ] fitting the core of a gaussian-like distribution
+- [ ] mBF smoother formalism vs gain matrix formalism
+- [ ] flow diagram of the greedy ambiguity solver
+- [ ] add stuff to the developments summary
+  - [ ] other shortcomings: 3D surface tolerance, track EDM dynamic columns for vectors and matrices
 
 ## document
 
 - [ ] Acknowledgements
-- [ ] ✔️✔️✔️ Abstract
-- [ ] ✔️✔️✔️ Kurzfassung
+- [x] Abstract
+- [x] Kurzfassung
 - [x] I. Introduction
   - [x] Intro text
   - [x] 1. General introduction
@@ -155,6 +154,6 @@
     - [x] 12.2. CPU performance and optimizations
     - [x] 12.3. Physics performance
     - [x] 12.4. Summary, conclusion and outlook
-- [ ] ✔️✔️✔️ IV. Conclusion and Outlook
-  - [ ] ✔️✔️✔️ 13. Conclusion
-  - [ ] ✔️✔️✔️ 14. Outlook
+- [x] IV. Conclusion and Outlook
+  - [x] 13. Conclusion
+  - [x] 14. Outlook
