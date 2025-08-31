@@ -7,14 +7,20 @@
 
 ## current
 
-- [ ] why is tracking important in the grad schema?
+- [ ] "pileup" / "run3" / "phase2" deduplication
+- [ ] deduplicate LHC upgrade in part one
+- 
+- [ ] why is tracking important?
 - [ ] what is luminosity (-> stephen's thesis)
 - [ ] different standard model picture (-> paul's thesis)
   - [ ] what are the "interesting" particles for tracking?
 - [ ] illustrate different detector types and what they aim to do (-> stephen's thesis)
+- [ ] CERN accelerator complex (-> paul's thesis)
 - [ ] references firstname vs lastname first
 - [ ] atlasify stepper plot
 - [ ] more references
+  - [ ] EF choice / TDR Addendum
+  - [ ] SM / BSM
 
 ## potential
 
@@ -55,7 +61,7 @@
     - [x] 2.1. Particle-Matter Interactions
     - [x] 2.2. Detection of Charged Particles
     - [x] 2.3. Equation of Motion
-    - [x] 2.4. Runge-Kutta-Nystrom Method
+    - [x] 2.4. Runge-Kutta-Nyström Method
     - [x] 2.5. Track parameters
     - [x] 2.6. Jacobian and covariance transport
     - [x] 2.7. Reconstruction chains and objects

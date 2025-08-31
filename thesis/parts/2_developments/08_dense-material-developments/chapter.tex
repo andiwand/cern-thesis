@@ -6,7 +6,7 @@ The main difference between the two approaches is how the material is handled du
 
 \input{parts/2_developments/08_dense-material-developments/figures/scatterer_think_thick.tex}
 
-While the surface-based approach is a long standing feature in ACTS, the volume-based approach had not yet been fully implemented. The work presented in this thesis aims to close this gap by implementing and validating particle transport through volume-based material in ACTS.
+While the surface-based approach is a long-standing feature in ACTS, the volume-based approach had not yet been fully implemented. The work presented in this thesis aims to close this gap by implementing and validating particle transport through volume-based material in ACTS.
 
 Similar to the existing surface-based approach, this implementation focuses on two types of interactions with the material: continuous energy loss and multiple scattering, which are described in the following sections. Afterwards, a reference with Geant4 is established and the implementation in ACTS is described. Finally, the performance of the implementation is evaluated.
 
@@ -227,7 +227,7 @@ The \texttt{EigenStepper} extension mechanism does not provide a way to accumula
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/eloss_rate_fe_100mm.pdf}
-    \caption{A comparison of the energy loss rate computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The vertical bars represent the estimated energy loss uncertainty. A Landau distribution is fitted to the Geant4 data for each bin and summarized as the emperical mean from the data in the bin and standard deviation computed from the FWHM of the distribution. ACTS is able to reproduce the mean energy loss and the FWHM well over the full spectrum.}
+    \caption{A comparison of the energy loss rate computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The vertical bars represent the estimated energy loss uncertainty. A Landau distribution is fitted to the Geant4 data for each bin and summarized as the empirical mean from the data in the bin and standard deviation computed from the FWHM of the distribution. ACTS is able to reproduce the mean energy loss and the FWHM well over the full spectrum.}
     \label{fig:dev/dense/eloss-cmp-rate}
 \end{figure}
 
@@ -244,7 +244,7 @@ While this approach led to promising results, the implementation was unsatisfact
 
 The \texttt{SympyStepper} is a new stepper implementation in ACTS based on symbolic math expressions with are transformed into code. Developments and performance are described in Section \ref{sec:dev/stepper/sympy}. It is an alternative approach to the \texttt{EigenStepper} where the math has been done first and then manually transcribed into code using the linear algebra framework Eigen. \texttt{SymPy} has the benefit of writing concise and readable math expressions which can be used to generate the stepping code automatically, including the derivation of the transport Jacobian. As such, including the continuous energy loss is just a matter of changing the equations of motion, which then automatically affect the Runge-Kutta-Nyström integration and the transport Jacobian.
 
-With this new implementation a generalized stepping extension mechanism is avoided and the continuous multiple scattering and energy loss is implemented as a separate routine. The \texttt{SympyStepper} switches to this routine when the particle passes through dense material. Instead of trying to generalize this, which was attemted with the \texttt{EigenStepper}, the \texttt{SympyStepper} just enumerates the two cases we are aware of: vacuum and dense material.
+With this new implementation a generalized stepping extension mechanism is avoided and the continuous multiple scattering and energy loss is implemented as a separate routine. The \texttt{SympyStepper} switches to this routine when the particle passes through dense material. Instead of trying to generalize this, which was attempted with the \texttt{EigenStepper}, the \texttt{SympyStepper} just enumerates the two cases we are aware of: vacuum and dense material.
 
 Apart from this new stepper implementation, a generalized covariance transport tool for dense material is implemented which is not tied to the stepper and can also be used by the \texttt{EigenStepper}. This tool accumulates material and stepper information to estimate position, direction, and momentum uncertainty of the particle. The accumulation can be done in two ways, either by having a bookkeeping of the material and stepper information and calculating the covariance at the end of the transport, or by accumulating the additional covariance during the transport and adding it to the bound covariance when requested. Both of these methods were explored during the work on this thesis.
 

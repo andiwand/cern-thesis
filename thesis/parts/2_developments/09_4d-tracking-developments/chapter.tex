@@ -19,7 +19,7 @@ This chapter describes the developments in ACTS to further support and improve 4
 
 \section{4D tracking in ACTS}
 
-4D tracking is a long standing capability in ACTS. Time quantities can be stored in almost all EDMs, including measurements, spacepoints, track parameters, track states, tracks themselves, and vertices. As such, all the algorithms connected to these EDMs can make use of time information, but not all of them are adapted to do so. Cluster cells and seeds with time information have been explored to some degree but not fully implemented yet.
+4D tracking is a long-standing capability in ACTS. Time quantities can be stored in almost all EDMs, including measurements, spacepoints, track parameters, track states, tracks themselves, and vertices. As such, all the algorithms connected to these EDMs can make use of time information, but not all of them are adapted to do so. Cluster cells and seeds with time information have been explored to some degree but not fully implemented yet.
 
 If measurements carry time information, it can be accessed in the same way as other measurement dimensions. Time is also automatically transported in the propagation and can be picked up by algorithms that rely on it. Examples are the track finding and fitting algorithms which depend on predicted track parameters to compare them with measurements and compute an update. For these kinds of algorithms the use of time information comes practically for free. If $\chi^2$ cuts are used, the user only needs to be aware that the thresholds need to be adjusted in order to keep the p-value similar to the case without time information.
 
