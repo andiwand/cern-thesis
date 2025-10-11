@@ -1,9 +1,10 @@
-# TODO
+# Ideas
 
-## current
+## potential 1
 
 - [ ] "pileup" / "run3" / "phase2" deduplication
 - [ ] deduplicate LHC upgrade in part one
+- [ ] LHC schedule
 - [ ] reverse chapter 4 content?
 - [ ] why is tracking important?
 - [ ] what is luminosity (-> stephen's thesis)
@@ -16,7 +17,7 @@
   - [ ] EF choice / TDR Addendum
   - [ ] SM / BSM
 
-## potential
+## potential 2
 
 - [ ] motivate track finding developments and performance measurements in introduction
 - [ ] what is a ttbar event? where to put this?
