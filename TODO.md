@@ -9,14 +9,13 @@
 
 - [ ] "pileup" / "run3" / "phase2" deduplication
 - [ ] deduplicate LHC upgrade in part one
-- 
+- [ ] reverse chapter 4 content?
 - [ ] why is tracking important?
 - [ ] what is luminosity (-> stephen's thesis)
 - [ ] different standard model picture (-> paul's thesis)
   - [ ] what are the "interesting" particles for tracking?
 - [ ] illustrate different detector types and what they aim to do (-> stephen's thesis)
 - [ ] CERN accelerator complex (-> paul's thesis)
-- [ ] references firstname vs lastname first
 - [ ] atlasify stepper plot
 - [ ] more references
   - [ ] EF choice / TDR Addendum
