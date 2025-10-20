@@ -14,7 +14,7 @@
 - [ ] CERN accelerator complex (-> paul's thesis)
 - [ ] atlasify stepper plot
 - [ ] more references
-  - [ ] EF choice / TDR Addendum
+  - [ ] EF choice
   - [ ] SM / BSM
 
 ## potential 2
