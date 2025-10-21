@@ -217,11 +217,23 @@ The final filtered state and covariance are optimal as they contain information 
 
 A $\chi^2$ value can be computed between measurements and predicted, filtered, or smoothed states:
 \begin{align}
-    \mathbf{r}_k = \mathbf{m}_k - \mathbf{H}_k \mathbf{x}_k \\
-    \mathbf{S}_k = \mathbf{H}_k \mathbf{C}_k \mathbf{H}_k^\mathrm{T} + \mathbf{R}_k \\
-    \chi^2_k = \mathbf{r}_k^\mathrm{T} \mathbf{S}_k^{-1} \mathbf{r}_k
+    \mathbf{r}_k &= \mathbf{m}_k - \mathbf{H}_k \mathbf{x}_k \\
+    \chi^2_k &= \mathbf{r}_k^\mathrm{T} \mathbf{S}_k^{-1} \mathbf{r}_k
 \end{align}
-with the appropriate state vector $\mathbf{x}_k$, its covariance $\mathbf{C}_k$, the residual $\mathbf{r}_k$, and the residual covariance $\mathbf{S}_k$. The $\chi^2$ value can be used to filter outliers or select measurements.
+with the appropriate state vector $\mathbf{x}_k$, the residual $\mathbf{r}_k$, and the residual covariance $\mathbf{S}_k$.
+
+For predicted states, the residual covariance is given by
+\begin{equation}
+    \mathbf{S}_{k|k-1} = \mathbf{R}_k + \mathbf{H}_k \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} \ \text{.}
+\end{equation}
+While for filtered and smoothed states the residual covariance is given by
+\begin{align}
+    \mathbf{S}_{k|k} &= \mathbf{R}_k - \mathbf{H}_k \mathbf{C}_{k|k} \mathbf{H}_k^\mathrm{T} \ \text{and} \\
+    \mathbf{S}_{k|n} &= \mathbf{R}_k - \mathbf{H}_k \mathbf{C}_{k|n} \mathbf{H}_k^\mathrm{T} \ \text{.}
+\end{align}
+The filtered and smoothed residual covariances are smaller than the predicted residual covariance as they include more information and they are correlated with the measurement.
+
+The $\chi^2$ value can be used to select measurements and filter outliers.
 
 \subsection{Primary vertexing}
 
