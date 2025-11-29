@@ -31,7 +31,11 @@ args = parser.parse_args()
 
 idpvm_acts = ROOT.TFile.Open(args.input_acts.absolute().as_posix())
 idpvm_legacy = ROOT.TFile.Open(args.input_legacy.absolute().as_posix())
-idpvm_acts_mod = ROOT.TFile.Open(args.input_acts_mod.absolute().as_posix()) if args.input_acts_mod else None
+idpvm_acts_mod = (
+    ROOT.TFile.Open(args.input_acts_mod.absolute().as_posix())
+    if args.input_acts_mod
+    else None
+)
 
 fig, axs = plt.subplots(
     2,
@@ -149,9 +153,13 @@ if args.input_acts_mod:
 axs[0].legend()
 
 if args.kind == "single_mu":
-    subtext = f"Athena 25.0.30\nsingle muons, $p_T$ = {args.pt} GeV, <$\\mu$> = {args.pu}"
+    subtext = (
+        f"Athena 25.0.30\nsingle muons, $p_T$ = {args.pt} GeV, <$\\mu$> = {args.pu}"
+    )
 elif args.kind == "ttbar":
-    subtext = f"Athena 25.0.30\nt\\bar{{t}}$, $\\sqrt{{s}}$ = 14 TeV, <$\\mu$> = {args.pu}"
+    subtext = (
+        f"Athena 25.0.30\nt\\bar{{t}}$, $\\sqrt{{s}}$ = 14 TeV, <$\\mu$> = {args.pu}"
+    )
 else:
     raise ValueError(f"Unknown kind: {args.kind}")
 

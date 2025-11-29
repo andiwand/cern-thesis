@@ -93,6 +93,7 @@ def draw_eta_lines(
                 z_out, r_out, s=r"$\eta=%s$" % (fmt % eta), ha=ha, va=va, **text_args
             )
 
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "--output",

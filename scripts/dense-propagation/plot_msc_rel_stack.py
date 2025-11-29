@@ -7,7 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import atlasify
 
-from common import material_label, read_g4_data, read_acts_data, make_g4_msc_stats, make_acts_msc_stats
+from common import (
+    material_label,
+    read_g4_data,
+    read_acts_data,
+    make_g4_msc_stats,
+    make_acts_msc_stats,
+)
 
 from mycommon1.plots import get_color, get_marker
 

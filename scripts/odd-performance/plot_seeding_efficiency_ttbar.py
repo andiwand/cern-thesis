@@ -46,7 +46,11 @@ ax.hlines(1, -3, 3, linestyles="--", color="gray")
 for i, pu, perf in zip(range(4), pus, seeding_perf):
     eff_vs_eta = TH1(perf.Get("trackeff_vs_eta"), xrange=(-3, 3))
     eff_vs_eta.errorbar(
-        ax, label=f"<$\\mu$> = {pu}", marker=get_marker(i), linestyle="", color=get_color(i)
+        ax,
+        label=f"<$\\mu$> = {pu}",
+        marker=get_marker(i),
+        linestyle="",
+        color=get_color(i),
     )
 
 ax.legend()

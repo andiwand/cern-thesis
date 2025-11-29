@@ -34,19 +34,28 @@ parser.add_argument(
 parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
-fig, axs = plt.subplots(2, 1, figsize=(8, 4), sharex=True, sharey=False, gridspec_kw={"hspace": 0.0})
+fig, axs = plt.subplots(
+    2, 1, figsize=(8, 4), sharex=True, sharey=False, gridspec_kw={"hspace": 0.0}
+)
 
 datas = [pd.read_csv(input) for input in args.input]
 
-#axs[0].set_xlabel("Step number")
+# axs[0].set_xlabel("Step number")
 axs[0].set_ylabel("Estimated error [mm]")
 
 axs[1].set_xlabel("Step number")
 axs[1].set_ylabel("Step size [mm]")
 
-xrange = [datas[0]["nstep"].min()-5, datas[0]["nstep"].max()+5]
+xrange = [datas[0]["nstep"].min() - 5, datas[0]["nstep"].max() + 5]
 accuracy = 1e-4
-axs[0].fill_between(xrange, accuracy * 1/4, accuracy * 4, color="gray", alpha=0.5, label="Accuracy limit")
+axs[0].fill_between(
+    xrange,
+    accuracy * 1 / 4,
+    accuracy * 4,
+    color="gray",
+    alpha=0.5,
+    label="Accuracy limit",
+)
 axs[0].hlines(accuracy, *xrange, color="gray", linestyle="--")
 
 for data, mom in zip(datas, [1, 10, 100]):
@@ -54,7 +63,7 @@ for data, mom in zip(datas, [1, 10, 100]):
     axs[1].plot(data["nstep"], data["size"], label=f"$p_T$={mom} GeV")
 
 axs[0].set_xlim(xrange)
-#axs[0].set_xscale("log")
+# axs[0].set_xscale("log")
 axs[0].set_yscale("log")
 
 axs[1].set_yscale("log")

@@ -63,7 +63,9 @@ vertices = vertices[(vertices["vertex_secondary"] == 0)]
 grid1d = pd.read_csv(args.grid_1d)
 grid2d = pd.read_csv(args.grid_2d)
 
-fig, axs = plt.subplots(2, 1, figsize=(8, 4), sharex=True, gridspec_kw={"height_ratios": [1, 10]})
+fig, axs = plt.subplots(
+    2, 1, figsize=(8, 4), sharex=True, gridspec_kw={"height_ratios": [1, 10]}
+)
 
 # axs[0].set_title("Track density with $z_0$")
 axs[0].get_yaxis().set_visible(False)
@@ -107,7 +109,7 @@ axs[1].scatter(
     vertices["vt"],
     s=1,
     c="red",
-    #label="Truth vertices",
+    # label="Truth vertices",
 )
 """
 axs[1].legend(

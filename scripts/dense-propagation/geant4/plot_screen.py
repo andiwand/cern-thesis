@@ -120,13 +120,15 @@ for i, file, axs_cols, momentum, x_range, e_range in zip(
     x, y = data["x"], data["y"]
     e = data["p_final"]
 
-    #axs_cols[0].set_aspect("equal")
+    # axs_cols[0].set_aspect("equal")
     axs_cols[0].set_title(f"{momentum} GeV")
-    #axs_cols[0].set_xlabel("x [mm]")
+    # axs_cols[0].set_xlabel("x [mm]")
     if i == 0:
         axs_cols[0].set_ylabel("y [mm]")
 
-    h2d = axs_cols[0].hist2d(x, y, bins=50, range=(x_range, x_range), vmin=0, vmax=60, cmap="Blues", cmin=10)
+    h2d = axs_cols[0].hist2d(
+        x, y, bins=50, range=(x_range, x_range), vmin=0, vmax=60, cmap="Blues", cmin=10
+    )
 
     (m, s), cov = robust_gauss_fit(x)
 

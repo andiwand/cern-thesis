@@ -25,13 +25,28 @@ parser.add_argument("--show", action="store_true", help="Show plot")
 args = parser.parse_args()
 
 particles = uproot.open(args.particles)
-particles = ak.to_dataframe(particles["particles"].arrays(["vertex_primary", "vertex_secondary", "particle", "generation", "sub_particle", "phi", "eta", "number_of_hits"], library="ak"), how="outer").dropna()
+particles = ak.to_dataframe(
+    particles["particles"].arrays(
+        [
+            "vertex_primary",
+            "vertex_secondary",
+            "particle",
+            "generation",
+            "sub_particle",
+            "phi",
+            "eta",
+            "number_of_hits",
+        ],
+        library="ak",
+    ),
+    how="outer",
+).dropna()
 particles = particles[
-    (particles["vertex_primary"] == 1) &
-    (particles["vertex_secondary"] == 0) &
-    (particles["particle"] == 1) &
-    (particles["generation"] == 0) &
-    (particles["sub_particle"] == 0)
+    (particles["vertex_primary"] == 1)
+    & (particles["vertex_secondary"] == 0)
+    & (particles["particle"] == 1)
+    & (particles["generation"] == 0)
+    & (particles["sub_particle"] == 0)
 ]
 
 eta_bins = 30
@@ -85,7 +100,7 @@ ax.errorbar(
     mean_hits_eta,
     yerr=std_hits_eta,
     xerr=(eta_edges[1:] - eta_edges[:-1]) / 2,
-    label="mean",
+    label=r"mean $\pm$ RMS",
     marker=get_marker(1),
     linestyle="",
     color=get_color(1),
@@ -97,15 +112,15 @@ ax.step(
     where="post",
     label="min / max",
     linestyle="--",
-    color="grey"
+    color="grey",
 )
 ax.step(
     eta_edges,
     list(max_hits_eta) + [max_hits_eta[-1]],
     where="post",
-    #label="min",
+    # label="min",
     linestyle="--",
-    color="grey"
+    color="grey",
 )
 
 ax.legend()

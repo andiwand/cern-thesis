@@ -8,7 +8,13 @@ import matplotlib.pyplot as plt
 import scipy.stats
 import atlasify
 
-from common import material_label, read_g4_data, make_g4_eloss_stats, read_acts_data, stat_mean
+from common import (
+    material_label,
+    read_g4_data,
+    make_g4_eloss_stats,
+    read_acts_data,
+    stat_mean,
+)
 
 from mycommon1.plots import get_color, get_marker
 

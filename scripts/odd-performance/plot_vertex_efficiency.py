@@ -59,7 +59,9 @@ for input_type, inputs_list in inputs.items():
         # filter for first primary vertex which is the HS vertex by design
         data = data[(data["vertex_primary"] == 1) & (data["vertex_secondary"] == 0)]
 
-        eff, eff_err_upper, eff_err_lower = clopper_pearson(data["nCleanVtx"].sum(), data["nVtxReconstructable"].sum())
+        eff, eff_err_upper, eff_err_lower = clopper_pearson(
+            data["nCleanVtx"].sum(), data["nVtxReconstructable"].sum()
+        )
 
         results[input_type].append(
             {

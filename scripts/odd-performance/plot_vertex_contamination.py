@@ -95,8 +95,8 @@ for i, input_type in enumerate(inputs.keys()):
             vp.set_alpha(0.5)
 
 labels = [
-    (mpatches.Patch(color=get_color(0),alpha=0.5), "without time"),
-    (mpatches.Patch(color=get_color(1),alpha=0.5), "with time"),
+    (mpatches.Patch(color=get_color(0), alpha=0.5), "without time"),
+    (mpatches.Patch(color=get_color(1), alpha=0.5), "with time"),
 ]
 ax.legend(*zip(*labels))
 

@@ -32,12 +32,28 @@ args = parser.parse_args()
 
 ptypes = ["mu", "pi", "e"]
 
-particles_selected = [args.mu_particles_selected, args.pi_particles_selected, args.e_particles_selected]
+particles_selected = [
+    args.mu_particles_selected,
+    args.pi_particles_selected,
+    args.e_particles_selected,
+]
 particles_selected = [uproot.open(p) for p in particles_selected]
-particles_selected = [ak.to_dataframe(p["particles"].arrays(["m", "q", "p", "pt", "phi", "eta"], library="ak"), how="outer").dropna() for p in particles_selected]
+particles_selected = [
+    ak.to_dataframe(
+        p["particles"].arrays(["m", "q", "p", "pt", "phi", "eta"], library="ak"),
+        how="outer",
+    ).dropna()
+    for p in particles_selected
+]
 particles = [args.mu_particles, args.pi_particles, args.e_particles]
 particles = [uproot.open(p) for p in particles]
-particles = [ak.to_dataframe(p["particles"].arrays(["m", "q", "p", "pt", "phi", "eta"], library="ak"), how="outer").dropna() for p in particles]
+particles = [
+    ak.to_dataframe(
+        p["particles"].arrays(["m", "q", "p", "pt", "phi", "eta"], library="ak"),
+        how="outer",
+    ).dropna()
+    for p in particles
+]
 
 eta_bins = 30
 eta_edges = np.linspace(-3, 3, eta_bins + 1)
