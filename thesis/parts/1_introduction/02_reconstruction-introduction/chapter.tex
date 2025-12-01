@@ -70,7 +70,7 @@ The global error of the fourth-order RKN method is of order $\mathcal{O}(h^4)$, 
 
 Track parameters summarize the observable state of a particle's trajectory at a given point. Usually this includes: the position, the local direction, and the local curvature of the trajectory. Time can also be included as a parameter if it is available.
 
-Track parameters can be bound to a surface or free. Bound track parameters are defined on a surface, while free track parameters are defined in the global 3D coordinate system. The motivation for bound track parameters is that they represent an observable state for tracking detectors.
+Track parameters can be bound to a surface or be free. Bound track parameters are defined on a surface, while free track parameters are defined in the global 3D coordinate system. The motivation for bound track parameters is that they represent an observable state for tracking detectors.
 
 Track parameterization is ultimately a choice. There is no single best parameterization for all applications. Experiments will use a parameterization that is best suited for their specific needs. Collider experiments are usually symmetric with respect to the beamline and use spherical and/or cylindrical coordinate systems to leverage that. If the magnetic field aligns with the beam axis, curvature only affects the transverse plane (also called bending plane), which can be reflected in the parameterization.
 
@@ -206,8 +206,8 @@ The KF evolves through two steps: predition and update. In the prediction step, 
 An updated state is formed by combining the predicted state and the measurement:
 \begin{align}
     \mathbf{x}_{k|k} &= \mathbf{x}_{k|k-1} + \mathbf{K}_k \left( \mathbf{m}_k - \mathbf{H}_k \mathbf{x}_{k|k-1} \right) \\
-    \mathbf{C}_{k|k} &= \mathbf{F}_{k-1} \mathbf{C}_{k|k-1} \mathbf{F}_{k-1}^\mathrm{T} + \mathbf{Q}_{k-1} \\
-    \mathbf{K}_k &= \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} \left( \mathbf{H}_k \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} + \mathbf{R}_k \right)^{-1}
+    \mathbf{C}_{k|k} &= \left( \mathbf{I} - \mathbf{K}_k \mathbf{H}_k \right) \mathbf{C}_{k|k-1} \\
+    \mathbf{K}_k &= \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} \left( \mathbf{R}_k + \mathbf{H}_k \mathbf{C}_{k|k-1} \mathbf{H}_k^\mathrm{T} \right)^{-1}
 \end{align}
 with the optimal Kalman gain $\mathbf{K}_k$, the predicted state $\mathbf{x}_{k|k-1}$, the predicted covariance $\mathbf{C}_{k|k-1}$, the updated state $\mathbf{x}_{k|k}$, and the updated covariance $\mathbf{C}_{k|k}$.
 
