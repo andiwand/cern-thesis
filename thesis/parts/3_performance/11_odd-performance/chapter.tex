@@ -23,11 +23,11 @@ The following events have been simulated and form the basis of the performance s
     \item using smeared digitization
 \end{itemize}
 
-Particles and hits are stored in ROOT \cite{root} files and are later used as inputs for the reconstruction chain. This allows switching the digitization method without running the event simulation again.
+Particles and hits are stored in ROOT \cite{root} files and later used as inputs for the reconstruction chain. This also allows switching the digitization method without running the event simulation again.
 
 \section{Reconstruction chain and cuts}
 
-Event reconstruction is implemented on top of existing components in ACTS Examples. The reconstruction chain consists of the following steps: truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and primary vertexing. The individual steps and their performance are described in the following sections. Note that the simulation and reconstruction use the same magnetic field, material, and alignment conditions.
+The event reconstruction is implemented on top of existing components in ACTS Examples. The reconstruction chain consists of the following steps: truth-based measurement formation, spacepoint creation, seeding, track finding, ambiguity resolution, track refitting, and primary vertexing. The individual steps and their performance are described in the following sections. The simulation and reconstruction use the same magnetic field, material, and alignment conditions.
 
 ACTS Examples provides different truth-based algorithms for track seeding, track finding, vertex seeding, and vertex finding. These algorithms allow evaluation of the performance of individual algorithms under ideal conditions. Truth-based algorithms were used in this study to compare the performance of the reconstruction chain with and without truth information.
 
