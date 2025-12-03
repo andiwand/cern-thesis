@@ -12,7 +12,7 @@ rule odd_hits:
         "plots/acts-introduction/odd_hits.pdf",
     shell:
         """
-        python {input.script} {input.particles} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.particles} --output {output}
         """
 
 rule odd_layout:
@@ -22,7 +22,7 @@ rule odd_layout:
         "plots/acts-introduction/odd_layout.pdf",
     shell:
         """
-        python {input.script} --output {output}
+        scripts/activate_and_run.sh python {input.script} --output {output}
         """
 
 rule odd_material:
@@ -33,5 +33,5 @@ rule odd_material:
         "plots/acts-introduction/odd_material_{y}_{x}.pdf",
     shell:
         """
-        python {input.script} {wildcards.x} {wildcards.y} {input.material} --output {output}
+        scripts/activate_and_run.sh python {input.script} {wildcards.x} {wildcards.y} {input.material} --output {output}
         """

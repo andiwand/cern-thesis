@@ -1,4 +1,4 @@
-rule all_acts_introduction:
+rule all_itk_performance_plots:
     input:
         expand("plots/itk-performance/default_single_mu_pt{pt}_eff_vs_eta.pdf", pt=[2, 10]),
         expand("plots/itk-performance/default_single_mu_pt{pt}_res_d0_vs_eta.pdf", pt=[2, 10]),
@@ -19,7 +19,7 @@ rule plot_itk_cmp_default_single_mu_eff_vs_eta:
         "plots/itk-performance/default_single_mu_pt{pt}_eff_vs_eta.pdf",
     shell:
         """
-        python {input.script} single_mu eff {input.idpvm_acts} {input.idpvm_legacy} --pt {wildcards.pt} --output {output}
+        scripts/activate_and_run.sh python {input.script} single_mu eff {input.idpvm_acts} {input.idpvm_legacy} --pt {wildcards.pt} --output {output}
         """
 
 rule plot_itk_cmp_default_single_mu_res_d0_vs_eta:
@@ -31,7 +31,7 @@ rule plot_itk_cmp_default_single_mu_res_d0_vs_eta:
         "plots/itk-performance/default_single_mu_pt{pt}_res_d0_vs_eta.pdf",
     shell:
         """
-        python {input.script} single_mu {input.idpvm_acts} {input.idpvm_legacy} --pt {wildcards.pt} --output {output}
+        scripts/activate_and_run.sh python {input.script} single_mu {input.idpvm_acts} {input.idpvm_legacy} --pt {wildcards.pt} --output {output}
         """
 
 rule plot_itk_cmp_default_ttbar_pu200_eff_vs_eta:
@@ -43,7 +43,7 @@ rule plot_itk_cmp_default_ttbar_pu200_eff_vs_eta:
         "plots/itk-performance/default_ttbar_pu200_eff_vs_eta.pdf",
     shell:
         """
-        python {input.script} ttbar eff {input.idpvm_acts} {input.idpvm_legacy} --pu 200 --output {output}
+        scripts/activate_and_run.sh python {input.script} ttbar eff {input.idpvm_acts} {input.idpvm_legacy} --pu 200 --output {output}
         """
 
 rule plot_itk_cmp_default_ttbar_pu200_fake_vs_eta:
@@ -55,7 +55,7 @@ rule plot_itk_cmp_default_ttbar_pu200_fake_vs_eta:
         "plots/itk-performance/default_ttbar_pu200_fake_vs_eta.pdf",
     shell:
         """
-        python {input.script} ttbar fake {input.idpvm_acts} {input.idpvm_legacy} --pu 200 --output {output}
+        scripts/activate_and_run.sh python {input.script} ttbar fake {input.idpvm_acts} {input.idpvm_legacy} --pu 200 --output {output}
         """
 
 rule plot_itk_cmp_default_mod_single_mu_eff_vs_eta:
@@ -68,7 +68,7 @@ rule plot_itk_cmp_default_mod_single_mu_eff_vs_eta:
         "plots/itk-performance/default_mod_single_mu_pt{pt}_eff_vs_eta.pdf",
     shell:
         """
-        python {input.script} single_mu eff {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pt {wildcards.pt} --output {output}
+        scripts/activate_and_run.sh python {input.script} single_mu eff {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pt {wildcards.pt} --output {output}
         """
 
 rule plot_itk_cmp_default_mod_single_mu_res_d0_vs_eta:
@@ -81,7 +81,7 @@ rule plot_itk_cmp_default_mod_single_mu_res_d0_vs_eta:
         "plots/itk-performance/default_mod_single_mu_pt{pt}_res_d0_vs_eta.pdf",
     shell:
         """
-        python {input.script} single_mu {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pt {wildcards.pt} --output {output}
+        scripts/activate_and_run.sh python {input.script} single_mu {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pt {wildcards.pt} --output {output}
         """
 
 rule plot_itk_cmp_default_mod_ttbar_pu200_eff_vs_eta:
@@ -94,7 +94,7 @@ rule plot_itk_cmp_default_mod_ttbar_pu200_eff_vs_eta:
         "plots/itk-performance/default_mod_ttbar_pu200_eff_vs_eta.pdf",
     shell:
         """
-        python {input.script} ttbar eff {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pu 200 --output {output}
+        scripts/activate_and_run.sh python {input.script} ttbar eff {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pu 200 --output {output}
         """
 
 rule plot_itk_cmp_default_mod_ttbar_pu200_fake_vs_eta:
@@ -107,5 +107,5 @@ rule plot_itk_cmp_default_mod_ttbar_pu200_fake_vs_eta:
         "plots/itk-performance/default_mod_ttbar_pu200_fake_vs_eta.pdf",
     shell:
         """
-        python {input.script} ttbar fake {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pu 200 --output {output}
+        scripts/activate_and_run.sh python {input.script} ttbar fake {input.idpvm_acts} {input.idpvm_legacy} --input-acts-mod {input.idpvm_acts_mod} --pu 200 --output {output}
         """

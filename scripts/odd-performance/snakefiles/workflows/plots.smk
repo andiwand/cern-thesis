@@ -49,7 +49,7 @@ rule plot_detector_material:
         "plots/odd-performance/detector_material.pdf",
     shell:
         """
-        python {input.script} {input.scan_acts} {input.scan_geant4} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.scan_acts} {input.scan_geant4} --output {output}
         """
 
 rule plot_detector_efficiency_mixed:
@@ -61,7 +61,7 @@ rule plot_detector_efficiency_mixed:
         "plots/odd-performance/{sim_label}_{seeding_label}/detector_efficiency_mixed.pdf",
     shell:
         """
-        python {input.script} {input.reco_particles} {input.sim_particles} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco_particles} {input.sim_particles} --output {output}
         """
 
 rule plot_seeding_redundancy:
@@ -72,7 +72,7 @@ rule plot_seeding_redundancy:
         "plots/odd-performance/{sim_label}_{seeding_label}/seeding_redundancy.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_seeding_efficiency_mu:
@@ -83,7 +83,7 @@ rule plot_seeding_efficiency_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_seeding_efficiency_mixed:
@@ -94,7 +94,7 @@ rule plot_seeding_efficiency_mixed:
         "plots/odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_mixed.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_seeding_efficiency_ttbar:
@@ -105,7 +105,7 @@ rule plot_seeding_efficiency_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_seeding_fake_ttbar:
@@ -116,7 +116,7 @@ rule plot_seeding_fake_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/seeding_fake_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_seeding_efficiency_ttbar_pileup:
@@ -127,7 +127,7 @@ rule plot_seeding_efficiency_ttbar_pileup:
         "plots/odd-performance/{sim_label}_{seeding_label}/seeding_efficiency_ttbar_pileup.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_finding_duplication:
@@ -138,7 +138,7 @@ rule plot_finding_duplication:
         "plots/odd-performance/{sim_label}_{seeding_label}/finding_duplication.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_finding_efficiency_mu:
@@ -149,7 +149,7 @@ rule plot_finding_efficiency_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/finding_efficiency_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_finding_efficiency_mixed:
@@ -160,7 +160,7 @@ rule plot_finding_efficiency_mixed:
         "plots/odd-performance/{sim_label}_{seeding_label}/finding_efficiency_mixed.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_finding_efficiency_ttbar:
@@ -171,7 +171,7 @@ rule plot_finding_efficiency_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/finding_efficiency_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_finding_fake_ttbar:
@@ -182,7 +182,7 @@ rule plot_finding_fake_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/finding_fake_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_finding_efficiency_ttbar_pileup:
@@ -193,7 +193,7 @@ rule plot_finding_efficiency_ttbar_pileup:
         "plots/odd-performance/{sim_label}_{seeding_label}/finding_efficiency_ttbar_pileup.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_fitting_resolution_d0_vs_eta_mu:
@@ -204,7 +204,7 @@ rule plot_fitting_resolution_d0_vs_eta_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/fitting_resolution_d0_vs_eta_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_fitting_resolution_z0_vs_pt_mixed:
@@ -215,7 +215,7 @@ rule plot_fitting_resolution_z0_vs_pt_mixed:
         "plots/odd-performance/{sim_label}_{seeding_label}/fitting_resolution_z0_vs_pt_mixed.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_fitting_pullmean_vs_eta_mu:
@@ -226,7 +226,7 @@ rule plot_fitting_pullmean_vs_eta_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/fitting_pullmean_vs_eta_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_fitting_pullwidth_vs_eta_mu:
@@ -237,7 +237,7 @@ rule plot_fitting_pullwidth_vs_eta_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/fitting_pullwidth_vs_eta_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_ambi_efficiency_ttbar:
@@ -249,7 +249,7 @@ rule plot_ambi_efficiency_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/ambi_efficiency_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.ambi} {input.ckf} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.ambi} {input.ckf} --output {output}
         """
 
 rule plot_ambi_duplication_ttbar:
@@ -261,7 +261,7 @@ rule plot_ambi_duplication_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/ambi_duplication_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.ambi} {input.ckf} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.ambi} {input.ckf} --output {output}
         """
 
 rule plot_refit_resolution_d0_vs_eta_mu:
@@ -272,7 +272,7 @@ rule plot_refit_resolution_d0_vs_eta_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/refit_resolution_d0_vs_eta_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_refit_resolution_z0_vs_pt_mixed:
@@ -283,7 +283,7 @@ rule plot_refit_resolution_z0_vs_pt_mixed:
         "plots/odd-performance/{sim_label}_{seeding_label}/refit_resolution_z0_vs_pt_mixed.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_refit_pullmean_vs_eta_mu:
@@ -294,7 +294,7 @@ rule plot_refit_pullmean_vs_eta_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/refit_pullmean_vs_eta_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_refit_pullwidth_vs_eta_mu:
@@ -305,7 +305,7 @@ rule plot_refit_pullwidth_vs_eta_mu:
         "plots/odd-performance/{sim_label}_{seeding_label}/refit_pullwidth_vs_eta_mu.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_vertex_resolution:
@@ -316,7 +316,7 @@ rule plot_vertex_resolution:
         "plots/odd-performance/{sim_label}_{seeding_label}/vertex_resolution.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_vertex_pull:
@@ -327,7 +327,7 @@ rule plot_vertex_pull:
         "plots/odd-performance/{sim_label}_{seeding_label}/vertex_pull.pdf",
     shell:
         """
-        python {input.script} {input.reco} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.reco} --output {output}
         """
 
 rule plot_vertex_efficiency:
@@ -339,7 +339,7 @@ rule plot_vertex_efficiency:
         "plots/odd-performance/{sim_label}_{seeding_label}/vertex_efficiency.pdf",
     shell:
         """
-        python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}
+        scripts/activate_and_run.sh python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}
         """
 
 rule plot_vertex_contamination:
@@ -351,7 +351,7 @@ rule plot_vertex_contamination:
         "plots/odd-performance/{sim_label}_{seeding_label}/vertex_contamination.pdf",
     shell:
         """
-        python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}
+        scripts/activate_and_run.sh python {input.script} --inputs-wot {input.reco_amvf_wot} --inputs-wt {input.reco_amvf_wt} --output {output}
         """
 
 rule plot_cpu_total_ttbar:
@@ -362,7 +362,7 @@ rule plot_cpu_total_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/cpu_total_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.times} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.times} --output {output}
         """
 
 rule plot_cpu_alg_ttbar:
@@ -373,5 +373,5 @@ rule plot_cpu_alg_ttbar:
         "plots/odd-performance/{sim_label}_{seeding_label}/cpu_alg_ttbar.pdf",
     shell:
         """
-        python {input.script} {input.times} --output {output}
+        scripts/activate_and_run.sh python {input.script} {input.times} --output {output}
         """

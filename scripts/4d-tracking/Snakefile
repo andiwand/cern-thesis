@@ -12,7 +12,7 @@ rule plot_ttbar_pu200_event_display:
         "plots/4d-tracking/ttbar-pu200-event-display.pdf",
     shell:
         """
-        python {input.script} --particles {input.particles} --vertices {input.vertices} --output {output}
+        scripts/activate_and_run.sh python {input.script} --particles {input.particles} --vertices {input.vertices} --output {output}
         """
 
 rule odd_layout:
@@ -26,5 +26,5 @@ rule odd_layout:
         "plots/4d-tracking/ttbar-pu200-grid-density.pdf",
     shell:
         """
-        python {input.script} --particles {input.particles} --vertices {input.vertices} --grid-1d {input.grid_1d} --grid-2d {input.grid_2d} --output {output}
+        scripts/activate_and_run.sh python {input.script} --particles {input.particles} --vertices {input.vertices} --grid-1d {input.grid_1d} --grid-2d {input.grid_2d} --output {output}
         """
