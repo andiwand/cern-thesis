@@ -98,7 +98,7 @@ for i, ax in np.ndenumerate(axs):
         vertices.iloc[0]["px"],
         vertices.iloc[0]["py"],
         facecolors="none",
-        edgecolors="blue",
+        edgecolors="yellow",
         linewidths=3,
         s=60,
         zorder=20,
