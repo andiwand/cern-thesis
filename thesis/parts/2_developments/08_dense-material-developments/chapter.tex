@@ -86,7 +86,7 @@ The covariance of a particle transported through material needs to be adjusted d
 
 \subsubsection{Multiple scattering}
 
-Charged particles passing through a medium are deflected by many small-angles. Most of these deflections are caused by Coulomb scattering from nuclei which is described by the Rutherford cross section. Given the central limit theorem, the net scattering and displacement distributions are Gaussian, with non-Gaussian tails produced by less frequent "hard" scattering \cite{pdg2024}.
+Charged particles passing through a medium are deflected by many small-angles. Most of these deflections are caused by Coulomb scattering from nuclei which is described by the Rutherford cross section. Given the central limit theorem, the net scattering and displacement distributions are Gaussian, with non-Gaussian tails produced by less frequent \textit{hard} scattering \cite{pdg2024}.
 
 The multiple scattering angle is given by \cite{pdg2024}
 \begin{equation}
@@ -117,7 +117,7 @@ with the molar electron density $\langle \rho \, Z/A \rangle$.
 
 One needs to be careful with continuous covariance updates as both, the energy loss and the multiple scattering are non-Gaussian processes and the convolution property is not fullfilled. As such, naively adding up variances after passing some amount of material will not give the correct result. To estimate the angle and energy uncertainty correctly, all the encountered material needs to be taken into account at once. At the same time these uncertainties will influence the positional and temporal uncertainty of the particle which needs to be accounted for.
 
-Taking the multiple scattering as an example, Equation \ref{eq:dev/dense/msc} gives the standard deviation of the angle uncertainty after passing some amount of material. We can apply this formula even for parts of the material, but it is not correct to "reset" the material amount after each step. For the second step one rather has to take the difference in angle variance $\text{Var}[\theta]$ from the first step into account to calculate the variance of the position $\text{Var}[y]$. Ignoring the evolution of the position variance during a step the variance can be calculated as follows:
+Taking the multiple scattering as an example, Equation \ref{eq:dev/dense/msc} gives the standard deviation of the angle uncertainty after passing some amount of material. We can apply this formula even for parts of the material, but it is not correct to \textit{reset} the material amount after each step. For the second step one rather has to take the difference in angle variance $\text{Var}[\theta]$ from the first step into account to calculate the variance of the position $\text{Var}[y]$. Ignoring the evolution of the position variance during a step the variance can be calculated as follows:
 \begin{equation}
 \begin{split}
     \text{Var}[\theta]_\text{\,at $x_1$} &= \theta_0^2(x_1) \\
@@ -157,7 +157,7 @@ During the developments of the \texttt{SympyStepper} for dense material describe
 \end{split}
 \label{eq:dev/dense/split-var-iter}
 \end{equation}
-with the step size $h_i = x_i - x_{i-1}$. To include the continuous energy loss in the multiple scattering estimation, $\Delta\theta_0^2$ can be evaluated with an average momentum at the middle of the step.
+with the step size $h_i = x_i - x_{i-1}$. To include the continuous energy loss in the multiple scattering estimation, $\Delta\theta_0^2$ can be evaluated with an average momentum at the midpoint of the step.
 
 A major challenge during the dense material handling for the \texttt{EigenStepper}, described in Section \ref{sec:dev/dense/eigen}, was that this kind of covariance transport was not foreseen in ACTS. The covariance is transported from one surface to the next using the transport Jacobian. There is no notion of a free track parameter covariance in the ACTS \texttt{EigenStepper} where additional material effects can be accumulated.
 
@@ -204,7 +204,7 @@ A reference is established using Geant4 \cite{geant4-2003}\cite{geant4-2006}\cit
 
 The toy model is implemented with Geant4 in C++ and used to propagate muons through the dense material. This is a standalone project with no other dependencies.
 
-When reaching the screen, the states of the muons are recorded as entries in a TTree and written to a ROOT file. Figure \ref{fig:dev/dense/geant4-events} shows an event display of 1000 muons passing through the toy geometry in Geant4.
+When reaching the screen, the states of the muons are recorded as entries in a \texttt{TTree} and written to a ROOT file. Figure \ref{fig:dev/dense/geant4-events} shows an event display of 1000 muons passing through the toy geometry in Geant4.
 
 \begin{figure}[ht]
     \centering
@@ -222,7 +222,7 @@ A volume-based material description exists in ACTS already for a while as well a
 
 Since steppers in ACTS primirily deal with Jacobian transport and propagate the covariance only on demand, the additional angle and positional uncertainty due to multiple scattering cannot be simply patched into the code. To work around this, an additional covariance term was introduced which is used to accumulate the multiple scattering and energy uncertainty. This term is then added when the covariance is transported to the next surface.
 
-The \texttt{EigenStepper} extension mechanism does not provide a way to accumulate the additional covariance during the transport and to apply it to the bound covariance when requested by the user. Changing this seemed like a major software architectural effort. As a first step a proof of concept solution was provided which reevaluates the additional covariance after each step. This is wasteful in terms of computing resources and should be improved later on.
+The \texttt{EigenStepper} extension mechanism does not provide a way to accumulate the additional covariance during the transport and to apply it to the bound covariance when requested by the user. Changing this seemed like a major software architectural effort. As a first step, a proof of concept solution was provided which reevaluates the additional covariance after each step. This is wasteful in terms of computing resources and should be improved later on.
 
 \begin{figure}[ht]
     \centering
@@ -242,7 +242,7 @@ While this approach led to promising results, the implementation was unsatisfact
 \section{Final implementation with the \texttt{SympyStepper}}
 \label{sec:dev/dense/sympy}
 
-The \texttt{SympyStepper} is a new stepper implementation in ACTS based on symbolic math expressions with are transformed into code. Developments and performance are described in Section \ref{sec:dev/stepper/sympy}. It is an alternative approach to the \texttt{EigenStepper} where the math has been done first and then manually transcribed into code using the linear algebra framework Eigen. \texttt{SymPy} has the benefit of writing concise and readable math expressions which can be used to generate the stepping code automatically, including the derivation of the transport Jacobian. As such, including the continuous energy loss is just a matter of changing the equations of motion, which then automatically affect the Runge-Kutta-Nyström integration and the transport Jacobian.
+The \texttt{SympyStepper} is a new stepper implementation in ACTS based on symbolic math expressions with are transformed into code. Developments and performance are described in Section \ref{sec:dev/stepper/sympy}. It is an alternative approach to the \texttt{EigenStepper} where the math has been done first and then manually transcribed into code using the linear algebra framework Eigen. SymPy has the benefit of writing concise and readable math expressions which can be used to generate the stepping code automatically, including the derivation of the transport Jacobian. As such, including the continuous energy loss is just a matter of changing the equations of motion, which then automatically affect the Runge-Kutta-Nyström integration and the transport Jacobian.
 
 With this new implementation a generalized stepping extension mechanism is avoided and the continuous multiple scattering and energy loss is implemented as a separate routine. The \texttt{SympyStepper} switches to this routine when the particle passes through dense material. Instead of trying to generalize this, which was attempted with the \texttt{EigenStepper}, the \texttt{SympyStepper} just enumerates the two cases we are aware of: vacuum and dense material.
 

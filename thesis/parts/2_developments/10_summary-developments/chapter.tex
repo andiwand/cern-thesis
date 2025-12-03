@@ -28,7 +28,7 @@ A solution to stepping in dense material has been proposed and implemented. In c
 
 \section{Proposals for future developments}
 
-Experiment independence is a key feature of ACTS. To further improve this, the track parameterization should be customizable. This includes the potential unused time parameter. Similarly, the units and constants should be customizable to give experiments more control over the numerical precision. This is a fairly long term goal and potentially requires large scale refactors. But keeping it in mind might open up new possibilities for the future.
+Experiment independence is a key feature of ACTS. To further improve this, the track parameterization should be customizable. This includes the potentially unused time parameter. Similarly, the units and constants should be customizable to give experiments more control over the numerical precision. This is a fairly long term goal and will require large scale refactors. Just keeping it in mind might already open up new possibilities for the future.
 
 The caller and callee inversion for propagation dependent algorithms has the potential to make ACTS more readable and maintainable. This will most likely not impact performance but can make the code more accessible to new developers. Additionally, debugging and profiling should be easier with this approach. This can be pioneered with the \texttt{KalmanFitter} and later discussed with the community.
 
