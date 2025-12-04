@@ -158,11 +158,11 @@ The following configuration was used for the track finding algorithm:
 \begin{figure}[thb]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_odd-performance/figures/finding_efficiency_mu.pdf}
-    \caption{Technical track efficiency as a function of true $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
+    \caption{Technical track finding efficiency as a function of true $\eta$ for single $\mu$ with $p_T = 1,10,100$ GeV.}
     \label{fig:perf/odd/finding-efficiency-mu}
 \end{figure}
 
-Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track efficiency for single $\mu$ as a function of true $\eta$ for different $p_T$ values. Technical efficiency is defined as the ratio of reconstructed particles with at least one matched track to the number of selected particles. Matching requires at least 50\% of the measurements on the track to come from the same truth particle, and at least 50\% of all the particle's measurements to be covered by the track. The observed efficiency for transverse momenta of 10 and 100 GeV is comparable to the seeding efficiency. For $p_T = 1$ GeV, the efficiency is significantly lower. This may be due to various reasons, such as an imprecise material map, incorrect implementation of energy loss or multiple scattering in ACTS, or a problem with navigation at low $p_T$. Increasing the $\chi^2$ cut for assigning measurements to the track improves efficiency. Multiple scattering dominates at lower $p_T$, and the fact that the original $\chi^2$ cut is sufficient for higher $p_T$ suggests that material handling is not optimal.
+Figure \ref{fig:perf/odd/finding-efficiency-mu} shows the track finding efficiency for single $\mu$ as a function of true $\eta$ for different $p_T$ values. Technical efficiency is defined as the ratio of reconstructed particles with at least one matched track to the number of selected particles. Matching requires at least 50\% of the measurements on the track to come from the same truth particle, and at least 50\% of all the particle's measurements to be covered by the track. The observed efficiency for transverse momenta of 10 and 100 GeV is comparable to the seeding efficiency. For $p_T = 1$ GeV, the efficiency is significantly lower. This may be due to various reasons, such as an imprecise material map, incorrect implementation of energy loss or multiple scattering in ACTS, or a problem with navigation at low $p_T$. Increasing the $\chi^2$ cut for assigning measurements to the track improves efficiency. Multiple scattering dominates at lower $p_T$, and the fact that the original $\chi^2$ cut is sufficient for higher $p_T$ suggests that material handling is not optimal.
 
 \begin{figure}[thb]
     \centering
@@ -176,22 +176,22 @@ Figure \ref{fig:perf/odd/finding-duplication} shows the track duplication ratio 
 \begin{figure}[thb]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_odd-performance/figures/finding_efficiency_mixed.pdf}
-    \caption{Technical track efficiency as a function of true $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
+    \caption{Technical track finding efficiency as a function of true $\eta$ for single $\mu$, $\pi$, and $e$ with $p_T = 10$ GeV.}
     \label{fig:perf/odd/finding-efficiency-mixed}
 \end{figure}
 
-Figure \ref{fig:perf/odd/finding-efficiency-mixed} shows the track efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of true $\eta$. The observed efficiency for $\pi$ is up to 1\% lower than for $\mu$. Given that the $\pi$ must have left at least 6 measurements in the detector and at least 3 in the pixels, performance should be similar to that for $\mu$. The reason for this is under investigation. $\pi$ are subject to nuclear interactions and can get stopped while traversing the detector. The CKF branch stopper could cause inefficiencies due to missing measurements at the end of the track. This can happen if the seed does not start from the innermost measurement, or if intermediate measurements are not assigned to the track. For $e$, efficiency is significantly lower, with about 95\% over most of the $\eta$ range, but dropping to about 80\% at $|\eta| \approx 1.7$. The poor finding performance for $e$ can be explained by the track finding algorithm not being optimized for this case. Electrons are affected not only by multiple scattering and ionization losses, but also by bremsstrahlung.
+Figure \ref{fig:perf/odd/finding-efficiency-mixed} shows the track finding efficiency for single $\mu$, $\pi$, and $e$ with $p_T$ = 10 GeV as a function of true $\eta$. The observed efficiency for $\pi$ is up to 1\% lower than for $\mu$. Given that the $\pi$ must have left at least 6 measurements in the detector and at least 3 in the pixels, performance should be similar to that for $\mu$. The reason for this is under investigation. $\pi$ are subject to nuclear interactions and can get stopped while traversing the detector. The CKF branch stopper could cause inefficiencies due to missing measurements at the end of the track. This can happen if the seed does not start from the innermost measurement, or if intermediate measurements are not assigned to the track. For $e$, efficiency is significantly lower, with about 95\% over most of the $\eta$ range, but dropping to about 80\% at $|\eta| \approx 1.7$. The poor finding performance for $e$ can be explained by the track finding algorithm not being optimized for this case. Electrons are affected not only by multiple scattering and ionization losses, but also by bremsstrahlung.
 
 To recover the remaining $e$ efficiency, the track finding algorithm must be robust against bremsstrahlung. This can be partially achieved by increasing the $\chi^2$ cut for assigning measurements to the track; however, this will also increase the fake rate. Ideally, track finding can be informed by a region-of-interest (ROI), for example provided by an electromagnetic calorimeter. Otherwise, the algorithm must assume that any seed could come from an electron, which would generally increase compute time and fake rate.
 
 \begin{figure}[thb]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/3_performance/11_odd-performance/figures/finding_efficiency_ttbar.pdf}
-    \caption{Technical track efficiency as a function of true $\eta$ for \ttbar events with different pileup $\langle \mu \rangle$.}
+    \caption{Technical track finding efficiency as a function of true $\eta$ for \ttbar events with different pileup $\langle \mu \rangle$.}
     \label{fig:perf/odd/finding-efficiency-ttbar}
 \end{figure}
 
-Figure \ref{fig:perf/odd/finding-efficiency-ttbar} shows the track efficiency for \ttbar events with different pileup $\langle \mu \rangle$ as a function of true $\eta$. The observed efficiency is similar to the seeding efficiency shown in Figure \ref{fig:perf/odd/seeding-efficiency-ttbar}. It drops with increasing pileup in the barrel region $|\eta| < 1.5$ and drastically at $|\eta| \approx 2$. There is an overall offset of about 2\% similar to the single $\pi$ efficiency shown in Figure \ref{fig:perf/odd/finding-efficiency-mixed}, which is likely due to the same reasons. The efficiency in the endcaps at $|\eta| \ge 2.3$ is generally high and less affected by pileup.
+Figure \ref{fig:perf/odd/finding-efficiency-ttbar} shows the track finding efficiency for \ttbar events with different pileup $\langle \mu \rangle$ as a function of true $\eta$. The observed efficiency is similar to the seeding efficiency shown in Figure \ref{fig:perf/odd/seeding-efficiency-ttbar}. It drops with increasing pileup in the barrel region $|\eta| < 1.5$ and drastically at $|\eta| \approx 2$. There is an overall offset of about 2\% similar to the single $\pi$ efficiency shown in Figure \ref{fig:perf/odd/finding-efficiency-mixed}, which is likely due to the same reasons. The efficiency in the endcaps at $|\eta| \ge 2.3$ is generally high and less affected by pileup.
 
 \begin{figure}[H]
     \centering
