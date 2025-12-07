@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
-import uproot
+import math
 import matplotlib.pyplot as plt
 import mplhep
 import argparse
 from pathlib import Path
+import ROOT
 import atlasify
+
+from mycommon1.root import TH1
 
 
 parser = argparse.ArgumentParser()
@@ -34,25 +37,29 @@ region_labels = ["Beampipe", "Pixel", "Short Strips", "Long Strips"]
 
 x_label = {"phi": r"$\phi$", "eta": r"$\eta$"}[args.x]
 y_label = {"l0": r"$X/\lambda_0$", "x0": "$X/X_0$"}[args.y]
+x_lim = {"phi": (-math.pi, math.pi), "eta": (-4, 4)}[args.x]
 
 hists = []
+bins = None
 labels = []
 
-rf = uproot.open(args.input)
+rf = ROOT.TFile.Open(args.input.absolute().as_posix())
 
 for name, label in zip(region_order, region_labels):
     key = f"{name}_{args.y}_vs_{args.x}_all"
-    if key in rf:
-        o = rf[key].to_hist()
-        o.axes[0].label = args.x
-        hists.append(o)
+    if rf.Get(key) is not None:
+        th1 = TH1(rf.Get(key), xrange=x_lim)
+        edges = list(th1.x_lo) + [th1.x_hi[-1]]
+
+        hists.append(th1.y)
+        bins = edges
     else:
         print(f"Key {key} not found in {args.input}")
     labels.append(label)
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4), layout="compressed")
-mplhep.histplot(hists, ax=ax, stack=True, histtype="fill", label=labels)
-ax.set_xlim(hists[0].axes[0].edges[0], hists[0].axes[0].edges[-1])
+mplhep.histplot(hists, bins=bins, ax=ax, stack=True, histtype="fill", label=labels)
+ax.set_xlim(*x_lim)
 ax.set_xlabel(x_label)
 ax.set_ylabel(y_label)
 ax.legend()
