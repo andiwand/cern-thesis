@@ -21,7 +21,7 @@ The ACTS-based track reconstruction chain can be used for offline reconstruction
 \section{CPU performance optimizations}
 \label{sec:perf/itk/cpu-performance}
 
-Since compute resources will be limited for reconstructing the large amount of data expected from the HL-LHC, the ACTS-based chain not only needs to deliver similar physics performance as the legacy chain, but also perform at least as well as the legacy chain in terms of CPU time \cite{atlas-hl-lhc-computing-cdr}\cite{atlas-tdr-029-add}. These optimizations were carried out by the ACTS-ITk team and as part of the work on this thesis. Some of these optimizations were performed directly in ACTS and have already been described in Chapter \ref{ch:dev/track_finding}.
+Since compute resources will be limited for reconstructing the large amount of data expected from the HL-LHC, the ACTS-based chain not only needs to deliver similar physics performance as the legacy chain, but also perform at least as well as the legacy chain in terms of CPU time \cite{atlas-hl-lhc-computing-cdr}\cite{atlas-tdr-029-add}. A series of optimizations was carried out by the ACTS-ITk team and as part of the work on this thesis. Some of these optimizations were performed directly in ACTS and have already been described in Chapter \ref{ch:dev/track_finding}.
 
 \begin{figure}[h]
     \centering
@@ -30,7 +30,7 @@ Since compute resources will be limited for reconstructing the large amount of d
     \label{fig:perf/itk/cpu-improvements}
 \end{figure}
 
-Figure \ref{fig:perf/itk/cpu-improvements} shows the incremental improvements to the compute time for reconstructing \ttbar events at $\langle \mu \rangle$ = 200 with the ATLAS reconstruction software Athena. This has been documented in \textcite{pubnote-2024-017} and is partially recapped and expanded here. The starting date for the plot is February 15, 2024, using Athena 24.0.24 (ACTS v32.0.2). The relevant improvements are listed in chronological order on the horizontal axis of the plot and described below. The last data point on the plot corresponds to the running time obtained on September 10, 2024 using Athena 25.0.16 (ACTS v36.2.1). The symbol $\dagger$ indicates that a major contribution to the item was made during the work on this thesis.
+Figure \ref{fig:perf/itk/cpu-improvements} shows the incremental improvements to the compute time for reconstructing \ttbar events at $\langle \mu \rangle$ = 200 with the ATLAS reconstruction software Athena. This has been documented in \textcite{pubnote-2024-017} and is partially recapped and expanded here. The starting date for the plot is February 15, 2024, using Athena 24.0.24 (ACTS v32.0.2). The relevant improvements are listed in chronological order on the horizontal axis of the plot and described below. The last data point on the plot corresponds to the CPU time obtained on September 10, 2024 using Athena 25.0.16 (ACTS v36.2.1). The symbol $\dagger$ indicates that a major contribution to the item was made during the work on this thesis.
 
 \begin{enumerate}
     \item \textbf{Ready for optimization}: the starting point of the optimizations, corresponding to the first fully functional version of the ACTS-based ITk track reconstruction deployed in Athena 24.0.24 (ACTS v32.0.2) on February 15, 2024. With this version of the code, ACTS track finding was measured to be six times slower than the legacy chain.
@@ -69,7 +69,7 @@ The physics performance of the ACTS-based chain is continuously evaluated agains
     \label{fig:perf/itk/eff-single-mu}
 \end{figure}
 
-Figure \ref{fig:perf/itk/eff-single-mu} shows the technical track efficiency as a function of true $\eta$ for single muons with $p_T = 2,10$ GeV for the ACTS-based and legacy chain. The ACTS-based chain shows good performance in the endcap region $|\eta| > 1.5$, but significant inefficiency in the barrel region $|\eta| < 1.5$ compared to the legacy chain. A modified ACTS-based chain is included in the plots, which uses a relaxed $\chi^2$ threshold of 100 instead of 25 to assign measurements during track finding. This is a temporary solution to improve performance in the barrel region. The modified ACTS-based chain shows a significant improvement compared to the unmodified ACTS-based chain in the barrel region and is consistently better than the legacy chain.
+Figure \ref{fig:perf/itk/eff-single-mu} shows the technical track efficiency as a function of true $\eta$ for single muons with $p_T = 2,10$ GeV for the ACTS-based and legacy chain. The ACTS-based chain shows good performance in the endcap region $|\eta| > 1.5$, but 1\% inefficiency in the barrel region $|\eta| < 1.5$ compared to the legacy chain. A modified ACTS-based chain is included in the plots, which uses a relaxed $\chi^2$ threshold of 100 instead of 25 to assign measurements during track finding. This is a temporary solution to improve performance in the barrel region. The modified ACTS-based chain shows a significant improvement compared to the unmodified ACTS-based chain in the barrel region and is consistently better than the legacy chain.
 
 \begin{figure}[H]
     \centering
@@ -99,7 +99,7 @@ Figure \ref{fig:perf/itk/res-single-mu} shows the resolution of the transverse i
 
 Figure \ref{fig:perf/itk/eff-fake-ttbar} shows the technical track efficiency and fake ratio as a function of true $\eta$ for \ttbar events with $\langle \mu \rangle = 200$ for the ACTS-based and legacy chain.
 
-Similar to what was observed for the single muon sample in Figure \ref{fig:perf/itk/eff-single-mu}, the ACTS-based chain shows good efficiency in the endcap region $|\eta| > 1.5$, but significant inefficiency in the barrel region $|\eta| < 1.5$ compared to the legacy chain. The modified ACTS-based chain shows a significant improvement in efficiency compared to the unmodified ACTS-based chain in the barrel region and is consistently better than the legacy chain.
+Similar to what was observed for the single muon sample in Figure \ref{fig:perf/itk/eff-single-mu}, the ACTS-based chain shows good efficiency in the endcap region $|\eta| > 1.5$, but 1-2\% inefficiency in the barrel region $|\eta| < 1.5$ compared to the legacy chain. The modified ACTS-based chain shows a significant improvement in efficiency compared to the unmodified ACTS-based chain in the barrel region and is consistently better than the legacy chain.
 
 The fake ratio is comparable between the ACTS-based and legacy chains. The modified ACTS-based chain shows a significant increase in fake tracks on the order of a factor of 10. This is due to the relaxed $\chi^2$ threshold for assigning measurements during track finding, as it allows more random measurement combinations to form fake tracks. Given this increase in fake tracks, the modified ACTS-based chain cannot be the final solution for recovering efficiency in the barrel region. The ACTS-ITk team is currently working to identify the cause of the inefficiency and how to improve it.
 

@@ -22,7 +22,7 @@ Surface ambiguity arises when multiple surfaces are close to each other. The nav
 
 During track finding, edge holes are not yet handled properly and can lead to inefficiencies. Handling multiple compatible surfaces is not implemented which can also result in inefficiencies if relevant. Additionally, ACTS could provide a modular implementation of the \texttt{TrackStateCreator} which generalizes to different experiments and allows for detailed customization.
 
-A solution to stepping in dense material has been proposed and implemented. In comparison to Geant4, not all material effects seem to be taken into account or are not taken into account the same way. This can lead to discrepancies between simulation and reconstruction which can affect the physics performance of the track finding and fitting.
+A solution to stepping in dense material has been proposed and implemented. In comparison to Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016}, not all material effects seem to be taken into account or are not taken into account the same way. This can lead to discrepancies between simulation and reconstruction which can affect the physics performance of the track finding and fitting.
 
 4D tracking has made a big step forward in ACTS. But there is still only one vertex seeder implementation that supports time information. To validate its performance, the truth based seeder can be used for now. Adaptation of the analytical gaussian track density seeder to support time information is not yet implemented.
 

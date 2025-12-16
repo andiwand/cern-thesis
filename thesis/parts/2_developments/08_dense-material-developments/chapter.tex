@@ -8,7 +8,7 @@ The main difference between the two approaches is how the material is handled du
 
 While the surface-based approach is a long-standing feature in ACTS, the volume-based approach had not yet been fully implemented. The work presented in this thesis aims to close this gap by implementing and validating particle transport through volume-based material in ACTS.
 
-Similar to the existing surface-based approach, this implementation focuses on two types of interactions with the material: continuous energy loss and multiple scattering, which are described in the following sections. Afterwards, a reference with Geant4 is established and the implementation in ACTS is described. Finally, the performance of the implementation is evaluated.
+Similar to the existing surface-based approach, this implementation focuses on two types of interactions with the material: continuous energy loss and multiple scattering, which are described in the following sections. Afterwards, a reference with Geant4 \cite{geant4-2003}\cite{geant4-2006}\cite{geant4-2016} is established and the implementation in ACTS is described. Finally, the performance of the implementation is evaluated.
 
 \section{Modified equations of motion}
 \label{sec:dev/dense/equations-of-motion}
@@ -227,7 +227,7 @@ The \texttt{EigenStepper} extension mechanism does not provide a way to accumula
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{parts/2_developments/08_dense-material-developments/figures/eloss_rate_fe_100mm.pdf}
-    \caption{A comparison of the energy loss rate computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The vertical bars represent the estimated energy loss uncertainty. A Landau distribution is fitted to the Geant4 data for each bin and summarized as the empirical mean from the data in the bin and standard deviation computed from the FWHM of the distribution. ACTS is able to reproduce the mean energy loss and the FWHM well over the full spectrum.}
+    \caption{A comparison of the energy loss rate computed by ACTS and Geant4 for muons over different momenta after passing 100 mm of iron. The vertical bars represent the estimated energy loss uncertainty. A Landau distribution is fitted to the Geant4 data for each bin and summarized as the empirical mean from the data in the bin and standard deviation computed from the FWHM of the distribution.}
     \label{fig:dev/dense/eloss-cmp-rate}
 \end{figure}
 

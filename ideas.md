@@ -1,5 +1,13 @@
 # Ideas
 
+## potential 0
+
+- [ ] inconsistent tables
+  - [ ] align text left vs center
+  - [ ] paramthesis for all tables
+  - [ ] check paramthesis consistency
+  - [ ] EigenStepper vs SympyStepper / w/ and w/o time with two columns?
+
 ## potential 1
 
 - [ ] "pileup" / "run3" / "phase2" deduplication

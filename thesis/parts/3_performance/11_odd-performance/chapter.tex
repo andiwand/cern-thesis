@@ -137,7 +137,7 @@ Figure \ref{fig:perf/odd/seeding-fake-ttbar} shows the seeding fake ratio for \t
 
 After seeding, the track finding algorithm is used to find complete tracks. The track finding algorithm in ACTS Examples is based on the combinatorial Kalman filter (CKF) (see Chapter \ref{ch:dev/track_finding}). The implementation of this algorithm has been reworked during the course of this thesis. These developments are described in detail in Chapter \ref{ch:dev/track_finding}. Briefly, the CKF starts propagation from the seed and collects measurements along the way. These measurements are used to iteratively refine the trajectory by updating the track parameters using the Kalman filter formalism. The track finding algorithm is designed not only to find all measurements, but also to provide an optimal fit to them. To achieve this, the CKF models material interactions accurately and has support for measurement calibration. Except for electrons, a refit should not be necessary after the track finding step.
 
-The performance of the seeding is essential for the track finding performance. A particle's track can only be reconstructed if there is a seed for it. Seed deduplication can be used to avoid duplication of similar tracks.
+The performance of the seeding is essential for the track finding performance. A particle's track can only be reconstructed if there is a seed for it. Seed deduplication can be used to avoid duplication of tracks.
 
 Track finding performance is evaluated using the same metrics as seeding: efficiency, duplication, and fake ratio. Additionally, the fitting performance is evaluated with the resolution and pull of the fitted track parameters at the interaction point.
 
