@@ -47,14 +47,14 @@ rf = ROOT.TFile.Open(args.input.absolute().as_posix())
 
 for name, label in zip(region_order, region_labels):
     key = f"{name}_{args.y}_vs_{args.x}_all"
-    if rf.Get(key) is not None:
-        th1 = TH1(rf.Get(key), xrange=x_lim)
-        edges = list(th1.x_lo) + [th1.x_hi[-1]]
-
-        hists.append(th1.y)
-        bins = edges
-    else:
+    if rf.Get(key) is None:
         print(f"Key {key} not found in {args.input}")
+        continue
+    th1 = TH1(rf.Get(key), xrange=x_lim)
+    edges = list(th1.x_lo) + [th1.x_hi[-1]]
+
+    hists.append(th1.y)
+    bins = edges
     labels.append(label)
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 4), layout="compressed")

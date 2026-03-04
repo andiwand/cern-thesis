@@ -8,7 +8,7 @@ For the reconstruction of the full event, tracks and vertices are used to form h
 
 Displaced tracks and vertices are not covered in this thesis. They can be created by interactions with the detector material or decays of long-lived particles. Displaced tracks and vertices are usually reconstructed in a separate step after the standard reconstruction, also called large radius tracking (LRT).
 
-This chapter introduces the key concepts and methods involved in track and vertex reconstruction. It begins with an overview of the relevant particle-matter interactions and the equations of motion for charged particles in a magnetic field. Then, the Runge-Kutta-Nyström method is presented as the numerical technique used to integrate these equations. Subsequently, the concept of track parameters is discussed, along with the transport of Jacobians and covariance matrices. Finally, the reconstruction chains and objects for tracks and vertices are described, along with the various reconstruction algorithms employed.
+This chapter introduces the key concepts and methods involved in track and vertex reconstruction. It starts with an overview of the relevant particle-matter interactions and the equations of motion for charged particles in a magnetic field. Then, the Runge-Kutta-Nyström method is presented as the numerical technique used to integrate these equations. Subsequently, the concept of track parameters is discussed, along with the transport of Jacobians and covariance matrices. Finally, the reconstruction chains and objects for tracks and vertices are described, along with the various reconstruction algorithms employed.
 
 \section{Particle-matter interactions}
 
@@ -37,7 +37,7 @@ The equations of motion describe the trajectory of a free, charged particle in t
 \end{align}
 with the curvature parameter $\lambda = q / p$, the normalized tangent vector $\mathbf{T} =\frac{d\mathbf{r}}{ds}$, magnetic field $\mathbf{B}$, the cartesian position $\mathbf{r}$, the rest frame time $t$, the path length $s$, the absolute momentum $p$, the mass $m$, and the charge $q$.
 
-In a homogeneous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. In reality, the magnetic field is not homogeneous, and the equations of motion are solved numerically. The most common method to solve the equations of motion is the Runge-Kutta-Nyström method, which is discussed in the next section.
+In a homogeneous magnetic field, the equations can be solved analytically and the particle's trajectory is a helix. In reality, the magnetic field is not homogeneous, and the equations of motion are solved numerically. A common method to solve the equations of motion is the Runge-Kutta-Nyström method, which is discussed in the next section.
 
 This equation can be extended to include the effects of continuous energy loss which is described in Section \ref{sec:dev/dense/equations-of-motion}.
 
