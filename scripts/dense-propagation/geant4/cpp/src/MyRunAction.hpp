@@ -39,6 +39,9 @@ public:
     analysisManager->CreateNtupleDColumn(1, "dir2");
     analysisManager->CreateNtupleDColumn(1, "p_final");
     analysisManager->CreateNtupleDColumn(1, "e_loss");
+    analysisManager->CreateNtupleDColumn(1, "kinetic_initial");
+    analysisManager->CreateNtupleDColumn(1, "kinetic_final");
+    analysisManager->CreateNtupleIColumn(1, "event");
     analysisManager->FinishNtuple(1);
   }
 

@@ -61,7 +61,7 @@ mid = 0.5 * (edges[:-1] + edges[1:])
 
 # ax.set_title("Relative positional uncertainty of muons passing Fe")
 ax.set_xlabel("Initial momentum [GeV]")
-ax.set_ylabel(r"$\Delta$ position ratio (ACTS / Geant4)")
+ax.set_ylabel(r"$\Delta$ position ratio (Geant4 / ACTS)")
 
 ax.set_xscale("log")
 ax.set_xlim(edges[0], edges[-1])

@@ -3,6 +3,7 @@
 
 #include "FTFP_BERT.hh"
 #include "G4RunManagerFactory.hh"
+#include "G4StepLimiterPhysics.hh"
 #include "G4SteppingVerbose.hh"
 #include "G4UImanager.hh"
 
@@ -48,8 +49,7 @@ int main(int argc, char **argv) {
   // Physics list
   G4VModularPhysicsList *physicsList = new FTFP_BERT();
 
-  // G4StepLimiterPhysics *stepLimitPhys = new G4StepLimiterPhysics();
-  // physicsList->RegisterPhysics(stepLimitPhys);
+  physicsList->RegisterPhysics(new G4StepLimiterPhysics());
 
   runManager->SetUserInitialization(physicsList);
 
@@ -66,8 +66,7 @@ int main(int argc, char **argv) {
 
   G4UImanager *uiManager = G4UImanager::GetUIpointer();
   uiManager->ApplyCommand(
-      ("/gun/energy " + std::to_string(static_cast<int>(energy)) + " GeV")
-          .c_str());
+      ("/gun/energy " + std::to_string(energy) + " GeV").c_str());
 
   // inactivate to disable the process
   uiManager->ApplyCommand("/process/activate muIoni");

@@ -3,9 +3,13 @@
 #include "MyTrackerHit.hpp"
 
 #include "G4AnalysisManager.hh"
+#include "G4Event.hh"
 #include "G4PrimaryParticle.hh"
+#include "G4RunManager.hh"
 #include "G4SDManager.hh"
 #include "G4VSensitiveDetector.hh"
+
+#include <unordered_set>
 
 class G4Run;
 
@@ -26,6 +30,11 @@ public:
     if (primaryParticle == nullptr) {
       return false;
     }
+    // A sensitive volume can take several steps for one track. Record the
+    // first screen crossing once, using the state at the entrance plane.
+    if (!m_recordedTracks.insert(particle).second) {
+      return false;
+    }
 
     auto newHit = new TrackerHit();
 
@@ -39,12 +48,13 @@ public:
 
     G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-    double p_initial = primaryParticle->GetKineticEnergy();
-    double t_final = aStep->GetTrack()->GetGlobalTime();
-    double p_final = aStep->GetTrack()->GetKineticEnergy();
-    double eloss =
-        primaryParticle->GetTotalEnergy() - aStep->GetTrack()->GetTotalEnergy();
-    G4ThreeVector direction = aStep->GetTrack()->GetMomentumDirection().unit();
+    double p_initial = primaryParticle->GetTotalMomentum();
+    double t_final = aStep->GetPreStepPoint()->GetGlobalTime();
+    double p_final = aStep->GetPreStepPoint()->GetMomentum().mag();
+    double eloss = primaryParticle->GetTotalEnergy() -
+                   aStep->GetPreStepPoint()->GetTotalEnergy();
+    G4ThreeVector direction =
+        aStep->GetPreStepPoint()->GetMomentumDirection().unit();
 
     analysisManager->FillNtupleIColumn(1, 0, particle);
     analysisManager->FillNtupleDColumn(1, 1, p_initial / CLHEP::GeV);
@@ -57,12 +67,19 @@ public:
     analysisManager->FillNtupleDColumn(1, 7, direction[2]);
     analysisManager->FillNtupleDColumn(1, 8, p_final / CLHEP::GeV);
     analysisManager->FillNtupleDColumn(1, 9, eloss / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(
+        1, 10, primaryParticle->GetKineticEnergy() / CLHEP::GeV);
+    analysisManager->FillNtupleDColumn(
+        1, 11, aStep->GetPreStepPoint()->GetKineticEnergy() / CLHEP::GeV);
+    analysisManager->FillNtupleIColumn(
+        1, 12, G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID());
     analysisManager->AddNtupleRow(1);
 
     return true;
   }
 
   void Initialize(G4HCofThisEvent *hce) override {
+    m_recordedTracks.clear();
     fHitsCollection =
         new TrackerHitsCollection(SensitiveDetectorName, collectionName[0]);
 
@@ -82,5 +99,6 @@ public:
   }
 
 private:
+  std::unordered_set<int> m_recordedTracks;
   TrackerHitsCollection *fHitsCollection = nullptr;
 };

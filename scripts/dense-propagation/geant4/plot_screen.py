@@ -5,9 +5,6 @@ import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-from scipy.optimize import curve_fit
-import uproot
-import awkward as ak
 import numpy as np
 import atlasify
 
@@ -20,58 +17,10 @@ def material_label(material):
     raise ValueError(f"Unknown material: {material}")
 
 
-def robust_gauss_fit_naive(data):
-    def fit(data):
-        return np.mean(data), np.std(data)
+import sys
 
-    if len(data) == 0:
-        return (0, 0), np.zeros((2, 2))
-
-    for _ in range(3):
-        m, s = fit(data)
-        data = data[np.abs(data - np.median(data)) < 3 * s]
-
-    return (m, s), np.zeros((2, 2))
-
-
-def robust_gauss_fit(data):
-    def fit(data):
-        def gauss(x, m, s):
-            return 1 / (s * (2 * np.pi) ** 0.5) * np.exp(-0.5 * ((x - m) / s) ** 2)
-
-        try:
-            if len(data) < 20:
-                raise ValueError(f"Not enough data to fit a Gaussian: {len(data)}")
-
-            low, mp1s, median, mm1s, high = np.percentile(data, [1, 16, 50, 84, 99])
-            hist_range = (low, high)
-            bins = 30
-            binned, edges = np.histogram(
-                data, range=hist_range, bins=bins, density=True
-            )
-            centers = 0.5 * (edges[1:] + edges[:-1])
-
-            p0 = median, mm1s - mp1s
-            params, cov = curve_fit(gauss, centers, binned, p0=p0, maxfev=1000000)
-
-            if cov[1, 1] > 5 * params[1] ** 2:
-                raise ValueError(
-                    f"Fit failed, covariance too large: {cov[1, 1]} > {5 * params[1] ** 2}"
-                )
-        except Exception as e:
-            print(f"Falling back to naive mean/std. Error: {e}")
-            params, cov = (np.mean(data), np.std(data)), np.zeros((2, 2))
-
-        return params, cov
-
-    if len(data) == 0:
-        return (0, 0), np.zeros((2, 2))
-
-    for _ in range(3):
-        (m, s), cov = fit(data)
-        data = data[np.abs(data - m) < 3 * s]
-
-    return (m, s), cov
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common import read_g4_data, robust_gauss_fit
 
 
 base_dir = Path(__file__).parent.parent.parent.parent
@@ -115,13 +64,13 @@ for i, file, axs_cols, momentum, x_range, e_range in zip(
     [(-220, 220), (-22, 22), (-2.2, 2.2)],
     [(0.65, 0.825), (9.55, 9.85), (99.55, 99.85)],
 ):
-    data = ak.to_dataframe(uproot.open(file)["reading"].arrays(library="ak"))
+    data = read_g4_data(file, 0)
 
     x, y = data["x"], data["y"]
     e = data["p_final"]
 
     # axs_cols[0].set_aspect("equal")
-    axs_cols[0].set_title(f"{momentum} GeV")
+    axs_cols[0].set_title(f"p = {data['p_initial'].mean():.3g} GeV")
     # axs_cols[0].set_xlabel("x [mm]")
     if i == 0:
         axs_cols[0].set_ylabel("y [mm]")
